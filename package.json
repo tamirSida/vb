@@ -1,0 +1,39 @@
+{
+  "name": "version-bravo-ventures",
+  "version": "1.0.0",
+  "description": "Landing page for Version Bravo Ventures - Veteran-led accelerator and venture fund",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next build && next export"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0"
+  },
+  "keywords": [
+    "venture-capital",
+    "veteran-entrepreneurs",
+    "accelerator",
+    "startup-funding",
+    "military-tech"
+  ],
+  "author": "Version Bravo Ventures",
+  "license": "MIT"
+}

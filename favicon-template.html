@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VBV Favicon</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 50px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .favicon-container {
+            width: 32px;
+            height: 32px;
+            background: #1a365d;
+            border-radius: 4px;
+            position: relative;
+            margin: 20px;
+            display: inline-block;
+        }
+        .favicon-logo {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+        }
+        .favicon-alt {
+            width: 32px;
+            height: 32px;
+            background: #1a365d;
+            border-radius: 6px;
+            position: relative;
+            margin: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .preview {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h3 {
+            color: #1a365d;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview">
+        <h3>Favicon Options for VBV</h3>
+        <p>Choose the best option for your favicon (save as 32x32 PNG, then convert to .ico)</p>
+        
+        <div>
+            <h4>Option 1: Logo-based</h4>
+            <div class="favicon-container">
+                <img src="./public/images/brand/vbv-logo.png" alt="VBV Logo" class="favicon-logo">
+            </div>
+            <p>Uses your actual logo (might be hard to see at small size)</p>
+        </div>
+        
+        <div>
+            <h4>Option 2: Text-based</h4>
+            <div class="favicon-alt">VB</div>
+            <p>Simple "VB" letters on navy background (more readable at small size)</p>
+        </div>
+    </div>
+
+    <div class="preview">
+        <h3>Instructions:</h3>
+        <p>1. Open this HTML file in your browser</p>
+        <p>2. Take a screenshot of your preferred favicon option</p>
+        <p>3. Crop to exactly 32x32 pixels</p>
+        <p>4. Save as favicon.ico in /public/ folder</p>
+        <p>5. Use online tool like favicon.io to convert PNG to ICO if needed</p>
+    </div>
+</body>
+</html>

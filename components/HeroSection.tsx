@@ -22,7 +22,7 @@ const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[20vh] sm:min-h-[18vh] md:min-h-[25vh] lg:min-h-[28vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[25vh] sm:min-h-[22vh] md:min-h-[35vh] lg:min-h-[40vh] flex items-center overflow-hidden">
       {/* Background Video for Desktop */}
       <div className="hidden md:block absolute inset-0 bg-black z-0">
         <video

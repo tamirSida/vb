@@ -227,7 +227,7 @@ export const siteData = {
       education: "Computer Science and Entrepreneurship - Reichman University",
       isFounder: false,
       bullets: [
-        "Tech Stack Architect & AI/Web Dev Mentor",
+        "AI/Web Dev Architect",
         "Chief of Operations (Res.), 55th Brigade, IDF",
         "Project & Product Manager leading complex technology programs in defense and innovation sectors",
         "AI/ML-focused software and full-stack web application developer",
@@ -341,29 +341,28 @@ export const siteData = {
 
   applicationProcess: {
     title: "Application & Diligence Process",
-    timeline: "1 month total",
+    timeline: "3-week streamlined process",
     steps: [
       {
         week: "Week 1",
-        activity: "1–3 intro calls"
+        activity: "1–3 Intro Meetings",
+        details: "Company receives a go/no-go for continued diligence"
       },
       {
         week: "Week 2", 
-        activity: "1–2 domain expert calls"
+        activity: "1–2 Domain Expert Meetings/Calls",
+        details: "Leveraging our extensive advisory network"
       },
       {
         week: "Week 3",
-        activity: "Diligence + follow-ups"
-      },
-      {
-        week: "Week 4",
-        activity: "Decision (must be unanimous)"
+        activity: "Final Diligence & Decision",
+        details: "Follow-on inquiries, investment decision, unanimous approval required from both partners"
       }
     ],
     commitments: [
-      "Weekly updates",
-      "1-month timeline max", 
-      "Transparent feedback (including deal memo)"
+      "Weekly progress updates throughout process",
+      "Maximum 3-week timeline from application to decision", 
+      "Transparent feedback at every stage (including detailed deal memo)"
     ]
   }
 };

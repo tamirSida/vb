@@ -22,7 +22,7 @@ const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[20vh] sm:min-h-[18vh] md:min-h-[22vh] lg:min-h-[25vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[20vh] sm:min-h-[18vh] md:min-h-[18vh] lg:min-h-[20vh] flex items-center overflow-hidden">
       {/* Background Video for Desktop */}
       <video
         ref={videoRef}
@@ -51,7 +51,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent z-10"></div>
 
       {/* Content */}
-      <div className="relative z-20 container-max px-4 py-2 sm:py-4 md:py-8 lg:py-10 text-white">
+      <div className="relative z-20 container-max px-4 py-2 sm:py-4 md:py-4 lg:py-6 text-white">
         <div className="max-w-4xl">
           {/* Logo */}
           <div className="mb-3 sm:mb-6 md:mb-8">
@@ -60,7 +60,7 @@ const HeroSection: React.FC = () => {
               alt="Version Bravo Ventures Logo"
               width={192}
               height={192}
-              className="h-16 sm:h-24 md:h-40 lg:h-48 w-auto"
+              className="h-16 sm:h-24 md:h-28 lg:h-32 w-auto"
               priority
             />
           </div>
@@ -73,13 +73,13 @@ const HeroSection: React.FC = () => {
             </div>
           </div>
           
-          <h1 className="text-xl sm:text-3xl md:text-6xl lg:text-7xl font-bold leading-tight mb-3 sm:mb-6 md:mb-8">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-3 sm:mb-6 md:mb-6">
             <span className="block text-gray-100">Investing in Veterans</span>
             <span className="block text-white">Who Conquered</span>
             <span className="block text-gray-100">the Impossible</span>
           </h1>
           
-          <p className="text-sm sm:text-lg md:text-2xl mb-3 sm:mb-6 md:mb-8 text-gray-200 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-xl mb-3 sm:mb-6 md:mb-6 text-gray-200 max-w-2xl leading-relaxed">
             {siteData.hero.subheadline}
           </p>
           

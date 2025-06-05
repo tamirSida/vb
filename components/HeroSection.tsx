@@ -46,7 +46,7 @@ const HeroSection: React.FC = () => {
             <img 
               src="/images/brand/vbv-logo.png" 
               alt="Version Bravo Ventures Logo"
-              className="h-24 md:h-32 lg:h-40 w-auto"
+              className="h-32 md:h-40 lg:h-48 w-auto"
             />
           </div>
 

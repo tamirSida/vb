@@ -16,19 +16,19 @@ const Programs: React.FC = () => {
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
           {siteData.programs.map((program, index) => (
-            <div key={index} className="bg-gradient-to-br from-dark to-medium text-white p-8 rounded-xl shadow-lg border border-secondary">
+            <div key={index} className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow">
               <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-3">{program.name}</h3>
-                <p className="text-gray-200 mb-4">{program.description}</p>
+                <h3 className="text-2xl font-bold mb-3 text-gray-700">{program.name}</h3>
+                <p className="text-medium mb-4">{program.description}</p>
                 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
                     <span className="text-gray-700 font-semibold">Duration:</span>
-                    <p className="text-white">{program.duration}</p>
+                    <p className="text-dark">{program.duration}</p>
                   </div>
                   <div>
                     <span className="text-gray-700 font-semibold">Investment:</span>
-                    <p className="text-white">{program.investment}</p>
+                    <p className="text-dark">{program.investment}</p>
                   </div>
                 </div>
               </div>
@@ -39,7 +39,7 @@ const Programs: React.FC = () => {
                   {program.highlights.map((highlight, idx) => (
                     <li key={idx} className="flex items-start">
                       <span className="text-gray-700 mr-2">•</span>
-                      <span className="text-gray-200">{highlight}</span>
+                      <span className="text-medium">{highlight}</span>
                     </li>
                   ))}
                 </ul>

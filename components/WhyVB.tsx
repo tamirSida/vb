@@ -12,16 +12,26 @@ const WhyVB: React.FC = () => {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {siteData.whyVB.points.map((point, index) => (
-            <div key={index} className="bg-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-secondary">
-              <div className="flex items-start">
-                <div className="bg-gray-700 text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                  {index + 1}
+          {siteData.whyVB.points.map((point, index) => {
+            const icons = [
+              "fas fa-users", // Team of successful operators
+              "fas fa-network-wired", // Unparalleled network
+              "fas fa-handshake", // We understand the veteran entrepreneur
+              "fas fa-graduation-cap", // Accelerator built by veterans
+              "fas fa-star" // Experienced advisory board
+            ];
+            
+            return (
+              <div key={index} className="bg-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-secondary">
+                <div className="flex items-start">
+                  <div className="bg-gray-700 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                    <i className={`${icons[index]} text-lg`}></i>
+                  </div>
+                  <p className="text-dark leading-relaxed">{point}</p>
                 </div>
-                <p className="text-dark leading-relaxed">{point}</p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

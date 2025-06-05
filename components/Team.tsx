@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { siteData } from '../data/content';
 
 const Team: React.FC = () => {
@@ -25,9 +26,11 @@ const Team: React.FC = () => {
               <div key={index} className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl">
                 <div className="flex justify-center pt-6 mb-6">
                   <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700 shadow-xl">
-                    <img 
+                    <Image 
                       src={member.image} 
                       alt={member.name}
+                      width={128}
+                      height={128}
                       className="w-full h-full object-cover object-center"
                     />
                   </div>
@@ -56,15 +59,18 @@ const Team: React.FC = () => {
         {/* Team Section */}
         <div>
           <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">Team & Advisors</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
             {team.map((member, index) => (
               <div key={index} className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md">
                 <div className="flex justify-center pt-4 mb-4">
                   <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
-                    <img 
+                    <Image 
                       src={member.image} 
                       alt={member.name}
-                      className="w-full h-full object-cover object-center"
+                      width={112}
+                      height={112}
+                      className="w-full h-full object-cover object-top scale-110"
+                      priority
                     />
                   </div>
                 </div>

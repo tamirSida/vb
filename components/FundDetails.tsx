@@ -16,9 +16,9 @@ const FundDetails: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-white/10 backdrop-blur rounded-lg p-6">
-            <h3 className="text-vbv-gold font-semibold mb-4">Fund Economics</h3>
+            <h3 className="text-gray-100 font-semibold mb-4">Fund Economics</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-300">Carried Interest:</span>
@@ -36,7 +36,7 @@ const FundDetails: React.FC = () => {
           </div>
 
           <div className="bg-white/10 backdrop-blur rounded-lg p-6">
-            <h3 className="text-vbv-gold font-semibold mb-4">Investment Terms</h3>
+            <h3 className="text-gray-100 font-semibold mb-4">Investment Terms</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-300">Target Size:</span>
@@ -54,7 +54,7 @@ const FundDetails: React.FC = () => {
           </div>
 
           <div className="bg-white/10 backdrop-blur rounded-lg p-6">
-            <h3 className="text-vbv-gold font-semibold mb-4">Timeline</h3>
+            <h3 className="text-gray-100 font-semibold mb-4">Timeline</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-300">Investment Period:</span>
@@ -69,8 +69,8 @@ const FundDetails: React.FC = () => {
         </div>
 
         <div className="mt-8 text-center">
-          <div className="bg-vbv-gold/20 border border-vbv-gold rounded-lg p-6 max-w-2xl mx-auto">
-            <h4 className="text-vbv-gold font-semibold mb-2">Mission-Driven Impact</h4>
+          <div className="bg-gray-100/20 border border-gray-100 rounded-lg p-6 max-w-2xl mx-auto">
+            <h4 className="text-gray-100 font-semibold mb-2">Mission-Driven Impact</h4>
             <p className="text-gray-200">
               {fundMechanics.details.charitableDonation}
             </p>

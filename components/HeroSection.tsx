@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { siteData } from '../data/content';
 
 const HeroSection: React.FC = () => {
@@ -43,10 +44,13 @@ const HeroSection: React.FC = () => {
         <div className="max-w-4xl">
           {/* Logo */}
           <div className="mb-8">
-            <img 
+            <Image 
               src="/images/brand/vbv-logo.png" 
               alt="Version Bravo Ventures Logo"
+              width={192}
+              height={192}
               className="h-32 md:h-40 lg:h-48 w-auto"
+              priority
             />
           </div>
 

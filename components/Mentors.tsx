@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { siteData } from '../data/content';
 
 const Mentors: React.FC = () => {
@@ -14,13 +15,15 @@ const Mentors: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-1 lg:grid-cols-4 gap-6">
           {siteData.mentors.map((mentor, index) => (
             <div key={index} className="text-center p-6 bg-light rounded-lg hover:shadow-lg transition-shadow border border-secondary">
               <div className="mb-4">
-                <img 
+                <Image 
                   src={mentor.image} 
                   alt={mentor.name}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-gray-700"
                 />
               </div>

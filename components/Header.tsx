@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 const Header: React.FC = () => {
   return (
@@ -6,9 +7,11 @@ const Header: React.FC = () => {
       <div className="container-max px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <img 
+            <Image 
               src="/images/brand/vbv-logo.png" 
               alt="Version Bravo Ventures"
+              width={96}
+              height={48}
               className="h-12 w-auto"
             />
           </div>

@@ -294,14 +294,14 @@ export const siteData = {
   ] as PortfolioCompany[],
 
   mentors: [
-    { name: "Rami Lachter", company: "Flare", image: "/images/mentors/rami-lachter.jpg" },
-    { name: "Isaac Zafarani", company: "Vero, EXO", image: "/images/mentors/isaac-zafarani.jpg" },
-    { name: "Tal Brown", company: "Zone 7", image: "/images/mentors/tal-brown.jpg" },
-    { name: "Oriel Raveh", company: "Tipping Point", image: "/images/mentors/oriel-raveh.jpg" },
-    { name: "Sonny Tai", company: "Acute", image: "/images/mentors/sonny-tai.jpg" },
-    { name: "Rob Huberty", company: "ZeroEyes", image: "/images/mentors/rob-huberty.jpg" },
-    { name: "Yochai Rozenblat", company: "Advisor", image: "/images/mentors/yochai-rozenblat.jpg" },
-    { name: "Avner Braverman", company: "Voia", image: "/images/mentors/avner-braverman.jpg" }
+    { name: "Rami Lachter", company: "Co-Founder - Flare", image: "/images/mentors/rami-lachter.jpg" },
+    { name: "Isaac Zafarani", company: "Co-Founder - Vero, EXO (Acq.)", image: "/images/mentors/isaac-zafarani.jpg" },
+    { name: "Tal Brown", company: "Co-Founder - Zone 7", image: "/images/mentors/tal-brown.jpg" },
+    { name: "Avner Braverman", company: "Founder - Voia", image: "/images/mentors/avner-braverman.jpg" },
+    { name: "Oriel Raveh", company: "Founder - Tipping Point", image: "/images/mentors/oriel-raveh.jpg" },
+    { name: "Sonny Tai", company: "Founder - Acute", image: "/images/mentors/sonny-tai.jpg" },
+    { name: "Yochai Rozenblat", company: "Serial Entrepreneur", image: "/images/mentors/yochai-rozenblat.jpg" },
+    { name: "Rob Huberty", company: "Co-Founder - ZeroEyes", image: "/images/mentors/rob-huberty.jpg" }
   ],
 
   investmentCriteria: {

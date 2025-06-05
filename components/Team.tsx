@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { siteData } from '../data/content';
 
 const Team: React.FC = () => {
-  const [hoveredMember, setHoveredMember] = useState<number | null>(null);
   const founders = siteData.team.filter(member => member.isFounder);
   const team = siteData.team.filter(member => !member.isFounder);
 
@@ -57,16 +56,11 @@ const Team: React.FC = () => {
         {/* Team Section */}
         <div>
           <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">Team & Advisors</h3>
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {team.map((member, index) => (
-              <div 
-                key={index} 
-                className="relative bg-light rounded-lg overflow-hidden border border-secondary hover:border-gray-700 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg"
-                onMouseEnter={() => setHoveredMember(index)}
-                onMouseLeave={() => setHoveredMember(null)}
-              >
-                <div className="flex justify-center pt-3 mb-3">
-                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
+              <div key={index} className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md">
+                <div className="flex justify-center pt-4 mb-4">
+                  <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
                     <img 
                       src={member.image} 
                       alt={member.name}
@@ -74,34 +68,29 @@ const Team: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="p-3">
-                  <h4 className="text-sm font-bold text-dark mb-1">{member.name}</h4>
-                  <p className="text-gray-700 font-semibold mb-2 text-xs">{member.title}</p>
+                <div className="p-4">
+                  <h4 className="text-lg font-bold text-dark mb-1 text-center">{member.name}</h4>
+                  <p className="text-gray-700 font-semibold mb-3 text-sm text-center">{member.title}</p>
                   
-                  <div className="space-y-1">
-                    {member.military !== "N/A" && (
-                      <div>
-                        <span className="text-xs text-medium">{member.military}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  {member.military !== "N/A" && (
+                    <div className="mb-3 text-center">
+                      <span className="text-xs text-medium font-medium">{member.military}</span>
+                    </div>
+                  )}
 
-                {/* Hover overlay with bullets */}
-                {hoveredMember === index && member.bullets && (
-                  <div className="absolute inset-0 bg-light/95 backdrop-blur-sm p-4 flex flex-col justify-start overflow-y-auto border-2 border-gray-700">
-                    <h4 className="text-sm font-bold text-dark mb-1">{member.name}</h4>
-                    <p className="text-gray-700 font-semibold mb-3 text-xs">{member.title}</p>
-                    <ul className="space-y-1">
-                      {member.bullets.map((bullet, bulletIndex) => (
-                        <li key={bulletIndex} className="text-xs text-dark flex items-start">
-                          <span className="text-gray-700 mr-2 flex-shrink-0">•</span>
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                  {member.bullets && (
+                    <div className="mt-3">
+                      <ul className="space-y-1">
+                        {member.bullets.map((bullet, bulletIndex) => (
+                          <li key={bulletIndex} className="text-xs text-dark flex items-start">
+                            <span className="text-gray-700 mr-2 flex-shrink-0">•</span>
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>

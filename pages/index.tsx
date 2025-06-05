@@ -67,8 +67,8 @@ export default function Home() {
         <WhyVB />
         <Programs />
         <Team />
-        <Portfolio />
         <Mentors />
+        <Portfolio />
         <FundDetails />
         <ApplicationProcess />
         <CTA />

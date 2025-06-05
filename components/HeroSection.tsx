@@ -22,18 +22,20 @@ const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[20vh] sm:min-h-[18vh] md:min-h-[18vh] lg:min-h-[20vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[20vh] sm:min-h-[18vh] md:min-h-[25vh] lg:min-h-[28vh] flex items-center overflow-hidden">
       {/* Background Video for Desktop */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        className="hidden md:block absolute inset-0 w-full h-full object-cover z-0"
-      >
-        <source src="/videos/hero-background.mp4" type="video/mp4" />
-        <source src="/videos/hero-background.webm" type="video/webm" />
-      </video>
+      <div className="hidden md:block absolute inset-0 bg-black z-0">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          className="w-full h-full object-contain"
+        >
+          <source src="/videos/hero-background.mp4" type="video/mp4" />
+          <source src="/videos/hero-background.webm" type="video/webm" />
+        </video>
+      </div>
       
       {/* Background Image for Mobile */}
       <div className="md:hidden absolute inset-0 z-0">
@@ -96,7 +98,7 @@ const HeroSection: React.FC = () => {
       </div>
       
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
         <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
           <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
         </div>

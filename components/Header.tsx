@@ -10,9 +10,10 @@ const Header: React.FC = () => {
             <Image 
               src="/images/brand/vbv-logo.png" 
               alt="Version Bravo Ventures"
-              width={96}
-              height={48}
-              className="h-12 w-auto"
+              width={160}
+              height={80}
+              className="h-20 brightness-0"
+              style={{ width: 'auto', filter: 'brightness(0) saturate(100%) invert(22%) sepia(12%) saturate(733%) hue-rotate(202deg) brightness(91%) contrast(95%)' }}
             />
           </div>
           

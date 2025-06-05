@@ -22,61 +22,72 @@ const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background Video Only */}
+    <section className="relative min-h-[20vh] sm:min-h-[18vh] md:min-h-[22vh] lg:min-h-[25vh] flex items-center overflow-hidden">
+      {/* Background Video for Desktop */}
       <video
         ref={videoRef}
         autoPlay
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="hidden md:block absolute inset-0 w-full h-full object-cover z-0"
       >
         <source src="/videos/hero-background.mp4" type="video/mp4" />
         <source src="/videos/hero-background.webm" type="video/webm" />
       </video>
+      
+      {/* Background Image for Mobile */}
+      <div className="md:hidden absolute inset-0 z-0">
+        <Image
+          src="/images/hero/vbv-hero.jpg"
+          alt="Version Bravo Ventures Hero"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60 z-10"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent z-10"></div>
 
       {/* Content */}
-      <div className="relative z-20 container-max section-padding text-white">
+      <div className="relative z-20 container-max px-4 py-2 sm:py-4 md:py-8 lg:py-10 text-white">
         <div className="max-w-4xl">
           {/* Logo */}
-          <div className="mb-8">
+          <div className="mb-3 sm:mb-6 md:mb-8">
             <Image 
               src="/images/brand/vbv-logo.png" 
               alt="Version Bravo Ventures Logo"
               width={192}
               height={192}
-              className="h-32 md:h-40 lg:h-48 w-auto"
+              className="h-16 sm:h-24 md:h-40 lg:h-48 w-auto"
               priority
             />
           </div>
 
-          <div className="mb-6">
-            <div className="inline-flex items-center bg-gray-800/40 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-500/30 mb-6">
-              <span className="text-gray-200 font-semibold text-sm uppercase tracking-wider">
+          <div className="mb-3 sm:mb-4 md:mb-6">
+            <div className="inline-flex items-center bg-gray-800/40 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full border border-gray-500/30 mb-3 sm:mb-6">
+              <span className="text-gray-200 font-semibold text-xs sm:text-sm uppercase tracking-wider">
                 Combat Veterans • Proven Operators
               </span>
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
+          <h1 className="text-xl sm:text-3xl md:text-6xl lg:text-7xl font-bold leading-tight mb-3 sm:mb-6 md:mb-8">
             <span className="block text-gray-100">Investing in Veterans</span>
             <span className="block text-white">Who Conquered</span>
             <span className="block text-gray-100">the Impossible</span>
           </h1>
           
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-2xl mb-3 sm:mb-6 md:mb-8 text-gray-200 max-w-2xl leading-relaxed">
             {siteData.hero.subheadline}
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-8 md:mb-12">
+            <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base">
               {siteData.hero.ctaPrimary}
             </button>
-            <button className="border-2 border-gray-300 text-gray-200 hover:bg-gray-200 hover:text-dark font-semibold py-4 px-8 rounded-lg transition-all duration-300">
+            <button className="border-2 border-gray-300 text-gray-200 hover:bg-gray-200 hover:text-dark font-semibold py-2 px-4 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 text-sm sm:text-base">
               {siteData.hero.ctaSecondary}
             </button>
           </div>

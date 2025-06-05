@@ -7,7 +7,7 @@ const Team: React.FC = () => {
   const team = siteData.team.filter(member => !member.isFounder);
 
   return (
-    <section className="section-padding bg-primary text-dark">
+    <section id="team" className="section-padding bg-primary text-dark">
       <div className="container-max">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">

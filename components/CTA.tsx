@@ -2,7 +2,7 @@ import React from 'react';
 
 const CTA: React.FC = () => {
   return (
-    <section className="section-padding bg-gradient-to-r from-vbv-gray to-gray-700 text-white">
+    <section id="contact" className="section-padding bg-gradient-to-r from-vbv-gray to-gray-700 text-white">
       <div className="container-max">
         <div className="text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">

@@ -3,7 +3,7 @@ import { siteData } from '../data/content';
 
 const Programs: React.FC = () => {
   return (
-    <section className="section-padding bg-light">
+    <section id="programs" className="section-padding bg-light">
       <div className="container-max">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">

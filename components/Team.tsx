@@ -13,9 +13,13 @@ const Team: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             <span className="text-dark">Leadership</span> <span className="text-gray-700">Team</span>
           </h2>
-          <p className="text-xl text-medium max-w-3xl mx-auto">
-            Combat veterans turned successful entrepreneurs and operators
-          </p>
+          <div className="flex items-center justify-center gap-4 text-xl text-medium max-w-3xl mx-auto">
+            <span className="font-semibold">Combat Veterans</span>
+            <i className="fas fa-arrow-right text-gray-700 text-2xl"></i>
+            <span className="font-semibold">Entrepreneurs</span>
+            <i className="fas fa-arrow-right text-gray-700 text-2xl"></i>
+            <span className="font-semibold">Investors</span>
+          </div>
         </div>
 
         {/* Founders Section */}

@@ -29,6 +29,7 @@ const HeroSection: React.FC = () => {
           ref={videoRef}
           autoPlay
           muted
+          loop
           playsInline
           className="w-full h-full object-contain"
         >

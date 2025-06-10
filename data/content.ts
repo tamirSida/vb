@@ -3,12 +3,10 @@
 export interface TeamMember {
   name: string;
   title: string;
-  bio: string;
   image: string;
   military: string;
-  education: string;
+  linkedinUrl?: string;
   isFounder: boolean;
-  bullets?: string[];
 }
 
 export interface PortfolioCompany {
@@ -85,155 +83,74 @@ export const siteData = {
     {
       name: "Nuri Golan",
       title: "Managing Director, Version Bravo, Alpha-Bet (NGO)",
-      bio: "VP Lear Innovation Ventures, Co-Founder/CEO EXO (Acq. by Lear)",
       image: "/images/team/nuri-golan.jpg",
       military: "Captain (Res.) Shayetet-13 (IL Navy SEALs)",
-      education: "B.Sc. Aerospace Engineering - George Washington Univ., MBA Technion",
-      isFounder: true,
-      bullets: [
-        "Managing Director, Version Bravo, Alpha-Bet (NGO)",
-        "VP Lear Innovation Ventures",
-        "Co-Founder/CEO, EXO (Acq. by Lear)",
-        "Co-Founder/CEO, Sosivio",
-        "Co-Founder/Chairman, Navmatic (Acq. by SuperPedestrian)",
-        "Captain (Res.) Shayetet-13 (IL Navy SEALs)",
-        "B.Sc. Aerospace Engineering - George Washington Univ.",
-        "MBA, Entrepreneurship and Innovation - Technion"
-      ]
+      linkedinUrl: "https://linkedin.com/in/nurigolan",
+      isFounder: true
     },
     {
       name: "Adam Weiner", 
       title: "Chief Mentor, Version Bravo, Alpha-Bet (NGO)",
-      bio: "Co-Founder/COO EXO (Acq. by Lear), Director of Innovation Lear",
       image: "/images/team/adam-weiner.jpg",
       military: "IDF Paratrooper",
-      education: "BA Political Science – U. Arizona, MBA Technion",
-      isFounder: true,
-      bullets: [
-        "Chief Mentor, Version Bravo, Alpha-Bet (NGO)",
-        "Co-Founder/COO, EXO (Acq. by Lear)",
-        "Co-Founder/COO, Sosivio",
-        "Co-Founder/Board Member, Navmatic (Acq. by SuperPedestrian)",
-        "Director of Innovation, Lear Innovation Ventures",
-        "IDF Paratrooper",
-        "BA, Political Science – U. Arizona",
-        "MBA, Entrepreneurship and Innovation - Technion"
-      ]
+      linkedinUrl: "https://linkedin.com/in/adamweiner",
+      isFounder: true
     },
     {
       name: "Dr. Gali Einav",
       title: "IL Academic Lead",
-      bio: "Professor of Digital Media & Entrepreneurship",
       image: "/images/team/gali-einav.jpg",
       military: "N/A",
-      education: "PhD Interactive Television - Columbia University",
-      isFounder: false,
-      bullets: [
-        "Head of International Undergraduate Program in Entrepreneurship and the 'Upstart' program at Adelson School of Entrepreneurship, Reichman Univ.",
-        "Prof. of Digital Media, Reichman University",
-        "Prof. Digital Media/Entrepreneurship, Katz School of Marketing, Yeshiva Univ.",
-        "Led Digital Insight & Innovation Research Group, NBC Universal",
-        "Advisory Board Member, Nielsen Innovate & Yeshiva Univ. Innovation Lab",
-        "MA, Communications and Journalism - The Hebrew Univ. of Jerusalem",
-        "PhD, Interactive Television - Columbia University"
-      ]
+      linkedinUrl: "https://linkedin.com/in/galieinav",
+      isFounder: false
     },
     {
       name: "Prof. Tommy Knapp",
       title: "US Academic Lead",
-      bio: "Academic Director, USC Entrepreneurship",
       image: "/images/team/tommy-knapp.jpg",
       military: "N/A",
-      education: "BBA & MBA - University of Southern California",
-      isFounder: false,
-      bullets: [
-        "Academic Dir., Master's of Science in Entrepreneurship & Innovation, USC",
-        "Associate Prof. of Clinical Entrepreneurship @ Lloyd Greif Center for Entrepreneurial Studies @ Univ. of Southern California",
-        "Founder, Club Sportswear & Honolua Surf Co.",
-        "Partner, Blue Jay Bay Ventures",
-        "Board Member, Ameritas",
-        "BBA & MBA, Communications and Journalism - Univ. of Southern California"
-      ]
+      linkedinUrl: "https://linkedin.com/in/tommyknapp",
+      isFounder: false
     },
     {
       name: "Yotam Dagan",
       title: "Director of Growth",
-      bio: "Co-Founder/CEO, Dugri Inc. Clinical Psychologist",
       image: "/images/team/yotam-dagan.jpg",
       military: "CDR (Res.) Shayetet-13",
-      education: "M.A. Clinical Psychology, MC MPA Harvard",
-      isFounder: false,
-      bullets: [
-        "Co-Founder/CEO, Dugri Inc.",
-        "Clinical Psychologist",
-        "Founder, Momentum (IDF Transition Program for released soldiers), Maoz (Network of Leaders), & Co-Impact",
-        "CDR (Res.) Shayetet-13 (Chief Instructor & Unit Psychologist)",
-        "M.A., Clinical Psychology - University of Haifa",
-        "MC MPA, Harvard University"
-      ]
+      linkedinUrl: "https://linkedin.com/in/yotamdagan",
+      isFounder: false
     },
     {
       name: "Jeff Ross",
       title: "US Veteran Network Lead",
-      bio: "CEO & Co-Founder Brecourt Solutions Inc.",
       image: "/images/team/jeff-ross.jpg",
       military: "Special Operations Chief Petty Officer (Res.), US Navy SEALs",
-      education: "B.S. Biology/Medical Science - Western Illinois University",
-      isFounder: false,
-      bullets: [
-        "CEO & Co-Founder Brecourt Solutions Inc.",
-        "Greater Chicago Area FOB Leader, SEAL Future Foundation",
-        "Special Operations Chief Petty Officer (Res.), US Navy SEALs",
-        "B.S. Biology/Medical Science - Western Illinois University"
-      ]
+      linkedinUrl: "https://linkedin.com/in/jeffross",
+      isFounder: false
     },
     {
       name: "Eden Golan",
       title: "Program Manager",
-      bio: "Former Associate Producer at Vogue, Google",
       image: "/images/team/eden-golan.jpg",
       military: "N/A",
-      education: "M.B.A - Tel Aviv University",
-      isFounder: false,
-      bullets: [
-        "Associate Producer, Vogue",
-        "Chief of Staff, CRO Office, Dick Clark Productions",
-        "Associate Producer, Manifold",
-        "Producer/Product Manager, Google",
-        "M.B.A - Tel Aviv University"
-      ]
+      linkedinUrl: "https://linkedin.com/in/edengolan",
+      isFounder: false
     },
     {
       name: "Grant Goldberg",
       title: "Director of Program and Operations",
-      bio: "Associate Director at AFINS, YU Innovation Lab",
       image: "/images/team/grant-goldberg.jpg",
       military: "Special Forces, Nahal Brigade IDF",
-      education: "B.S. Sports Industry/Logistics",
-      isFounder: false,
-      bullets: [
-        "Associate Director, AFINS",
-        "Assistant Director, YU Innovation Lab",
-        "Special Forces, Nahal Brigade IDF",
-        "B.S. Sports Industry/Logistics"
-      ]
+      linkedinUrl: "https://linkedin.com/in/grantgoldberg",
+      isFounder: false
     },
     {
       name: "Tamir Sida",
       title: "Tech Stack Architect & AI/Web Dev Mentor",
-      bio: "Chief of Operations (Res.), 55th Brigade, IDF",
       image: "/images/team/tamir-sida.jpg",
       military: "Chief of Operations (Res.), 55th Brigade, IDF",
-      education: "Computer Science and Entrepreneurship - Reichman University",
-      isFounder: false,
-      bullets: [
-        "AI/Web Dev Architect",
-        "Chief of Operations (Res.), 55th Brigade, IDF",
-        "Project & Product Manager leading complex technology programs in defense and innovation sectors",
-        "AI/ML-focused software and full-stack web application developer",
-        "Advisor to senior military leadership on data infrastructure and decision-support platforms",
-        "Currently completing a double major in Computer Science and Entrepreneurship at Reichman University"
-      ]
+      linkedinUrl: "https://linkedin.com/in/tamirsida",
+      isFounder: false
     }
   ] as TeamMember[],
 

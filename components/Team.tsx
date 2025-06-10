@@ -67,21 +67,25 @@ const Team: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="p-6">
-                  <h4 className="text-xl font-bold text-dark mb-2">{member.name}</h4>
-                  <p className="text-gray-700 font-semibold mb-3 text-sm">{member.title}</p>
-                  <p className="text-medium mb-4 text-sm">{member.bio}</p>
-                  
-                  <div className="border-t border-secondary pt-4 space-y-2">
-                    <div>
-                      <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Military:</span>
-                      <p className="text-sm text-dark">{member.military}</p>
-                    </div>
-                    <div>
-                      <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Education:</span>
-                      <p className="text-sm text-dark">{member.education}</p>
-                    </div>
+                <div className="p-5">
+                  <div className="text-center mb-4">
+                    <h4 className="text-xl font-bold text-dark mb-2">{member.name}</h4>
+                    <p className="text-gray-700 font-semibold mb-3 text-sm">{member.title}</p>
+                    <p className="text-sm text-medium italic">{member.military}</p>
                   </div>
+                  
+                  {member.linkedinUrl && (
+                    <div className="flex justify-center pt-3 border-t border-secondary">
+                      <a 
+                        href={member.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 transition-colors"
+                      >
+                        <i className="fab fa-linkedin text-xl"></i>
+                      </a>
+                    </div>
+                  )}
                 </div>
               </EditableSection>
             ))}
@@ -112,38 +116,37 @@ const Team: React.FC = () => {
                 onEdit={() => handleEditMember(member)}
                 className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md"
               >
-                <div className="flex justify-center pt-4 mb-4">
-                  <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
+                <div className="flex justify-center pt-3 mb-3">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
                     <Image 
                       src={member.image} 
                       alt={member.name}
-                      width={112}
-                      height={112}
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover object-top scale-110"
                       priority
                     />
                   </div>
                 </div>
-                <div className="p-4">
-                  <h4 className="text-lg font-bold text-dark mb-1 text-center">{member.name}</h4>
-                  <p className="text-gray-700 font-semibold mb-3 text-sm text-center">{member.title}</p>
+                <div className="p-3">
+                  <div className="text-center mb-3">
+                    <h4 className="text-base font-bold text-dark mb-1">{member.name}</h4>
+                    <p className="text-gray-700 font-semibold text-xs mb-2">{member.title}</p>
+                    {member.military !== "N/A" && (
+                      <p className="text-xs text-medium italic">{member.military}</p>
+                    )}
+                  </div>
                   
-                  {member.military !== "N/A" && (
-                    <div className="mb-3 text-center">
-                      <span className="text-xs text-medium font-medium">{member.military}</span>
-                    </div>
-                  )}
-
-                  {member.bullets && (
-                    <div className="mt-3">
-                      <ul className="space-y-1">
-                        {member.bullets.map((bullet, bulletIndex) => (
-                          <li key={bulletIndex} className="text-xs text-dark flex items-start">
-                            <span className="text-gray-700 mr-2 flex-shrink-0">•</span>
-                            <span>{bullet}</span>
-                          </li>
-                        ))}
-                      </ul>
+                  {member.linkedinUrl && (
+                    <div className="flex justify-center pt-2 border-t border-secondary">
+                      <a 
+                        href={member.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 transition-colors"
+                      >
+                        <i className="fab fa-linkedin text-lg"></i>
+                      </a>
                     </div>
                   )}
                 </div>
@@ -154,7 +157,7 @@ const Team: React.FC = () => {
             <EditableSection 
               sectionName="Add New Team Member"
               onEdit={() => console.log('Add team member')}
-              className="bg-light/50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center h-60"
+              className="bg-light/50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center h-48"
               isAddButton={true}
             >
               <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
@@ -193,13 +196,6 @@ const Team: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Bio</label>
-            <textarea
-              defaultValue={editingMember.bio}
-              className="admin-input w-full h-24 resize-none"
-            />
-          </div>
-          <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Military Background</label>
             <input
               type="text"
@@ -208,11 +204,12 @@ const Team: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Education</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">LinkedIn URL</label>
             <input
-              type="text"
-              defaultValue={editingMember.education}
+              type="url"
+              defaultValue={editingMember.linkedinUrl || ''}
               className="admin-input w-full"
+              placeholder="https://linkedin.com/in/username"
             />
           </div>
           <div>

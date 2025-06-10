@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import IconSelector from './admin/IconSelector';
 
 const WhyVB: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingPointIndex, setEditingPointIndex] = useState<number | null>(null);
+  const [selectedIcon, setSelectedIcon] = useState<string>('');
 
   const handleEditSection = () => {
     setIsEditModalOpen(true);
@@ -13,11 +15,14 @@ const WhyVB: React.FC = () => {
 
   const handleEditPoint = (index: number) => {
     setEditingPointIndex(index);
+    const icons = ['fas fa-users', 'fas fa-network-wired', 'fas fa-handshake', 'fas fa-graduation-cap', 'fas fa-star'];
+    setSelectedIcon(icons[index] || 'fas fa-star');
     setIsEditModalOpen(true);
   };
 
   const handleAddPoint = () => {
     setEditingPointIndex(-1); // -1 indicates new point
+    setSelectedIcon('fas fa-star'); // Default icon for new points
     setIsEditModalOpen(true);
   };
 
@@ -124,15 +129,10 @@ const WhyVB: React.FC = () => {
               placeholder="Enter the point text..."
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Icon (FontAwesome class)</label>
-            <input
-              type="text"
-              defaultValue={editingPointIndex >= 0 ? `fas fa-${['users', 'network-wired', 'handshake', 'graduation-cap', 'star'][editingPointIndex]}` : 'fas fa-star'}
-              className="admin-input w-full"
-              placeholder="e.g., fas fa-star"
-            />
-          </div>
+          <IconSelector
+            selectedIcon={selectedIcon}
+            onIconSelect={setSelectedIcon}
+          />
           {editingPointIndex >= 0 && (
             <div className="pt-4 border-t border-gray-600">
               <button 

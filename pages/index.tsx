@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useState } from 'react';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import WhyVB from '../components/WhyVB';
@@ -9,8 +10,47 @@ import Mentors from '../components/Mentors';
 import FundDetails from '../components/FundDetails';
 import ApplicationProcess from '../components/ApplicationProcess';
 import CTA from '../components/CTA';
+import SectionManager from '../components/admin/SectionManager';
 
 export default function Home() {
+  const [sections, setSections] = useState([
+    'hero', 'whyVB', 'programs', 'team', 'mentors', 'portfolio', 'fundDetails', 'applicationProcess', 'cta'
+  ]);
+
+  const handleAddSection = (sectionType: string, position: number) => {
+    const newSections = [...sections];
+    newSections.splice(position, 0, sectionType);
+    setSections(newSections);
+    console.log(`Adding ${sectionType} section at position ${position}`);
+  };
+
+  const renderSection = (sectionType: string, index: number) => {
+    switch (sectionType) {
+      case 'hero': return <HeroSection key={`hero-${index}`} />;
+      case 'whyVB': return <WhyVB key={`whyVB-${index}`} />;
+      case 'programs': return <Programs key={`programs-${index}`} />;
+      case 'team': return <Team key={`team-${index}`} />;
+      case 'mentors': return <Mentors key={`mentors-${index}`} />;
+      case 'portfolio': return <Portfolio key={`portfolio-${index}`} />;
+      case 'fundDetails': return <FundDetails key={`fundDetails-${index}`} />;
+      case 'applicationProcess': return <ApplicationProcess key={`applicationProcess-${index}`} />;
+      case 'cta': return <CTA key={`cta-${index}`} />;
+      default: 
+        return (
+          <div key={`custom-${index}`} className="section-padding bg-gray-100">
+            <div className="container-max text-center">
+              <h2 className="text-2xl font-bold text-gray-700 mb-4">
+                New {sectionType.charAt(0).toUpperCase() + sectionType.slice(1)} Section
+              </h2>
+              <p className="text-gray-600">
+                This is a placeholder for the new {sectionType} section. Content can be customized through the CMS.
+              </p>
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <>
       <Head>
@@ -63,15 +103,15 @@ export default function Home() {
 
       <Header />
       <main>
-        <HeroSection />
-        <WhyVB />
-        <Programs />
-        <Team />
-        <Mentors />
-        <Portfolio />
-        <FundDetails />
-        <ApplicationProcess />
-        <CTA />
+        {sections.map((sectionType, index) => (
+          <div key={`section-${index}`}>
+            {renderSection(sectionType, index)}
+            <SectionManager 
+              onAddSection={handleAddSection}
+              position={index + 1}
+            />
+          </div>
+        ))}
       </main>
     </>
   );

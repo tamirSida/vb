@@ -1,22 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { siteData } from '../data/content';
+import EditableSection from './admin/EditableSection';
+import EditModal from './admin/EditModal';
 
 const Programs: React.FC = () => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingProgram, setEditingProgram] = useState<any>(null);
+  const [editingType, setEditingType] = useState<'header' | 'program' | 'add'>('header');
+
+  const handleEditHeader = () => {
+    setEditingType('header');
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditProgram = (program: any) => {
+    setEditingProgram(program);
+    setEditingType('program');
+    setIsEditModalOpen(true);
+  };
+
+  const handleAddProgram = () => {
+    setEditingProgram(null);
+    setEditingType('add');
+    setIsEditModalOpen(true);
+  };
+
+  const handleSave = (data: any) => {
+    console.log('Saving programs data:', data);
+    setIsEditModalOpen(false);
+    setEditingProgram(null);
+  };
+
   return (
-    <section id="programs" className="section-padding bg-light">
-      <div className="container-max">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-            Our Programs
-          </h2>
-          <p className="text-xl text-medium max-w-3xl mx-auto">
-            Two pathways for veteran entrepreneurs to access our network, expertise, and capital
-          </p>
-        </div>
+    <>
+      <section id="programs" className="section-padding bg-light">
+        <div className="container-max">
+          <EditableSection 
+            sectionName="Programs Header"
+            onEdit={handleEditHeader}
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
+                Our Programs
+              </h2>
+              <p className="text-xl text-medium max-w-3xl mx-auto">
+                Two pathways for veteran entrepreneurs to access our network, expertise, and capital
+              </p>
+            </div>
+          </EditableSection>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
           {siteData.programs.map((program, index) => (
-            <div key={index} className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow">
+            <EditableSection
+              key={index}
+              sectionName={`${program.name} Program`}
+              onEdit={() => handleEditProgram(program)}
+              className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow"
+            >
               <div className="mb-6">
                 <h3 className="text-2xl font-bold mb-3 text-gray-700">{program.name}</h3>
                 <p className="text-medium mb-4">{program.description}</p>
@@ -44,11 +84,126 @@ const Programs: React.FC = () => {
                   ))}
                 </ul>
               </div>
-            </div>
+            </EditableSection>
           ))}
+          
+          {/* Add Program Button */}
+          <EditableSection 
+            sectionName="Add New Program"
+            onEdit={handleAddProgram}
+            className="bg-light/50 border-2 border-dashed border-gray-300 p-8 rounded-xl flex items-center justify-center min-h-[300px]"
+            isAddButton={true}
+          >
+            <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
+              <i className="fas fa-plus text-3xl mb-4"></i>
+              <p className="font-medium">Add New Program</p>
+            </div>
+          </EditableSection>
         </div>
       </div>
     </section>
+
+    {/* Edit Modal */}
+    <EditModal
+      isOpen={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
+      onSave={handleSave}
+      title={
+        editingType === 'header' 
+          ? "Edit Programs Section" 
+          : editingType === 'add'
+            ? "Add New Program"
+            : `Edit ${editingProgram?.name || 'Program'}`
+      }
+    >
+      {editingType === 'header' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
+            <input
+              type="text"
+              defaultValue="Our Programs"
+              className="admin-input w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Section Description</label>
+            <textarea
+              defaultValue="Two pathways for veteran entrepreneurs to access our network, expertise, and capital"
+              className="admin-input w-full h-20 resize-none"
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Program Name</label>
+            <input
+              type="text"
+              defaultValue={editingProgram?.name || ''}
+              className="admin-input w-full"
+              placeholder="e.g., VB Accelerator"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+            <textarea
+              defaultValue={editingProgram?.description || ''}
+              className="admin-input w-full h-20 resize-none"
+              placeholder="Brief description of the program"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Duration</label>
+              <input
+                type="text"
+                defaultValue={editingProgram?.duration || ''}
+                className="admin-input w-full"
+                placeholder="e.g., 10 weeks"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Investment</label>
+              <input
+                type="text"
+                defaultValue={editingProgram?.investment || ''}
+                className="admin-input w-full"
+                placeholder="e.g., $100,000"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Equity</label>
+            <input
+              type="text"
+              defaultValue={editingProgram?.equity || ''}
+              className="admin-input w-full"
+              placeholder="e.g., 3.33%"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Highlights (one per line)</label>
+            <textarea
+              defaultValue={editingProgram?.highlights?.join('\n') || ''}
+              className="admin-input w-full h-24 resize-none"
+              placeholder="Program highlight 1&#10;Program highlight 2&#10;Program highlight 3"
+            />
+          </div>
+          {editingType === 'program' && (
+            <div className="pt-4 border-t border-gray-600">
+              <button 
+                onClick={() => console.log('Delete program', editingProgram?.name)}
+                className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
+              >
+                🗑️ Delete Program
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </EditModal>
+  </>
   );
 };
 

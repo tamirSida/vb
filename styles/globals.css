@@ -29,4 +29,25 @@ body {
   .container-max {
     @apply max-w-7xl mx-auto;
   }
+
+  /* Kizna CMS Admin Styles */
+  .glass-effect {
+    @apply backdrop-blur-sm bg-white/10 border border-white/20 rounded-lg;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-kizna-electric to-kizna-teal bg-clip-text text-transparent;
+  }
+  
+  .neon-glow {
+    @apply shadow-lg shadow-kizna-electric/25 border border-kizna-electric/30;
+  }
+  
+  .admin-btn {
+    @apply glass-effect hover:neon-glow text-kizna-electric hover:text-white font-medium px-4 py-2 rounded-md transition-all duration-300;
+  }
+  
+  .admin-input {
+    @apply glass-effect bg-kizna-dark/50 text-white placeholder-gray-400 border-kizna-blue/30 focus:border-kizna-electric focus:ring-kizna-electric/20 rounded-md px-3 py-2;
+  }
 }

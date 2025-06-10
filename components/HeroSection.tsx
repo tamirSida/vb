@@ -1,9 +1,21 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { siteData } from '../data/content';
+import EditableSection from './admin/EditableSection';
+import EditModal from './admin/EditModal';
 
 const HeroSection: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const handleEditHero = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveHero = (data: any) => {
+    console.log('Saving hero data:', data);
+    setIsEditModalOpen(false);
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -22,7 +34,12 @@ const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[25vh] sm:min-h-[22vh] md:min-h-[35vh] lg:min-h-[40vh] flex items-center overflow-hidden">
+    <>
+      <EditableSection 
+        sectionName="Hero Section"
+        onEdit={handleEditHero}
+        className="relative min-h-[25vh] sm:min-h-[22vh] md:min-h-[35vh] lg:min-h-[40vh] flex items-center overflow-hidden"
+      >
       {/* Background Video for Desktop */}
       <div className="hidden md:block absolute inset-0 bg-black z-0">
         <video
@@ -104,7 +121,50 @@ const HeroSection: React.FC = () => {
           <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
         </div>
       </div>
-    </section>
+      </EditableSection>
+
+      {/* Edit Modal */}
+      <EditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveHero}
+        title="Edit Hero Section"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Headline</label>
+            <input
+              type="text"
+              defaultValue={siteData.hero.headline}
+              className="admin-input w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Subheadline</label>
+            <textarea
+              defaultValue={siteData.hero.subheadline}
+              className="admin-input w-full h-24 resize-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Primary CTA</label>
+            <input
+              type="text"
+              defaultValue={siteData.hero.ctaPrimary}
+              className="admin-input w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Secondary CTA</label>
+            <input
+              type="text"
+              defaultValue={siteData.hero.ctaSecondary}
+              className="admin-input w-full"
+            />
+          </div>
+        </div>
+      </EditModal>
+    </>
   );
 };
 

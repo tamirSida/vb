@@ -1,8 +1,40 @@
+import React from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/globals.css';
+import { AdminProvider } from '../contexts/AdminContext';
+import AdminToggle from '../components/admin/AdminToggle';
+import LoginForm from '../components/admin/LoginForm';
+import { useAdmin } from '../contexts/AdminContext';
 
-export default function App({ Component, pageProps }: AppProps) {
+function AppContent({ Component, pageProps, router }: AppProps) {
+  const { user, isAdmin, loading } = useAdmin();
+  const [showLogin, setShowLogin] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShowLogin(!user && window.location.pathname === '/admin');
+    }
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-kizna-navy">
+        <div className="text-kizna-electric">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Component {...pageProps} />
+      {isAdmin && <AdminToggle />}
+      {showLogin && <LoginForm />}
+    </>
+  );
+}
+
+export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
@@ -15,7 +47,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="manifest" href="/favicon/site.webmanifest" />
         
       </Head>
-      <Component {...pageProps} />
+      <AdminProvider>
+        <AppContent Component={Component} pageProps={pageProps} router={router} />
+      </AdminProvider>
     </>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +27,12 @@ const Header: React.FC = () => {
             <a href="#contact" className="text-dark hover:text-gray-700 font-medium transition-colors">Contact</a>
           </nav>
           
-          <div className="flex items-center">
+          <div className="flex items-center space-x-3">
+            <Link href="/admin">
+              <button className="hidden md:block text-xs bg-kizna-dark hover:bg-kizna-electric hover:text-kizna-dark text-kizna-electric px-3 py-1.5 rounded-md font-medium transition-colors border border-kizna-electric/30">
+                Admin Login
+              </button>
+            </Link>
             <button className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
               Apply Now
             </button>
@@ -78,8 +84,16 @@ const Header: React.FC = () => {
               >
                 Contact
               </a>
+              <Link href="/admin">
+                <button 
+                  className="w-full text-xs bg-kizna-dark hover:bg-kizna-electric hover:text-kizna-dark text-kizna-electric px-3 py-2 rounded-md font-medium transition-colors border border-kizna-electric/30 mb-3"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin Login
+                </button>
+              </Link>
               <button 
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors mt-3"
+                className="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Apply Now

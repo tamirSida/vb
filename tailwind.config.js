@@ -19,6 +19,14 @@ module.exports = {
         'vbv-navy': '#1a365d',
         'vbv-gold': '#d69e2e', 
         'vbv-gray': '#2d3748',
+        
+        // Kizna CMS colors for admin interface
+        'kizna-navy': '#0a1628',
+        'kizna-dark': '#1a202c', 
+        'kizna-blue': '#2563eb',
+        'kizna-electric': '#00d4ff',
+        'kizna-teal': '#0d9488',
+        'kizna-lime': '#84cc16',
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],

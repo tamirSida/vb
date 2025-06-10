@@ -3,7 +3,7 @@
 export interface TeamMember {
   id?: string;
   name: string;
-  title: string;
+  title?: string;
   image: string;
   military: string;
   linkedinUrl?: string;
@@ -40,7 +40,7 @@ export const siteData = {
     nonProfitCta: "Non-Profit Program",
     nonProfitUrl: "/non-profit",
     acceleratorCta: "VB Accelerator",
-    acceleratorUrl: "https://www.versionbravo.com",
+    acceleratorUrl: "/accelerator",
     fundCta: "Investment Fund",
     fundUrl: "/fund"
   },
@@ -88,7 +88,6 @@ export const siteData = {
   team: [
     {
       name: "Nuri Golan",
-      title: "Managing Director, Version Bravo, Alpha-Bet (NGO)",
       image: "/images/team/nuri-golan.jpg",
       military: "Captain (Res.) Shayetet-13 (IL Navy SEALs)",
       linkedinUrl: "https://www.linkedin.com/in/nurigolan/",
@@ -96,7 +95,6 @@ export const siteData = {
     },
     {
       name: "Adam Weiner", 
-      title: "Chief Mentor, Version Bravo, Alpha-Bet (NGO)",
       image: "/images/team/adam-weiner.jpg",
       military: "IDF Paratrooper",
       linkedinUrl: "https://www.linkedin.com/in/weineradam/",

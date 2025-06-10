@@ -70,7 +70,9 @@ const Team: React.FC = () => {
                 <div className="p-5">
                   <div className="text-center mb-4">
                     <h4 className="text-xl font-bold text-dark mb-2">{member.name}</h4>
-                    <p className="text-gray-700 font-semibold mb-3 text-sm">{member.title}</p>
+                    {member.title && (
+                      <p className="text-gray-700 font-semibold mb-3 text-sm">{member.title}</p>
+                    )}
                     <p className="text-sm text-medium italic">{member.military}</p>
                   </div>
                   
@@ -107,7 +109,7 @@ const Team: React.FC = () => {
 
         {/* Team Section */}
         <div>
-          <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">Team & Advisors</h3>
+          <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">Team</h3>
           <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
             {team.map((member, index) => (
               <EditableSection
@@ -131,7 +133,9 @@ const Team: React.FC = () => {
                 <div className="p-3">
                   <div className="text-center mb-3">
                     <h4 className="text-base font-bold text-dark mb-1">{member.name}</h4>
-                    <p className="text-gray-700 font-semibold text-xs mb-2">{member.title}</p>
+                    {member.title && (
+                      <p className="text-gray-700 font-semibold text-xs mb-2">{member.title}</p>
+                    )}
                     {member.military !== "N/A" && (
                       <p className="text-xs text-medium italic">{member.military}</p>
                     )}
@@ -188,11 +192,12 @@ const Team: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Title (optional)</label>
             <input
               type="text"
-              defaultValue={editingMember.title}
+              defaultValue={editingMember.title || ''}
               className="admin-input w-full"
+              placeholder="Leave empty for General Partners"
             />
           </div>
           <div>

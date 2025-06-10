@@ -85,7 +85,7 @@ export const siteData = {
       title: "Managing Director, Version Bravo, Alpha-Bet (NGO)",
       image: "/images/team/nuri-golan.jpg",
       military: "Captain (Res.) Shayetet-13 (IL Navy SEALs)",
-      linkedinUrl: "https://linkedin.com/in/nurigolan",
+      linkedinUrl: "https://www.linkedin.com/in/nurigolan/",
       isFounder: true
     },
     {
@@ -93,15 +93,15 @@ export const siteData = {
       title: "Chief Mentor, Version Bravo, Alpha-Bet (NGO)",
       image: "/images/team/adam-weiner.jpg",
       military: "IDF Paratrooper",
-      linkedinUrl: "https://linkedin.com/in/adamweiner",
+      linkedinUrl: "https://www.linkedin.com/in/weineradam/",
       isFounder: true
     },
     {
       name: "Dr. Gali Einav",
       title: "IL Academic Lead",
       image: "/images/team/gali-einav.jpg",
-      military: "N/A",
-      linkedinUrl: "https://linkedin.com/in/galieinav",
+      military: "8200 IDF",
+      linkedinUrl: "https://www.linkedin.com/in/gali-einav-ph-d-6771aa1/",
       isFounder: false
     },
     {
@@ -109,7 +109,7 @@ export const siteData = {
       title: "US Academic Lead",
       image: "/images/team/tommy-knapp.jpg",
       military: "N/A",
-      linkedinUrl: "https://linkedin.com/in/tommyknapp",
+      linkedinUrl: "https://www.linkedin.com/in/tommyknapp1/",
       isFounder: false
     },
     {
@@ -117,7 +117,7 @@ export const siteData = {
       title: "Director of Growth",
       image: "/images/team/yotam-dagan.jpg",
       military: "CDR (Res.) Shayetet-13",
-      linkedinUrl: "https://linkedin.com/in/yotamdagan",
+      linkedinUrl: "https://www.linkedin.com/in/yotam-dagan-abaa14b/",
       isFounder: false
     },
     {
@@ -125,7 +125,7 @@ export const siteData = {
       title: "US Veteran Network Lead",
       image: "/images/team/jeff-ross.jpg",
       military: "Special Operations Chief Petty Officer (Res.), US Navy SEALs",
-      linkedinUrl: "https://linkedin.com/in/jeffross",
+      linkedinUrl: "https://www.linkedin.com/in/jeff-ross-64183143/",
       isFounder: false
     },
     {
@@ -133,7 +133,7 @@ export const siteData = {
       title: "Program Manager",
       image: "/images/team/eden-golan.jpg",
       military: "N/A",
-      linkedinUrl: "https://linkedin.com/in/edengolan",
+      linkedinUrl: "https://www.linkedin.com/in/edenzgolan/",
       isFounder: false
     },
     {
@@ -141,7 +141,7 @@ export const siteData = {
       title: "Director of Program and Operations",
       image: "/images/team/grant-goldberg.jpg",
       military: "Special Forces, Nahal Brigade IDF",
-      linkedinUrl: "https://linkedin.com/in/grantgoldberg",
+      linkedinUrl: "https://www.linkedin.com/in/ggoldberg27/",
       isFounder: false
     },
     {
@@ -149,7 +149,7 @@ export const siteData = {
       title: "Tech Stack Architect & AI/Web Dev Mentor",
       image: "/images/team/tamir-sida.jpg",
       military: "Chief of Operations (Res.), 55th Brigade, IDF",
-      linkedinUrl: "https://linkedin.com/in/tamirsida",
+      linkedinUrl: "https://www.linkedin.com/in/tamir-sida/",
       isFounder: false
     }
   ] as TeamMember[],

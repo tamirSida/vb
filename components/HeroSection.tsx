@@ -42,7 +42,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
       <EditableSection 
         sectionName="Hero Section"
         onEdit={handleEditHero}
-        className="relative min-h-[25vh] sm:min-h-[22vh] md:min-h-[35vh] lg:min-h-[40vh] flex items-center overflow-hidden"
+        className="relative h-screen w-full flex items-center overflow-hidden"
       >
       {/* Background Video for Desktop */}
       <div className="hidden md:block absolute inset-0 bg-black z-0">
@@ -52,7 +52,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
           muted
           loop
           playsInline
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />
           <source src="/videos/hero-background.webm" type="video/webm" />

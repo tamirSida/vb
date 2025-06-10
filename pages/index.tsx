@@ -54,9 +54,9 @@ export default function Home() {
         />
       </Head>
 
-      <Header />
+      <Header showNavigation={false} />
       <main>
-        <HeroSection />
+        <HeroSection showScrollIndicator={false} />
       </main>
       
       {/* Discrete admin access methods */}

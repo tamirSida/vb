@@ -4,7 +4,11 @@ import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 
-const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  showScrollIndicator?: boolean;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -76,8 +80,8 @@ const HeroSection: React.FC = () => {
           {/* Logo */}
           <div className="mb-3 sm:mb-6 md:mb-8">
             <Image 
-              src="/images/brand/vbv-logo.png" 
-              alt="Version Bravo Ventures Logo"
+              src="/images/brand/vb-logo-notxt.png" 
+              alt="Version Bravo Logo"
               width={192}
               height={192}
               className="h-16 sm:h-24 md:h-28 lg:h-32 w-auto"
@@ -128,11 +132,13 @@ const HeroSection: React.FC = () => {
       </div>
       
       {/* Scroll Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
-        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
+      {showScrollIndicator && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
+          </div>
         </div>
-      </div>
+      )}
       </EditableSection>
 
       {/* Edit Modal */}

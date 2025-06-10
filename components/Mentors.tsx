@@ -69,7 +69,19 @@ const Mentors: React.FC = () => {
               </div>
               <h3 className="font-bold text-gray-700 text-lg mb-2">{mentor.name}</h3>
               {mentor.company && (
-                <p className="text-medium text-sm">{mentor.company}</p>
+                <p className="text-medium text-sm mb-3">{mentor.company}</p>
+              )}
+              {mentor.linkedinUrl && (
+                <div className="pt-3 border-t border-secondary">
+                  <a 
+                    href={mentor.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 transition-colors inline-block"
+                  >
+                    <i className="fab fa-linkedin text-xl"></i>
+                  </a>
+                </div>
               )}
             </EditableSection>
           ))}
@@ -148,6 +160,15 @@ const Mentors: React.FC = () => {
               defaultValue={editingMentor?.image || ''}
               className="admin-input w-full"
               placeholder="/images/mentors/mentor-name.jpg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">LinkedIn URL</label>
+            <input
+              type="url"
+              defaultValue={editingMentor?.linkedinUrl || ''}
+              className="admin-input w-full"
+              placeholder="https://linkedin.com/in/username"
             />
           </div>
           {editingType === 'mentor' && (

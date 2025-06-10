@@ -211,14 +211,14 @@ export const siteData = {
   ] as PortfolioCompany[],
 
   mentors: [
-    { name: "Rami Lachter", company: "Co-Founder - Flare", image: "/images/mentors/rami-lachter.jpg" },
-    { name: "Isaac Zafarani", company: "Co-Founder - Vero, EXO (Acq.)", image: "/images/mentors/isaac-zafarani.jpg" },
-    { name: "Tal Brown", company: "Co-Founder - Zone 7", image: "/images/mentors/tal-brown.jpg" },
-    { name: "Avner Braverman", company: "Founder - Voia", image: "/images/mentors/avner-braverman.jpg" },
-    { name: "Oriel Raveh", company: "Founder - Tipping Point", image: "/images/mentors/oriel-raveh.jpg" },
-    { name: "Sonny Tai", company: "Founder - Acute", image: "/images/mentors/sonny-tai.jpg" },
-    { name: "Yochai Rozenblat", company: "Serial Entrepreneur", image: "/images/mentors/yochai-rozenblat.jpg" },
-    { name: "Rob Huberty", company: "Co-Founder - ZeroEyes", image: "/images/mentors/rob-huberty.jpg" }
+    { name: "Rami Lachter", company: "Co-Founder - Flare", image: "/images/mentors/rami-lachter.jpg", linkedinUrl: "https://www.linkedin.com/in/ramilachter/" },
+    { name: "Isaac Zafarani", company: "Co-Founder - Vero, EXO (Acq.)", image: "/images/mentors/isaac-zafarani.jpg", linkedinUrl: "https://www.linkedin.com/in/isaac-zafarani-a9752313/" },
+    { name: "Tal Brown", company: "Co-Founder - Zone 7", image: "/images/mentors/tal-brown.jpg", linkedinUrl: "https://www.linkedin.com/in/talbrown/" },
+    { name: "Avner Braverman", company: "Founder - Voia", image: "/images/mentors/avner-braverman.jpg", linkedinUrl: "https://www.linkedin.com/in/avnerbraverman/" },
+    { name: "Oriel Raveh", company: "Founder - Tipping Point", image: "/images/mentors/oriel-raveh.jpg", linkedinUrl: "https://www.linkedin.com/in/oriel-raveh/" },
+    { name: "Sonny Tai", company: "Founder - Acute", image: "/images/mentors/sonny-tai.jpg", linkedinUrl: "https://www.linkedin.com/in/sonny-tai/" },
+    { name: "Yochai Rozenblat", company: "Serial Entrepreneur", image: "/images/mentors/yochai-rozenblat.jpg", linkedinUrl: "https://www.linkedin.com/in/yochai-rozenblat-b8845412/" },
+    { name: "Rob Huberty", company: "Co-Founder - ZeroEyes", image: "/images/mentors/rob-huberty.jpg", linkedinUrl: "https://www.linkedin.com/in/rob-huberty-605991a2/" }
   ],
 
   investmentCriteria: {

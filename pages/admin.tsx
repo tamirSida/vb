@@ -218,7 +218,7 @@ function TeamManagement({ data, loading, onAdd, onUpdate, onDelete }: any) {
               <div>
                 <h3 className="text-lg font-semibold text-white">{member.name}</h3>
                 <p className="text-kizna-electric">{member.title}</p>
-                <p className="text-gray-300 text-sm mt-1">{member.bio}</p>
+                <p className="text-gray-300 text-sm mt-1">{member.military}</p>
               </div>
               <div className="flex space-x-2">
                 <button

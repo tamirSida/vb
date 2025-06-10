@@ -13,7 +13,11 @@ import {
   QuerySnapshot 
 } from 'firebase/firestore';
 
-export function useFirestore<T = DocumentData>(collectionName: string) {
+interface FirestoreDocument extends DocumentData {
+  id?: string;
+}
+
+export function useFirestore<T extends FirestoreDocument = FirestoreDocument>(collectionName: string) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +30,7 @@ export function useFirestore<T = DocumentData>(collectionName: string) {
       const docs = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as T[];
+      } as T));
       setData(docs);
       setError(null);
     } catch (err) {
@@ -38,9 +42,9 @@ export function useFirestore<T = DocumentData>(collectionName: string) {
   };
 
   // Add new document
-  const addDocument = async (data: Partial<T>) => {
+  const addDocument = async (data: Omit<T, 'id'>) => {
     try {
-      const docRef = await addDoc(collection(db, collectionName), data);
+      const docRef = await addDoc(collection(db, collectionName), data as DocumentData);
       await fetchData(); // Refresh data
       return docRef.id;
     } catch (err) {
@@ -50,9 +54,9 @@ export function useFirestore<T = DocumentData>(collectionName: string) {
   };
 
   // Update document
-  const updateDocument = async (id: string, data: Partial<T>) => {
+  const updateDocument = async (id: string, data: Partial<Omit<T, 'id'>>) => {
     try {
-      await updateDoc(doc(db, collectionName, id), data);
+      await updateDoc(doc(db, collectionName, id), data as DocumentData);
       await fetchData(); // Refresh data
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

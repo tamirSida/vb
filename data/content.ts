@@ -1,6 +1,7 @@
 // Content data structure - CMS-ready for future integration
 
 export interface TeamMember {
+  id?: string;
   name: string;
   title: string;
   image: string;
@@ -10,6 +11,7 @@ export interface TeamMember {
 }
 
 export interface PortfolioCompany {
+  id?: string;
   name: string;
   description: string;
   logo: string;

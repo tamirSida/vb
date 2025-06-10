@@ -67,6 +67,12 @@ export default function AdminPanel() {
             >
               Logout
             </button>
+            <a 
+              href="/"
+              className="block text-center text-gray-400 hover:text-kizna-electric transition-colors text-sm mt-4"
+            >
+              ← Back to Website
+            </a>
           </div>
         </div>
       </div>
@@ -79,13 +85,21 @@ export default function AdminPanel() {
       <div className="min-h-screen bg-kizna-navy flex items-center justify-center">
         <div className="glass-effect bg-kizna-dark/80 p-8 rounded-lg text-center">
           <h1 className="text-2xl font-bold text-gradient mb-4">Access Denied</h1>
-          <p className="text-gray-300">You need admin privileges to access this page.</p>
-          <button
-            onClick={logout}
-            className="admin-btn mt-4 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white"
-          >
-            Logout
-          </button>
+          <p className="text-gray-300 mb-4">You need admin privileges to access this page.</p>
+          <div className="space-y-3">
+            <button
+              onClick={logout}
+              className="admin-btn w-full bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white"
+            >
+              Logout
+            </button>
+            <a 
+              href="/"
+              className="block text-center text-gray-400 hover:text-kizna-electric transition-colors text-sm"
+            >
+              ← Back to Website
+            </a>
+          </div>
         </div>
       </div>
     );

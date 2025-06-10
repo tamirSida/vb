@@ -91,6 +91,15 @@ export default function LoginForm() {
           </button>
         </form>
         
+        <div className="mt-6 pt-4 border-t border-gray-600">
+          <a 
+            href="/"
+            className="block text-center text-gray-400 hover:text-kizna-electric transition-colors text-sm"
+          >
+            ← Back to Website
+          </a>
+        </div>
+        
         <p className="text-gray-400 text-xs text-center mt-4">
           Only authorized VBV team members can access admin features
         </p>

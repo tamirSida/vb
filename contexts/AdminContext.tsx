@@ -59,6 +59,10 @@ export function AdminProvider({ children }: AdminProviderProps) {
     try {
       await signOut(auth);
       setIsAdminMode(false);
+      // Redirect to home page after logout
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
     } catch (error) {
       console.error('Logout error:', error);
       throw error;

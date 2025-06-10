@@ -6,7 +6,6 @@ import AcceleratorPrograms from '../components/AcceleratorPrograms';
 import Team from '../components/Team';
 import Portfolio from '../components/Portfolio';
 import Mentors from '../components/Mentors';
-import FundDetails from '../components/FundDetails';
 import ApplicationProcess from '../components/ApplicationProcess';
 import CTA from '../components/CTA';
 import SectionManager from '../components/admin/SectionManager';
@@ -14,7 +13,7 @@ import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/Disc
 
 export default function Accelerator() {
   const [sections, setSections] = useState([
-    'whyVB', 'programs', 'team', 'mentors', 'portfolio', 'fundDetails', 'applicationProcess', 'cta'
+    'whyVB', 'programs', 'team', 'mentors', 'portfolio', 'applicationProcess', 'cta'
   ]);
 
   // Enable discrete admin access methods
@@ -34,7 +33,6 @@ export default function Accelerator() {
       case 'team': return <Team key={`team-${index}`} />;
       case 'mentors': return <Mentors key={`mentors-${index}`} />;
       case 'portfolio': return <Portfolio key={`portfolio-${index}`} />;
-      case 'fundDetails': return <FundDetails key={`fundDetails-${index}`} />;
       case 'applicationProcess': return <ApplicationProcess key={`applicationProcess-${index}`} />;
       case 'cta': return <CTA key={`cta-${index}`} />;
       default: 

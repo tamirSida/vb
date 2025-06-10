@@ -7,7 +7,7 @@ import Team from '../components/Team';
 import Portfolio from '../components/Portfolio';
 import Mentors from '../components/Mentors';
 import ApplicationProcess from '../components/ApplicationProcess';
-import CTA from '../components/CTA';
+import AcceleratorCTA from '../components/AcceleratorCTA';
 import SectionManager from '../components/admin/SectionManager';
 import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/DiscreteAdminAccess';
 
@@ -34,7 +34,7 @@ export default function Accelerator() {
       case 'mentors': return <Mentors key={`mentors-${index}`} />;
       case 'portfolio': return <Portfolio key={`portfolio-${index}`} />;
       case 'applicationProcess': return <ApplicationProcess key={`applicationProcess-${index}`} />;
-      case 'cta': return <CTA key={`cta-${index}`} />;
+      case 'cta': return <AcceleratorCTA key={`cta-${index}`} />;
       default: 
         return (
           <div key={`custom-${index}`} className="section-padding bg-gray-100">

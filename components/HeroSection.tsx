@@ -105,7 +105,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
             {siteData.hero.subheadline}
           </p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-4xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-3xl">
             <a 
               href={siteData.hero.nonProfitUrl}
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
@@ -119,16 +119,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
               {siteData.hero.acceleratorCta}
-            </a>
-            <a 
-              href={siteData.hero.fundUrl}
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = siteData.hero.fundUrl;
-              }}
-              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
-            >
-              {siteData.hero.fundCta}
             </a>
           </div>
 
@@ -205,26 +195,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
                 defaultValue={siteData.hero.acceleratorUrl}
                 className="admin-input w-full"
                 placeholder="https://www.versionbravo.com"
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Fund Button Text</label>
-              <input
-                type="text"
-                defaultValue={siteData.hero.fundCta}
-                className="admin-input w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Fund URL</label>
-              <input
-                type="text"
-                defaultValue={siteData.hero.fundUrl}
-                className="admin-input w-full"
-                placeholder="#fund or relative path"
               />
             </div>
           </div>

@@ -94,22 +94,34 @@ const HeroSection: React.FC = () => {
           </div>
           
           <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-3 sm:mb-6 md:mb-6">
-            <span className="block text-gray-100">Investing in Veterans</span>
-            <span className="block text-white">Who Conquered</span>
-            <span className="block text-gray-100">the Impossible</span>
+            <span className="block text-white">{siteData.hero.headline}</span>
           </h1>
           
-          <p className="text-sm sm:text-lg md:text-xl mb-3 sm:mb-6 md:mb-6 text-gray-200 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 text-gray-200 max-w-3xl leading-relaxed">
             {siteData.hero.subheadline}
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-8 md:mb-12">
-            <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base">
-              {siteData.hero.ctaPrimary}
-            </button>
-            <button className="border-2 border-gray-300 text-gray-200 hover:bg-gray-200 hover:text-dark font-semibold py-2 px-4 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 text-sm sm:text-base">
-              {siteData.hero.ctaSecondary}
-            </button>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-4xl">
+            <a 
+              href={siteData.hero.nonProfitUrl}
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
+            >
+              {siteData.hero.nonProfitCta}
+            </a>
+            <a 
+              href={siteData.hero.acceleratorUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
+            >
+              {siteData.hero.acceleratorCta}
+            </a>
+            <a 
+              href={siteData.hero.fundUrl}
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
+            >
+              {siteData.hero.fundCta}
+            </a>
           </div>
 
         </div>
@@ -146,21 +158,65 @@ const HeroSection: React.FC = () => {
               className="admin-input w-full h-24 resize-none"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Primary CTA</label>
-            <input
-              type="text"
-              defaultValue={siteData.hero.ctaPrimary}
-              className="admin-input w-full"
-            />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Non-Profit Button Text</label>
+              <input
+                type="text"
+                defaultValue={siteData.hero.nonProfitCta}
+                className="admin-input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Non-Profit URL</label>
+              <input
+                type="url"
+                defaultValue={siteData.hero.nonProfitUrl}
+                className="admin-input w-full"
+                placeholder="https://..."
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Secondary CTA</label>
-            <input
-              type="text"
-              defaultValue={siteData.hero.ctaSecondary}
-              className="admin-input w-full"
-            />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Accelerator Button Text</label>
+              <input
+                type="text"
+                defaultValue={siteData.hero.acceleratorCta}
+                className="admin-input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Accelerator URL</label>
+              <input
+                type="url"
+                defaultValue={siteData.hero.acceleratorUrl}
+                className="admin-input w-full"
+                placeholder="https://www.versionbravo.com"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Fund Button Text</label>
+              <input
+                type="text"
+                defaultValue={siteData.hero.fundCta}
+                className="admin-input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Fund URL</label>
+              <input
+                type="text"
+                defaultValue={siteData.hero.fundUrl}
+                className="admin-input w-full"
+                placeholder="#fund or relative path"
+              />
+            </div>
           </div>
         </div>
       </EditModal>

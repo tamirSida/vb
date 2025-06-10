@@ -33,10 +33,14 @@ export interface Program {
 
 export const siteData = {
   hero: {
-    headline: "Investing in Veteran Entrepreneurs Who Have Already Conquered the Impossible",
-    subheadline: "Version Bravo Ventures is an accelerator and venture fund run by combat veterans turned successful entrepreneurs.",
-    ctaPrimary: "Apply to VB Accelerator",
-    ctaSecondary: "Invest in the Fund"
+    headline: "Version Bravo",
+    subheadline: "Empowering veteran entrepreneurs through education, acceleration, and investment - from battlefield leadership to business success.",
+    nonProfitCta: "Non-Profit Program",
+    nonProfitUrl: "/non-profit",
+    acceleratorCta: "VB Accelerator",
+    acceleratorUrl: "https://www.versionbravo.com",
+    fundCta: "Investment Fund",
+    fundUrl: "/fund"
   },
   
   whyVB: {

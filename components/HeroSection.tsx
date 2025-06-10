@@ -122,6 +122,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
             </a>
             <a 
               href={siteData.hero.fundUrl}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = siteData.hero.fundUrl;
+              }}
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
               {siteData.hero.fundCta}

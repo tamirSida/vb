@@ -46,8 +46,8 @@ export default function DiscreteAdminAccess() {
       }, 3000);
     };
 
-    // Add logo click listener
-    const logo = document.querySelector('img[alt*="Version Bravo"]');
+    // Add logo click listener (only for header logo)
+    const logo = document.querySelector('header img[alt*="Version Bravo"]');
     if (logo) {
       logo.addEventListener('click', handleLogoClick);
     }

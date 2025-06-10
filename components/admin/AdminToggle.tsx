@@ -13,7 +13,7 @@ export default function AdminToggle() {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-20 right-4 z-50"
+      className="fixed top-32 right-4 z-50"
     >
       <button
         onClick={toggleAdminMode}

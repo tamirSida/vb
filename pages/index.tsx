@@ -11,11 +11,15 @@ import FundDetails from '../components/FundDetails';
 import ApplicationProcess from '../components/ApplicationProcess';
 import CTA from '../components/CTA';
 import SectionManager from '../components/admin/SectionManager';
+import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/DiscreteAdminAccess';
 
 export default function Home() {
   const [sections, setSections] = useState([
     'hero', 'whyVB', 'programs', 'team', 'mentors', 'portfolio', 'fundDetails', 'applicationProcess', 'cta'
   ]);
+
+  // Enable discrete admin access methods
+  useUrlAdminAccess();
 
   const handleAddSection = (sectionType: string, position: number) => {
     const newSections = [...sections];
@@ -113,6 +117,9 @@ export default function Home() {
           </div>
         ))}
       </main>
+      
+      {/* Discrete admin access methods */}
+      <DiscreteAdminAccess />
     </>
   );
 }

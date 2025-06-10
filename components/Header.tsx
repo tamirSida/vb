@@ -28,11 +28,23 @@ const Header: React.FC = () => {
           </nav>
           
           <div className="flex items-center space-x-3">
+            {/* Hidden Admin Access - Multiple Options */}
+            
+            {/* Option 1: Tiny dot in corner */}
             <Link href="/admin">
-              <button className="hidden md:block text-xs bg-kizna-dark hover:bg-kizna-electric hover:text-kizna-dark text-kizna-electric px-3 py-1.5 rounded-md font-medium transition-colors border border-kizna-electric/30">
-                Admin Login
-              </button>
+              <div className="hidden md:block w-2 h-2 bg-gray-400 hover:bg-kizna-electric rounded-full opacity-30 hover:opacity-100 transition-all duration-300 cursor-pointer"></div>
             </Link>
+            
+            {/* Option 2: Copyright symbol - uncomment to use instead */}
+            {/* <Link href="/admin">
+              <span className="hidden md:block text-xs text-gray-400 hover:text-kizna-electric transition-colors cursor-pointer select-none">©</span>
+            </Link> */}
+            
+            {/* Option 3: Invisible area - uncomment to use instead */}
+            {/* <Link href="/admin">
+              <div className="hidden md:block w-8 h-8 cursor-pointer"></div>
+            </Link> */}
+            
             <button className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
               Apply Now
             </button>
@@ -84,13 +96,14 @@ const Header: React.FC = () => {
               >
                 Contact
               </a>
+              {/* Mobile admin access - also discrete */}
               <Link href="/admin">
-                <button 
-                  className="w-full text-xs bg-kizna-dark hover:bg-kizna-electric hover:text-kizna-dark text-kizna-electric px-3 py-2 rounded-md font-medium transition-colors border border-kizna-electric/30 mb-3"
+                <div 
+                  className="w-full flex justify-center py-2 mb-3"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Admin Login
-                </button>
+                  <div className="w-3 h-3 bg-gray-400 hover:bg-kizna-electric rounded-full opacity-40 hover:opacity-100 transition-all"></div>
+                </div>
               </Link>
               <button 
                 className="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors"

@@ -51,7 +51,7 @@ export default function AdminPanel() {
     return (
       <div className="min-h-screen bg-kizna-navy flex items-center justify-center">
         <div className="glass-effect bg-kizna-dark/80 p-8 rounded-lg text-center max-w-md">
-          <div className="text-kizna-electric text-4xl mb-4">✓</div>
+          <div className="text-kizna-electric text-4xl mb-4"><i className="fas fa-check"></i></div>
           <h1 className="text-2xl font-bold text-gradient mb-4">Admin Access Granted</h1>
           <p className="text-gray-300 mb-6">Welcome, {user?.email}! You can now edit the website content.</p>
           <div className="space-y-3">
@@ -133,9 +133,9 @@ export default function AdminPanel() {
           {/* Tab Navigation */}
           <div className="flex space-x-1 mb-8">
             {[
-              { key: 'team', label: 'Team Management', icon: '👥' },
-              { key: 'portfolio', label: 'Portfolio Companies', icon: '💼' },
-              { key: 'content', label: 'Site Content', icon: '📝' }
+              { key: 'team', label: 'Team Management', icon: 'fas fa-users' },
+              { key: 'portfolio', label: 'Portfolio Companies', icon: 'fas fa-briefcase' },
+              { key: 'content', label: 'Site Content', icon: 'fas fa-edit' }
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -146,7 +146,7 @@ export default function AdminPanel() {
                     : 'text-kizna-electric'
                 }`}
               >
-                <span>{tab.icon}</span>
+<i className={tab.icon}></i>
                 <span>{tab.label}</span>
               </button>
             ))}
@@ -207,7 +207,7 @@ function TeamManagement({ data, loading, onAdd, onUpdate, onDelete }: any) {
           onClick={() => setShowAddForm(true)}
           className="admin-btn bg-kizna-teal text-white"
         >
-          + Add Team Member
+<i className="fas fa-plus mr-2"></i>Add Team Member
         </button>
       </div>
 
@@ -279,7 +279,7 @@ function PortfolioManagement({ data, loading, onAdd, onUpdate, onDelete }: any) 
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gradient">Portfolio Companies</h2>
         <button className="admin-btn bg-kizna-teal text-white">
-          + Add Company
+<i className="fas fa-plus mr-2"></i>Add Company
         </button>
       </div>
       <div className="text-gray-300">

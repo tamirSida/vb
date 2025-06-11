@@ -50,7 +50,7 @@ export default function EditableSection({
             onClick={onEdit}
             className="admin-btn bg-kizna-electric text-kizna-dark shadow-lg"
           >
-            ✏️ Edit {sectionName}
+<i className="fas fa-edit mr-2"></i>Edit {sectionName}
           </button>
         </motion.div>
       )}

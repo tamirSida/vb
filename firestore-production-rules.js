@@ -26,11 +26,11 @@ DEPLOYMENT STEPS:
 3. Click "Publish"
 
 SECURITY FEATURES:
-✅ Public can read site content (needed for website)
-✅ Only authenticated users can edit (you control who gets accounts)
-✅ All other collections blocked
-✅ Simple and secure
-✅ No email validation needed since you manually manage users
+- Public can read site content (needed for website)
+- Only authenticated users can edit (you control who gets accounts)
+- All other collections blocked
+- Simple and secure
+- No email validation needed since you manually manage users
 
 ADMIN USER MANAGEMENT:
 - Add users manually in Firebase Console → Authentication → Users

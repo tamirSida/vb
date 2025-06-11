@@ -23,7 +23,7 @@ export default function AdminToggle() {
             : 'text-kizna-electric'
         }`}
       >
-        {isAdminMode ? '🔒 Exit Admin' : '⚙️ Admin Mode'}
+{isAdminMode ? <><i className="fas fa-lock mr-2"></i>Exit Admin</> : <><i className="fas fa-cog mr-2"></i>Admin Mode</>}
       </button>
     </motion.div>
   );

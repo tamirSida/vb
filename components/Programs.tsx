@@ -280,7 +280,7 @@ const Programs: React.FC = () => {
                 onClick={() => console.log('Delete program', editingProgram?.name)}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
-                🗑️ Delete Program
+<i className="fas fa-trash mr-2"></i>Delete Program
               </button>
             </div>
           )}

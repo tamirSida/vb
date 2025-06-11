@@ -195,7 +195,7 @@ const WhyVB: React.FC = () => {
                 onClick={() => console.log('Delete point', editingPointIndex)}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
-                🗑️ Delete This Point
+<i className="fas fa-trash mr-2"></i>Delete This Point
               </button>
             </div>
           )}

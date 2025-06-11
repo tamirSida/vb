@@ -331,7 +331,7 @@ const Team: React.FC = () => {
               onClick={handleDeleteMember}
               className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
             >
-              🗑️ Delete Team Member
+<i className="fas fa-trash mr-2"></i>Delete Team Member
             </button>
           </div>
         </div>

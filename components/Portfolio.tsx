@@ -335,7 +335,7 @@ const Portfolio: React.FC = () => {
                 onClick={() => console.log('Delete company', editingCompany?.name)}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
-                🗑️ Delete Portfolio Company
+<i className="fas fa-trash mr-2"></i>Delete Portfolio Company
               </button>
             </div>
           )}

@@ -244,7 +244,7 @@ const ApplicationProcess: React.FC = () => {
                 onClick={() => console.log('Delete step', editingIndex)}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
-                🗑️ Delete Step
+<i className="fas fa-trash mr-2"></i>Delete Step
               </button>
             </div>
           )}

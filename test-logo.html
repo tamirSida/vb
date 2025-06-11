@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Test</title>
+</head>
+<body>
+    <h1>Logo Test - Chrome vs Safari</h1>
+    
+    <h2>Original Path:</h2>
+    <img src="/images/brand/vb-logo-notxt.png" alt="VB Logo" style="height: 100px;">
+    
+    <h2>With Cache Buster:</h2>
+    <img src="/images/brand/vb-logo-notxt.png?v=2" alt="VB Logo Cache Bust" style="height: 100px;">
+    
+    <h2>Full URL:</h2>
+    <img src="http://localhost:3000/images/brand/vb-logo-notxt.png?v=3" alt="VB Logo Full URL" style="height: 100px;">
+    
+    <h2>File Info:</h2>
+    <p>File should now be a proper PNG (was TIFF with .png extension)</p>
+    <p>Original size: ~3MB TIFF</p>
+    <p>New size: ~441KB PNG</p>
+    
+    <script>
+        // Test if image loads
+        const img = new Image();
+        img.onload = () => console.log('✅ Logo loaded successfully');
+        img.onerror = () => console.error('❌ Logo failed to load');
+        img.src = '/images/brand/vb-logo-notxt.png?test=' + Date.now();
+    </script>
+</body>
+</html>

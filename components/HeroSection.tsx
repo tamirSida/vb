@@ -111,10 +111,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
             <Image 
               src="/images/brand/vb-logo-notxt.png" 
               alt="Version Bravo Logo"
-              width={192}
-              height={192}
+              width={876}
+              height={867}
               className="h-16 sm:h-24 md:h-28 lg:h-32 w-auto"
               priority
+              unoptimized
             />
           </div>
 

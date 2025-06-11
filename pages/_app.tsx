@@ -6,6 +6,7 @@ import { AdminProvider } from '../contexts/AdminContext';
 import AdminToggle from '../components/admin/AdminToggle';
 import LoginForm from '../components/admin/LoginForm';
 import { useAdmin } from '../contexts/AdminContext';
+import { initializeFirestoreData } from '../lib/firebase/initializeData';
 
 function AppContent({ Component, pageProps, router }: AppProps) {
   const { user, isAdmin, loading } = useAdmin();
@@ -16,6 +17,11 @@ function AppContent({ Component, pageProps, router }: AppProps) {
       setShowLogin(!user && window.location.pathname === '/admin');
     }
   }, [user]);
+
+  // Initialize Firestore data on app start
+  React.useEffect(() => {
+    initializeFirestoreData();
+  }, []);
 
   if (loading) {
     return (

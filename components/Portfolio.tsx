@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { siteData } from '../data/content';
+import { siteData, PortfolioCompany } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const Portfolio: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
   const [editingType, setEditingType] = useState<'header' | 'company' | 'add'>('header');
+  const [portfolioData, setPortfolioData] = useState({
+    title: 'Portfolio Highlights',
+    description: 'Proven track record of successful investments in veteran-led companies',
+    companies: siteData.portfolio
+  });
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -26,11 +33,88 @@ const Portfolio: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving portfolio data:', data);
-    setIsEditModalOpen(false);
-    setEditingCompany(null);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingType === 'header') {
+        // Update section header
+        const updatedData = {
+          title: data.title,
+          description: data.description,
+          companies: portfolioData.companies,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('portfolio', updatedData);
+        setPortfolioData(updatedData);
+      } else if (editingType === 'add') {
+        // Add new company
+        const newCompany = {
+          name: data.name,
+          description: data.description,
+          logo: data.logo,
+          metrics: {
+            investment: data.investment,
+            valuation: data.valuation,
+            tvpi: data.tvpi,
+            irr: data.irr,
+            status: data.status
+          }
+        };
+        const updatedData = {
+          ...portfolioData,
+          companies: [...portfolioData.companies, newCompany],
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('portfolio', updatedData);
+        setPortfolioData(updatedData);
+      } else {
+        // Update existing company
+        const companyIndex = portfolioData.companies.findIndex(c => c.name === editingCompany.name);
+        if (companyIndex !== -1) {
+          const updatedCompanies = [...portfolioData.companies];
+          updatedCompanies[companyIndex] = {
+            name: data.name,
+            description: data.description,
+            logo: data.logo,
+            metrics: {
+              investment: data.investment,
+              valuation: data.valuation,
+              tvpi: data.tvpi,
+              irr: data.irr,
+              status: data.status
+            }
+          };
+          const updatedData = {
+            ...portfolioData,
+            companies: updatedCompanies,
+            updatedAt: new Date().toISOString()
+          };
+          await updateDocument('portfolio', updatedData);
+          setPortfolioData(updatedData);
+        }
+      }
+      console.log('Portfolio data saved successfully');
+      setIsEditModalOpen(false);
+      setEditingCompany(null);
+    } catch (error) {
+      console.error('Error saving portfolio data:', error);
+    }
   };
+
+  // Load Portfolio data from Firestore on component mount
+  useEffect(() => {
+    const loadPortfolioData = async () => {
+      try {
+        const data = await getDocument('portfolio');
+        if (data) {
+          setPortfolioData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading portfolio data:', error);
+      }
+    };
+    
+    loadPortfolioData();
+  }, []);
 
   return (
     <>
@@ -42,16 +126,16 @@ const Portfolio: React.FC = () => {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-700 mb-4">
-                Portfolio Highlights
+                {portfolioData.title}
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Proven track record of successful investments in veteran-led companies
+                {portfolioData.description}
               </p>
             </div>
           </EditableSection>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-4 gap-6">
-          {siteData.portfolio.map((company, index) => (
+          {portfolioData.companies.map((company, index) => (
             <EditableSection
               key={index}
               sectionName={`${company.name}`}
@@ -143,14 +227,16 @@ const Portfolio: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
             <input
               type="text"
-              defaultValue="Portfolio Highlights"
+              name="title"
+              defaultValue={portfolioData.title}
               className="admin-input w-full"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Description</label>
             <textarea
-              defaultValue="Proven track record of successful investments in veteran-led companies"
+              name="description"
+              defaultValue={portfolioData.description}
               className="admin-input w-full h-20 resize-none"
             />
           </div>
@@ -161,6 +247,7 @@ const Portfolio: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Company Name</label>
             <input
               type="text"
+              name="name"
               defaultValue={editingCompany?.name || ''}
               className="admin-input w-full"
               placeholder="e.g., TechCorp"
@@ -169,6 +256,7 @@ const Portfolio: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
             <textarea
+              name="description"
               defaultValue={editingCompany?.description || ''}
               className="admin-input w-full h-20 resize-none"
               placeholder="Brief description of the company"
@@ -178,6 +266,7 @@ const Portfolio: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Logo URL</label>
             <input
               type="text"
+              name="logo"
               defaultValue={editingCompany?.logo || ''}
               className="admin-input w-full"
               placeholder="/images/portfolio/company-logo.png"
@@ -191,6 +280,7 @@ const Portfolio: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-300 mb-1">Investment</label>
                 <input
                   type="text"
+                  name="investment"
                   defaultValue={editingCompany?.metrics?.investment || ''}
                   className="admin-input w-full"
                   placeholder="e.g., $260K pre-seed"
@@ -200,6 +290,7 @@ const Portfolio: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-300 mb-1">Valuation</label>
                 <input
                   type="text"
+                  name="valuation"
                   defaultValue={editingCompany?.metrics?.valuation || ''}
                   className="admin-input w-full"
                   placeholder="e.g., $200M"
@@ -209,6 +300,7 @@ const Portfolio: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-300 mb-1">TVPI</label>
                 <input
                   type="text"
+                  name="tvpi"
                   defaultValue={editingCompany?.metrics?.tvpi || ''}
                   className="admin-input w-full"
                   placeholder="e.g., 14.61"
@@ -218,6 +310,7 @@ const Portfolio: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-300 mb-1">IRR</label>
                 <input
                   type="text"
+                  name="irr"
                   defaultValue={editingCompany?.metrics?.irr || ''}
                   className="admin-input w-full"
                   placeholder="e.g., 1,726%"
@@ -228,6 +321,7 @@ const Portfolio: React.FC = () => {
               <label className="block text-sm font-medium text-gray-300 mb-1">Status</label>
               <input
                 type="text"
+                name="status"
                 defaultValue={editingCompany?.metrics?.status || ''}
                 className="admin-input w-full"
                 placeholder="e.g., Active, Acquired, etc."

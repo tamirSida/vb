@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 interface HeroSectionProps {
   showScrollIndicator?: boolean;
@@ -11,15 +12,43 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [heroData, setHeroData] = useState(siteData.hero);
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHero = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveHero = (data: any) => {
-    console.log('Saving hero data:', data);
-    setIsEditModalOpen(false);
+  const handleSaveHero = async (data: any) => {
+    try {
+      const updatedData = {
+        ...data,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('hero', updatedData);
+      setHeroData({ ...heroData, ...data });
+      console.log('Hero data saved successfully');
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('Error saving hero data:', error);
+    }
   };
+
+  // Load hero data from Firestore on component mount
+  useEffect(() => {
+    const loadHeroData = async () => {
+      try {
+        const data = await getDocument('hero');
+        if (data) {
+          setHeroData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading hero data:', error);
+      }
+    };
+    
+    loadHeroData();
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -98,27 +127,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
           </div>
           
           <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-3 sm:mb-6 md:mb-6">
-            <span className="block text-white">{siteData.hero.headline}</span>
+            <span className="block text-white">{heroData.headline}</span>
           </h1>
           
           <p className="text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 text-gray-200 max-w-3xl leading-relaxed">
-            {siteData.hero.subheadline}
+            {heroData.subheadline}
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-3xl">
             <a 
-              href={siteData.hero.nonProfitUrl}
+              href={heroData.nonProfitUrl}
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
-              {siteData.hero.nonProfitCta}
+              {heroData.nonProfitCta}
             </a>
             <a 
-              href={siteData.hero.acceleratorUrl}
+              href={heroData.acceleratorUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
-              {siteData.hero.acceleratorCta}
+              {heroData.acceleratorCta}
             </a>
           </div>
 
@@ -147,14 +176,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
             <label className="block text-sm font-medium text-gray-300 mb-1">Headline</label>
             <input
               type="text"
-              defaultValue={siteData.hero.headline}
+              name="headline"
+              defaultValue={heroData.headline}
               className="admin-input w-full"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Subheadline</label>
             <textarea
-              defaultValue={siteData.hero.subheadline}
+              name="subheadline"
+              defaultValue={heroData.subheadline}
               className="admin-input w-full h-24 resize-none"
             />
           </div>
@@ -164,7 +195,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               <label className="block text-sm font-medium text-gray-300 mb-1">Non-Profit Button Text</label>
               <input
                 type="text"
-                defaultValue={siteData.hero.nonProfitCta}
+                name="nonProfitCta"
+                defaultValue={heroData.nonProfitCta}
                 className="admin-input w-full"
               />
             </div>
@@ -172,7 +204,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               <label className="block text-sm font-medium text-gray-300 mb-1">Non-Profit URL</label>
               <input
                 type="url"
-                defaultValue={siteData.hero.nonProfitUrl}
+                name="nonProfitUrl"
+                defaultValue={heroData.nonProfitUrl}
                 className="admin-input w-full"
                 placeholder="https://..."
               />
@@ -184,7 +217,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               <label className="block text-sm font-medium text-gray-300 mb-1">Accelerator Button Text</label>
               <input
                 type="text"
-                defaultValue={siteData.hero.acceleratorCta}
+                name="acceleratorCta"
+                defaultValue={heroData.acceleratorCta}
                 className="admin-input w-full"
               />
             </div>
@@ -192,7 +226,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               <label className="block text-sm font-medium text-gray-300 mb-1">Accelerator URL</label>
               <input
                 type="url"
-                defaultValue={siteData.hero.acceleratorUrl}
+                name="acceleratorUrl"
+                defaultValue={heroData.acceleratorUrl}
                 className="admin-input w-full"
                 placeholder="https://www.versionbravo.com"
               />

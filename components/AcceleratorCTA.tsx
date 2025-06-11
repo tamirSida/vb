@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const AcceleratorCTA: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingType, setEditingType] = useState<'header' | 'buttons'>('header');
+  const [ctaData, setCTAData] = useState({
+    title: 'Ready to Join the Mission?',
+    description: "Whether you're a veteran entrepreneur ready to scale or an investor looking to back the next generation of military-trained founders, we're here to help.",
+    primaryButtonText: 'Apply to Accelerator',
+    primaryButtonUrl: '#',
+    secondaryButtonText: 'Become an LP',
+    secondaryButtonUrl: '#'
+  });
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -16,10 +26,51 @@ const AcceleratorCTA: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving Accelerator CTA data:', data);
-    setIsEditModalOpen(false);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingType === 'header') {
+        const updatedData = {
+          ...ctaData,
+          title: data.title,
+          description: data.description,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorCTA', updatedData);
+        setCTAData(updatedData);
+      } else {
+        const updatedData = {
+          ...ctaData,
+          primaryButtonText: data.primaryButtonText,
+          primaryButtonUrl: data.primaryButtonUrl,
+          secondaryButtonText: data.secondaryButtonText,
+          secondaryButtonUrl: data.secondaryButtonUrl,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorCTA', updatedData);
+        setCTAData(updatedData);
+      }
+      console.log('Accelerator CTA data saved successfully');
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('Error saving accelerator CTA data:', error);
+    }
   };
+
+  // Load data from Firestore on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('acceleratorCTA');
+        if (data) {
+          setCTAData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading accelerator CTA data:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   return (
     <>
@@ -31,10 +82,10 @@ const AcceleratorCTA: React.FC = () => {
               onEdit={handleEditHeader}
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Ready to Join the Mission?
+                {ctaData.title}
               </h2>
               <p className="text-xl mb-8 text-gray-200 max-w-3xl mx-auto">
-                Whether you're a veteran entrepreneur ready to scale or an investor looking to back the next generation of military-trained founders, we're here to help.
+                {ctaData.description}
               </p>
             </EditableSection>
         
@@ -44,10 +95,10 @@ const AcceleratorCTA: React.FC = () => {
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <button className="btn-primary bg-gray-100 hover:bg-white text-gray-700 flex-1">
-              Apply to Accelerator
+              {ctaData.primaryButtonText}
             </button>
             <button className="btn-secondary border-white text-white hover:bg-white hover:text-gray-700 flex-1">
-              Become an LP
+              {ctaData.secondaryButtonText}
             </button>
           </div>
         </EditableSection>
@@ -70,14 +121,16 @@ const AcceleratorCTA: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Headline</label>
             <input
               type="text"
-              defaultValue="Ready to Join the Mission?"
+              name="title"
+              defaultValue={ctaData.title}
               className="admin-input w-full"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
             <textarea
-              defaultValue="Whether you're a veteran entrepreneur ready to scale or an investor looking to back the next generation of military-trained founders, we're here to help."
+              name="description"
+              defaultValue={ctaData.description}
               className="admin-input w-full h-24 resize-none"
             />
           </div>
@@ -88,7 +141,8 @@ const AcceleratorCTA: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Primary Button Text</label>
             <input
               type="text"
-              defaultValue="Apply to Accelerator"
+              name="primaryButtonText"
+              defaultValue={ctaData.primaryButtonText}
               className="admin-input w-full"
             />
           </div>
@@ -96,7 +150,8 @@ const AcceleratorCTA: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Primary Button Link</label>
             <input
               type="text"
-              defaultValue="#"
+              name="primaryButtonUrl"
+              defaultValue={ctaData.primaryButtonUrl}
               className="admin-input w-full"
               placeholder="https://apply.versionbravoventures.com"
             />
@@ -105,7 +160,8 @@ const AcceleratorCTA: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Secondary Button Text</label>
             <input
               type="text"
-              defaultValue="Become an LP"
+              name="secondaryButtonText"
+              defaultValue={ctaData.secondaryButtonText}
               className="admin-input w-full"
             />
           </div>
@@ -113,7 +169,8 @@ const AcceleratorCTA: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Secondary Button Link</label>
             <input
               type="text"
-              defaultValue="#"
+              name="secondaryButtonUrl"
+              defaultValue={ctaData.secondaryButtonUrl}
               className="admin-input w-full"
               placeholder="https://invest.versionbravoventures.com"
             />

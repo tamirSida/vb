@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const Mentors: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingMentor, setEditingMentor] = useState<any>(null);
   const [editingType, setEditingType] = useState<'header' | 'mentor' | 'add'>('header');
+  const [mentorsData, setMentorsData] = useState({
+    title: 'Mentor Network',
+    description: 'Industry experts and successful entrepreneurs providing guidance to our portfolio companies',
+    mentors: siteData.mentors
+  });
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -26,11 +33,74 @@ const Mentors: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving mentors data:', data);
-    setIsEditModalOpen(false);
-    setEditingMentor(null);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingType === 'header') {
+        const updatedData = {
+          title: data.title,
+          description: data.description,
+          mentors: mentorsData.mentors,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('mentors', updatedData);
+        setMentorsData(updatedData);
+      } else if (editingType === 'add') {
+        const newMentor = {
+          name: data.name,
+          company: data.company,
+          image: data.image,
+          linkedinUrl: data.linkedinUrl
+        };
+        const updatedData = {
+          ...mentorsData,
+          mentors: [...mentorsData.mentors, newMentor],
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('mentors', updatedData);
+        setMentorsData(updatedData);
+      } else {
+        // Update existing mentor
+        const mentorIndex = mentorsData.mentors.findIndex(m => m.name === editingMentor.name);
+        if (mentorIndex !== -1) {
+          const updatedMentors = [...mentorsData.mentors];
+          updatedMentors[mentorIndex] = {
+            name: data.name,
+            company: data.company,
+            image: data.image,
+            linkedinUrl: data.linkedinUrl
+          };
+          const updatedData = {
+            ...mentorsData,
+            mentors: updatedMentors,
+            updatedAt: new Date().toISOString()
+          };
+          await updateDocument('mentors', updatedData);
+          setMentorsData(updatedData);
+        }
+      }
+      console.log('Mentors data saved successfully');
+      setIsEditModalOpen(false);
+      setEditingMentor(null);
+    } catch (error) {
+      console.error('Error saving mentors data:', error);
+    }
   };
+
+  // Load data from Firestore on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('mentors');
+        if (data) {
+          setMentorsData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading mentors data:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   return (
     <>
@@ -42,16 +112,16 @@ const Mentors: React.FC = () => {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-                Mentor Network
+                {mentorsData.title}
               </h2>
               <p className="text-xl text-medium max-w-3xl mx-auto">
-                Industry experts and successful entrepreneurs providing guidance to our portfolio companies
+                {mentorsData.description}
               </p>
             </div>
           </EditableSection>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-4 gap-6">
-          {siteData.mentors.map((mentor, index) => (
+          {mentorsData.mentors.map((mentor, index) => (
             <EditableSection
               key={index}
               sectionName={`${mentor.name}`}
@@ -121,14 +191,16 @@ const Mentors: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
             <input
               type="text"
-              defaultValue="Mentor Network"
+              name="title"
+              defaultValue={mentorsData.title}
               className="admin-input w-full"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Description</label>
             <textarea
-              defaultValue="Industry experts and successful entrepreneurs providing guidance to our portfolio companies"
+              name="description"
+              defaultValue={mentorsData.description}
               className="admin-input w-full h-20 resize-none"
             />
           </div>
@@ -139,6 +211,7 @@ const Mentors: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Mentor Name</label>
             <input
               type="text"
+              name="name"
               defaultValue={editingMentor?.name || ''}
               className="admin-input w-full"
               placeholder="e.g., John Doe"
@@ -148,6 +221,7 @@ const Mentors: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Company/Role</label>
             <input
               type="text"
+              name="company"
               defaultValue={editingMentor?.company || ''}
               className="admin-input w-full"
               placeholder="e.g., Co-Founder - TechCorp"
@@ -157,6 +231,7 @@ const Mentors: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
             <input
               type="text"
+              name="image"
               defaultValue={editingMentor?.image || ''}
               className="admin-input w-full"
               placeholder="/images/mentors/mentor-name.jpg"
@@ -166,6 +241,7 @@ const Mentors: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">LinkedIn URL</label>
             <input
               type="url"
+              name="linkedinUrl"
               defaultValue={editingMentor?.linkedinUrl || ''}
               className="admin-input w-full"
               placeholder="https://linkedin.com/in/username"

@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import IconSelector from './admin/IconSelector';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const WhyVB: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingPointIndex, setEditingPointIndex] = useState<number | null>(null);
   const [selectedIcon, setSelectedIcon] = useState<string>('');
+  const [whyVBData, setWhyVBData] = useState(siteData.whyVB);
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditSection = () => {
     setIsEditModalOpen(true);
@@ -26,11 +29,62 @@ const WhyVB: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving WhyVB data:', data);
-    setIsEditModalOpen(false);
-    setEditingPointIndex(null);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingPointIndex === null) {
+        // Update section title
+        const updatedData = {
+          title: data.title,
+          points: whyVBData.points,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('whyVB', updatedData);
+        setWhyVBData(updatedData);
+      } else if (editingPointIndex === -1) {
+        // Add new point
+        const newPoints = [...whyVBData.points, data.text];
+        const updatedData = {
+          title: whyVBData.title,
+          points: newPoints,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('whyVB', updatedData);
+        setWhyVBData(updatedData);
+      } else {
+        // Update existing point
+        const newPoints = [...whyVBData.points];
+        newPoints[editingPointIndex] = data.text;
+        const updatedData = {
+          title: whyVBData.title,
+          points: newPoints,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('whyVB', updatedData);
+        setWhyVBData(updatedData);
+      }
+      console.log('WhyVB data saved successfully');
+      setIsEditModalOpen(false);
+      setEditingPointIndex(null);
+    } catch (error) {
+      console.error('Error saving WhyVB data:', error);
+    }
   };
+
+  // Load WhyVB data from Firestore on component mount
+  useEffect(() => {
+    const loadWhyVBData = async () => {
+      try {
+        const data = await getDocument('whyVB');
+        if (data) {
+          setWhyVBData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading WhyVB data:', error);
+      }
+    };
+    
+    loadWhyVBData();
+  }, []);
 
   return (
     <>
@@ -42,13 +96,13 @@ const WhyVB: React.FC = () => {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-                {siteData.whyVB.title}
+                {whyVBData.title}
               </h2>
             </div>
           </EditableSection>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {siteData.whyVB.points.map((point, index) => {
+          {whyVBData.points.map((point, index) => {
             const icons = [
               "fas fa-users", // Team of successful operators
               "fas fa-network-wired", // Unparalleled network
@@ -114,7 +168,8 @@ const WhyVB: React.FC = () => {
           <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
           <input
             type="text"
-            defaultValue={siteData.whyVB.title}
+            name="title"
+            defaultValue={whyVBData.title}
             className="admin-input w-full"
           />
         </div>
@@ -124,7 +179,8 @@ const WhyVB: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Point Text</label>
             <textarea
-              defaultValue={editingPointIndex >= 0 ? siteData.whyVB.points[editingPointIndex] : ''}
+              name="text"
+              defaultValue={editingPointIndex >= 0 ? whyVBData.points[editingPointIndex] : ''}
               className="admin-input w-full h-24 resize-none"
               placeholder="Enter the point text..."
             />

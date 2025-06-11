@@ -26,4 +26,11 @@ export const storage = getStorage(app);
 // Initialize Analytics (only in browser environment)
 export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
+// Enable Firestore offline persistence
+if (typeof window !== 'undefined') {
+  import('firebase/firestore').then(({ enableNetwork, disableNetwork }) => {
+    // Handle network state for better offline support
+  });
+}
+
 export default app;

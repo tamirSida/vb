@@ -18,6 +18,17 @@ export default function EditModal({
   title, 
   children 
 }: EditModalProps) {
+  const [formData, setFormData] = useState<any>({});
+
+  const handleSubmit = () => {
+    const form = document.getElementById('edit-form') as HTMLFormElement;
+    if (form) {
+      const data = new FormData(form);
+      const formObject = Object.fromEntries(data.entries());
+      onSave(formObject);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -43,9 +54,9 @@ export default function EditModal({
           </button>
         </div>
         
-        <div className="mb-6">
+        <form id="edit-form" className="mb-6">
           {children}
-        </div>
+        </form>
         
         <div className="flex space-x-3 justify-end">
           <button
@@ -55,7 +66,7 @@ export default function EditModal({
             Cancel
           </button>
           <button
-            onClick={() => onSave({})}
+            onClick={handleSubmit}
             className="admin-btn bg-kizna-electric text-kizna-dark"
           >
             Save Changes

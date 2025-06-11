@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const ApplicationProcess: React.FC = () => {
-  const { applicationProcess } = siteData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingType, setEditingType] = useState<'header' | 'step' | 'commitments' | 'add-step' | 'add-commitment'>('header');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [applicationData, setApplicationData] = useState(siteData.applicationProcess);
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -35,11 +37,49 @@ const ApplicationProcess: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving application process data:', data);
-    setIsEditModalOpen(false);
-    setEditingIndex(null);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingType === 'header') {
+        const updatedData = {
+          ...applicationData,
+          title: data.title,
+          timeline: data.timeline,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('applicationProcess', updatedData);
+        setApplicationData(updatedData);
+      } else if (editingType === 'commitments') {
+        const updatedData = {
+          ...applicationData,
+          commitments: data.commitments.split('\n').filter((c: string) => c.trim()),
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('applicationProcess', updatedData);
+        setApplicationData(updatedData);
+      }
+      console.log('Application process data saved successfully');
+      setIsEditModalOpen(false);
+      setEditingIndex(null);
+    } catch (error) {
+      console.error('Error saving application process data:', error);
+    }
   };
+
+  // Load data from Firestore on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('applicationProcess');
+        if (data) {
+          setApplicationData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading application process data:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
   
   return (
     <>
@@ -51,10 +91,10 @@ const ApplicationProcess: React.FC = () => {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-                {applicationProcess.title}
+                {applicationData.title}
               </h2>
               <p className="text-xl text-medium max-w-3xl mx-auto">
-                {applicationProcess.timeline} — transparent, veteran-to-veteran evaluation
+                {applicationData.timeline} — transparent, veteran-to-veteran evaluation
               </p>
             </div>
           </EditableSection>
@@ -64,7 +104,7 @@ const ApplicationProcess: React.FC = () => {
           <div>
             <h3 className="text-2xl font-bold text-dark mb-6">Application Timeline</h3>
             <div className="space-y-6">
-              {applicationProcess.steps.map((step, index) => (
+              {applicationData.steps.map((step, index) => (
                 <EditableSection
                   key={index}
                   sectionName={`${step.week}`}
@@ -108,7 +148,7 @@ const ApplicationProcess: React.FC = () => {
               className="bg-light rounded-lg p-6 shadow-md border border-secondary"
             >
               <ul className="space-y-4">
-                {applicationProcess.commitments.map((commitment, index) => (
+                {applicationData.commitments.map((commitment, index) => (
                   <li key={index} className="flex items-start">
                     <div className="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm font-bold">
                       ✓
@@ -140,7 +180,7 @@ const ApplicationProcess: React.FC = () => {
       onSave={handleSave}
       title={
         editingType === 'header' ? "Edit Application Process Header" :
-        editingType === 'step' ? `Edit ${applicationProcess.steps[editingIndex || 0]?.week || 'Step'}` :
+        editingType === 'step' ? `Edit ${applicationData.steps[editingIndex || 0]?.week || 'Step'}` :
         editingType === 'add-step' ? "Add New Application Step" :
         editingType === 'commitments' ? "Edit Commitments" :
         "Edit Application CTA"
@@ -152,7 +192,8 @@ const ApplicationProcess: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
             <input
               type="text"
-              defaultValue={applicationProcess.title}
+              name="title"
+              defaultValue={applicationData.title}
               className="admin-input w-full"
             />
           </div>
@@ -160,7 +201,8 @@ const ApplicationProcess: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Timeline Description</label>
             <input
               type="text"
-              defaultValue={applicationProcess.timeline}
+              name="timeline"
+              defaultValue={applicationData.timeline}
               className="admin-input w-full"
             />
           </div>
@@ -171,7 +213,8 @@ const ApplicationProcess: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Week/Phase</label>
             <input
               type="text"
-              defaultValue={editingIndex !== null ? applicationProcess.steps[editingIndex]?.week : ''}
+              name="week"
+              defaultValue={editingIndex !== null ? applicationData.steps[editingIndex]?.week : ''}
               className="admin-input w-full"
               placeholder="e.g., Week 1"
             />
@@ -180,7 +223,8 @@ const ApplicationProcess: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Activity</label>
             <input
               type="text"
-              defaultValue={editingIndex !== null ? applicationProcess.steps[editingIndex]?.activity : ''}
+              name="activity"
+              defaultValue={editingIndex !== null ? applicationData.steps[editingIndex]?.activity : ''}
               className="admin-input w-full"
               placeholder="e.g., 1–3 Intro Meetings"
             />
@@ -188,7 +232,8 @@ const ApplicationProcess: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Details (optional)</label>
             <textarea
-              defaultValue={editingIndex !== null ? applicationProcess.steps[editingIndex]?.details : ''}
+              name="details"
+              defaultValue={editingIndex !== null ? applicationData.steps[editingIndex]?.details : ''}
               className="admin-input w-full h-20 resize-none"
               placeholder="Additional details about this step"
             />
@@ -209,7 +254,8 @@ const ApplicationProcess: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Commitments (one per line)</label>
             <textarea
-              defaultValue={applicationProcess.commitments.join('\n')}
+              name="commitments"
+              defaultValue={applicationData.commitments.join('\n')}
               className="admin-input w-full h-32 resize-none"
               placeholder="Weekly progress updates throughout process&#10;Maximum 3-week timeline&#10;Transparent feedback at every stage"
             />

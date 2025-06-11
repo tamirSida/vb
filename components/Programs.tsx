@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const Programs: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
   const [editingType, setEditingType] = useState<'header' | 'program' | 'add'>('header');
+  const [programsData, setProgramsData] = useState({
+    title: 'Our Programs',
+    description: 'Two pathways for veteran entrepreneurs to access our network, expertise, and capital',
+    programs: siteData.programs
+  });
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -25,11 +32,80 @@ const Programs: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving programs data:', data);
-    setIsEditModalOpen(false);
-    setEditingProgram(null);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingType === 'header') {
+        // Update section header
+        const updatedData = {
+          title: data.title,
+          description: data.description,
+          programs: programsData.programs,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('programs', updatedData);
+        setProgramsData(updatedData);
+      } else if (editingType === 'add') {
+        // Add new program
+        const newProgram = {
+          name: data.name,
+          description: data.description,
+          duration: data.duration,
+          investment: data.investment,
+          equity: data.equity,
+          highlights: data.highlights.split('\n').filter((h: string) => h.trim())
+        };
+        const updatedData = {
+          ...programsData,
+          programs: [...programsData.programs, newProgram],
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('programs', updatedData);
+        setProgramsData(updatedData);
+      } else {
+        // Update existing program
+        const programIndex = programsData.programs.findIndex(p => p.name === editingProgram.name);
+        if (programIndex !== -1) {
+          const updatedPrograms = [...programsData.programs];
+          updatedPrograms[programIndex] = {
+            name: data.name,
+            description: data.description,
+            duration: data.duration,
+            investment: data.investment,
+            equity: data.equity,
+            highlights: data.highlights.split('\n').filter((h: string) => h.trim())
+          };
+          const updatedData = {
+            ...programsData,
+            programs: updatedPrograms,
+            updatedAt: new Date().toISOString()
+          };
+          await updateDocument('programs', updatedData);
+          setProgramsData(updatedData);
+        }
+      }
+      console.log('Programs data saved successfully');
+      setIsEditModalOpen(false);
+      setEditingProgram(null);
+    } catch (error) {
+      console.error('Error saving programs data:', error);
+    }
   };
+
+  // Load Programs data from Firestore on component mount
+  useEffect(() => {
+    const loadProgramsData = async () => {
+      try {
+        const data = await getDocument('programs');
+        if (data) {
+          setProgramsData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading programs data:', error);
+      }
+    };
+    
+    loadProgramsData();
+  }, []);
 
   return (
     <>
@@ -41,16 +117,16 @@ const Programs: React.FC = () => {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-                Our Programs
+                {programsData.title}
               </h2>
               <p className="text-xl text-medium max-w-3xl mx-auto">
-                Two pathways for veteran entrepreneurs to access our network, expertise, and capital
+                {programsData.description}
               </p>
             </div>
           </EditableSection>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
-          {siteData.programs.map((program, index) => (
+          {programsData.programs.map((program, index) => (
             <EditableSection
               key={index}
               sectionName={`${program.name} Program`}
@@ -122,14 +198,16 @@ const Programs: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
             <input
               type="text"
-              defaultValue="Our Programs"
+              name="title"
+              defaultValue={programsData.title}
               className="admin-input w-full"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Description</label>
             <textarea
-              defaultValue="Two pathways for veteran entrepreneurs to access our network, expertise, and capital"
+              name="description"
+              defaultValue={programsData.description}
               className="admin-input w-full h-20 resize-none"
             />
           </div>
@@ -140,6 +218,7 @@ const Programs: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Program Name</label>
             <input
               type="text"
+              name="name"
               defaultValue={editingProgram?.name || ''}
               className="admin-input w-full"
               placeholder="e.g., VB Accelerator"
@@ -148,6 +227,7 @@ const Programs: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
             <textarea
+              name="description"
               defaultValue={editingProgram?.description || ''}
               className="admin-input w-full h-20 resize-none"
               placeholder="Brief description of the program"
@@ -158,6 +238,7 @@ const Programs: React.FC = () => {
               <label className="block text-sm font-medium text-gray-300 mb-1">Duration</label>
               <input
                 type="text"
+                name="duration"
                 defaultValue={editingProgram?.duration || ''}
                 className="admin-input w-full"
                 placeholder="e.g., 10 weeks"
@@ -167,6 +248,7 @@ const Programs: React.FC = () => {
               <label className="block text-sm font-medium text-gray-300 mb-1">Investment</label>
               <input
                 type="text"
+                name="investment"
                 defaultValue={editingProgram?.investment || ''}
                 className="admin-input w-full"
                 placeholder="e.g., $100,000"
@@ -177,6 +259,7 @@ const Programs: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Equity</label>
             <input
               type="text"
+              name="equity"
               defaultValue={editingProgram?.equity || ''}
               className="admin-input w-full"
               placeholder="e.g., 3.33%"
@@ -185,6 +268,7 @@ const Programs: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Highlights (one per line)</label>
             <textarea
+              name="highlights"
               defaultValue={editingProgram?.highlights?.join('\n') || ''}
               className="admin-input w-full h-24 resize-none"
               placeholder="Program highlight 1&#10;Program highlight 2&#10;Program highlight 3"

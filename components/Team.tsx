@@ -1,27 +1,108 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { siteData } from '../data/content';
+import { siteData, TeamMember } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const Team: React.FC = () => {
   const [editingMember, setEditingMember] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [teamData, setTeamData] = useState<TeamMember[]>(siteData.team);
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
   
-  const founders = siteData.team.filter(member => member.isFounder);
-  const team = siteData.team.filter(member => !member.isFounder);
+  const founders = teamData.filter(member => member.isFounder);
+  const team = teamData.filter(member => !member.isFounder);
 
   const handleEditMember = (member: any) => {
     setEditingMember(member);
+    setIsAddMode(false);
     setIsEditModalOpen(true);
   };
 
-  const handleSaveMember = (data: any) => {
-    // TODO: Implement save to Firebase
-    console.log('Saving member:', data);
-    setIsEditModalOpen(false);
-    setEditingMember(null);
+  const handleAddMember = (isFounder: boolean) => {
+    setEditingMember({ 
+      name: '', 
+      title: '', 
+      image: '', 
+      military: '', 
+      linkedinUrl: '', 
+      isFounder 
+    });
+    setIsAddMode(true);
+    setIsEditModalOpen(true);
   };
+
+  const handleSaveMember = async (data: any) => {
+    try {
+      const memberData = {
+        name: data.name,
+        title: data.title,
+        image: data.image,
+        military: data.military,
+        linkedinUrl: data.linkedinUrl,
+        isFounder: data.isFounder === 'true' || data.isFounder === true
+      };
+
+      let updatedTeam;
+      if (isAddMode) {
+        // Add new member
+        updatedTeam = [...teamData, { ...memberData, id: Date.now().toString() }];
+      } else {
+        // Update existing member
+        updatedTeam = teamData.map(member => 
+          member.name === editingMember.name ? { ...member, ...memberData } : member
+        );
+      }
+
+      await updateDocument('team', { 
+        members: updatedTeam,
+        updatedAt: new Date().toISOString()
+      });
+      setTeamData(updatedTeam);
+      
+      console.log('Team member saved successfully');
+      setIsEditModalOpen(false);
+      setEditingMember(null);
+      setIsAddMode(false);
+    } catch (error) {
+      console.error('Error saving team member:', error);
+    }
+  };
+
+  const handleDeleteMember = async () => {
+    try {
+      const updatedTeam = teamData.filter(member => member.name !== editingMember.name);
+      await updateDocument('team', { 
+        members: updatedTeam,
+        updatedAt: new Date().toISOString()
+      });
+      setTeamData(updatedTeam);
+      
+      console.log('Team member deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingMember(null);
+    } catch (error) {
+      console.error('Error deleting team member:', error);
+    }
+  };
+
+  // Load Team data from Firestore on component mount
+  useEffect(() => {
+    const loadTeamData = async () => {
+      try {
+        const data = await getDocument('team');
+        if (data && (data as any).members) {
+          setTeamData((data as any).members);
+        }
+      } catch (error) {
+        console.error('Error loading team data:', error);
+      }
+    };
+    
+    loadTeamData();
+  }, []);
 
   return (
     <>
@@ -95,7 +176,7 @@ const Team: React.FC = () => {
             {/* Add General Partner Button */}
             <EditableSection 
               sectionName="Add New General Partner"
-              onEdit={() => console.log('Add general partner')}
+              onEdit={() => handleAddMember(true)}
               className="bg-light/50 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center h-80"
               isAddButton={true}
             >
@@ -160,7 +241,7 @@ const Team: React.FC = () => {
             {/* Add Team Member Button */}
             <EditableSection 
               sectionName="Add New Team Member"
-              onEdit={() => console.log('Add team member')}
+              onEdit={() => handleAddMember(false)}
               className="bg-light/50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center h-48"
               isAddButton={true}
             >
@@ -179,7 +260,7 @@ const Team: React.FC = () => {
       isOpen={isEditModalOpen}
       onClose={() => setIsEditModalOpen(false)}
       onSave={handleSaveMember}
-      title={`Edit ${editingMember?.name || 'Team Member'}`}
+      title={isAddMode ? 'Add Team Member' : `Edit ${editingMember?.name || 'Team Member'}`}
     >
       {editingMember && (
         <div className="space-y-4">
@@ -187,6 +268,7 @@ const Team: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
             <input
               type="text"
+              name="name"
               defaultValue={editingMember.name}
               className="admin-input w-full"
             />
@@ -195,6 +277,7 @@ const Team: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Title (optional)</label>
             <input
               type="text"
+              name="title"
               defaultValue={editingMember.title || ''}
               className="admin-input w-full"
               placeholder="Leave empty for General Partners"
@@ -204,6 +287,7 @@ const Team: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Military Background</label>
             <input
               type="text"
+              name="military"
               defaultValue={editingMember.military}
               className="admin-input w-full"
             />
@@ -212,6 +296,7 @@ const Team: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">LinkedIn URL</label>
             <input
               type="url"
+              name="linkedinUrl"
               defaultValue={editingMember.linkedinUrl || ''}
               className="admin-input w-full"
               placeholder="https://linkedin.com/in/username"
@@ -221,6 +306,7 @@ const Team: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
             <input
               type="text"
+              name="image"
               defaultValue={editingMember.image}
               className="admin-input w-full"
               placeholder="/images/team/member-name.jpg"
@@ -230,6 +316,8 @@ const Team: React.FC = () => {
             <label className="flex items-center text-gray-300">
               <input
                 type="checkbox"
+                name="isFounder"
+                value="true"
                 defaultChecked={editingMember.isFounder}
                 className="mr-2"
               />
@@ -240,7 +328,7 @@ const Team: React.FC = () => {
           {/* Delete Button */}
           <div className="pt-4 border-t border-gray-600">
             <button 
-              onClick={() => console.log('Delete member', editingMember.name)}
+              onClick={handleDeleteMember}
               className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
             >
               🗑️ Delete Team Member

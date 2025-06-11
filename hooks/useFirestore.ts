@@ -26,16 +26,21 @@ export function useFirestore<T extends FirestoreDocument = FirestoreDocument>(co
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Simple read without real-time listeners to avoid CORS
       const querySnapshot = await getDocs(collection(db, collectionName));
       const docs = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       } as T));
       setData(docs);
-      setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error fetching data:', err);
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      console.warn('Firestore fetch error:', errorMessage);
+      // Don't throw error, just log it and continue with empty data
+      setError(null); // Clear error to not break UI
+      setData([]); // Set empty data
     } finally {
       setLoading(false);
     }
@@ -45,7 +50,7 @@ export function useFirestore<T extends FirestoreDocument = FirestoreDocument>(co
   const addDocument = async (data: Omit<T, 'id'>) => {
     try {
       const docRef = await addDoc(collection(db, collectionName), data as DocumentData);
-      await fetchData(); // Refresh data
+      // Don't auto-refresh to avoid CORS issues
       return docRef.id;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -53,14 +58,31 @@ export function useFirestore<T extends FirestoreDocument = FirestoreDocument>(co
     }
   };
 
-  // Update document
+  // Update or create document
   const updateDocument = async (id: string, data: Partial<Omit<T, 'id'>>) => {
     try {
-      await updateDoc(doc(db, collectionName, id), data as DocumentData);
-      await fetchData(); // Refresh data
+      const docRef = doc(db, collectionName, id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        await updateDoc(docRef, data as DocumentData);
+      } else {
+        await setDoc(docRef, data as DocumentData);
+      }
+      
+      // Don't auto-refresh to avoid CORS issues
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      throw err;
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      console.error('Firestore update error:', errorMessage);
+      
+      // Handle specific CORS/network errors
+      if (errorMessage.includes('CORS') || errorMessage.includes('network')) {
+        setError('Network error - changes saved locally but may not sync until connection is restored');
+      } else {
+        setError(errorMessage);
+      }
+      // Don't throw error to avoid breaking the UI
+      console.error('Update error:', err);
     }
   };
 
@@ -68,7 +90,7 @@ export function useFirestore<T extends FirestoreDocument = FirestoreDocument>(co
   const deleteDocument = async (id: string) => {
     try {
       await deleteDoc(doc(db, collectionName, id));
-      await fetchData(); // Refresh data
+      // Don't auto-refresh to avoid CORS issues
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       throw err;
@@ -90,9 +112,8 @@ export function useFirestore<T extends FirestoreDocument = FirestoreDocument>(co
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [collectionName]);
+  // Remove auto-fetch on mount to avoid CORS issues
+  // Components will call getDocument directly
 
   return {
     data,

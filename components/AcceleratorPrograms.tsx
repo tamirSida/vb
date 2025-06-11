@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const AcceleratorPrograms: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
   const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about'>('header');
+  const [acceleratorData, setAcceleratorData] = useState({
+    title: 'Our Accelerator Program',
+    description: 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+    about: 'adam fill here',
+    programs: siteData.programs.filter(program => program.name === 'VB Accelerator')
+  });
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   // Only show the VB Accelerator program
-  const acceleratorPrograms = siteData.programs.filter(program => program.name === 'VB Accelerator');
+  const acceleratorPrograms = acceleratorData.programs;
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -33,11 +41,50 @@ const AcceleratorPrograms: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (data: any) => {
-    console.log('Saving accelerator programs data:', data);
-    setIsEditModalOpen(false);
-    setEditingProgram(null);
+  const handleSave = async (data: any) => {
+    try {
+      if (editingType === 'header') {
+        const updatedData = {
+          title: data.title,
+          description: data.description,
+          about: acceleratorData.about,
+          programs: acceleratorData.programs,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorPrograms', updatedData);
+        setAcceleratorData(updatedData);
+      } else if (editingType === 'about') {
+        const updatedData = {
+          ...acceleratorData,
+          about: data.about,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorPrograms', updatedData);
+        setAcceleratorData(updatedData);
+      }
+      console.log('Accelerator programs data saved successfully');
+      setIsEditModalOpen(false);
+      setEditingProgram(null);
+    } catch (error) {
+      console.error('Error saving accelerator programs data:', error);
+    }
   };
+
+  // Load data from Firestore on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('acceleratorPrograms');
+        if (data) {
+          setAcceleratorData(data as any);
+        }
+      } catch (error) {
+        console.error('Error loading accelerator programs data:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   return (
     <>
@@ -49,10 +96,10 @@ const AcceleratorPrograms: React.FC = () => {
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-                Our Accelerator Program
+                {acceleratorData.title}
               </h2>
               <p className="text-xl text-medium max-w-3xl mx-auto">
-                Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups
+                {acceleratorData.description}
               </p>
             </div>
           </EditableSection>
@@ -108,7 +155,7 @@ const AcceleratorPrograms: React.FC = () => {
             <div className="mb-6">
               <h3 className="text-2xl font-bold mb-4 text-gray-700">About the Program</h3>
               <p className="text-medium text-gray-600">
-                adam fill here
+                {acceleratorData.about}
               </p>
             </div>
           </EditableSection>
@@ -150,14 +197,16 @@ const AcceleratorPrograms: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
             <input
               type="text"
-              defaultValue="Our Accelerator Program"
+              name="title"
+              defaultValue={acceleratorData.title}
               className="admin-input w-full"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Description</label>
             <textarea
-              defaultValue="Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups"
+              name="description"
+              defaultValue={acceleratorData.description}
               className="admin-input w-full h-20 resize-none"
             />
           </div>
@@ -167,7 +216,8 @@ const AcceleratorPrograms: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">About Content</label>
             <textarea
-              defaultValue="adam fill here"
+              name="about"
+              defaultValue={acceleratorData.about}
               className="admin-input w-full h-32 resize-none"
               placeholder="Describe the program in detail..."
             />

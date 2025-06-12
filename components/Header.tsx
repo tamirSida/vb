@@ -79,15 +79,15 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
           {isAcceleratorPage ? (
             <div className="hidden md:flex items-center justify-center flex-1">
               <nav className="flex items-center space-x-8">
-                <a href="#team" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                <Link href="/accelerator/team" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Team
-                </a>
-                <a href="#programs" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                </Link>
+                <Link href="/accelerator/program" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Accelerator
-                </a>
-                <a href="#applicationProcess" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                </Link>
+                <Link href="/accelerator/application" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Application
-                </a>
+                </Link>
                 <EditableSection
                   sectionName="Contact Email"
                   onEdit={handleEditNavigation}
@@ -97,9 +97,12 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                     Contact
                   </a>
                 </EditableSection>
-                <a href="#portfolio" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                <Link href="/accelerator/portfolio" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Portfolio
-                </a>
+                </Link>
+                <Link href="/accelerator/mentors" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                  Mentors
+                </Link>
               </nav>
             </div>
           ) : (
@@ -169,29 +172,29 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
         {(showNavigation || isAcceleratorPage) && isMenuOpen && (
           <div className="md:hidden bg-light border-t border-secondary">
             <nav className="px-4 py-4 space-y-3">
-              <a 
-                href="#team" 
-                className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Team
-              </a>
-              <a 
-                href="#programs" 
-                className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {isAcceleratorPage ? 'Accelerator' : 'Programs'}
-              </a>
-              {isAcceleratorPage && (
+              {isAcceleratorPage ? (
                 <>
-                  <a 
-                    href="#applicationProcess"
+                  <Link 
+                    href="/accelerator/team" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Team
+                  </Link>
+                  <Link 
+                    href="/accelerator/program" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Accelerator
+                  </Link>
+                  <Link 
+                    href="/accelerator/application"
                     className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Application
-                  </a>
+                  </Link>
                   <a 
                     href={`mailto:${navigationData.contactEmail}`}
                     className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
@@ -199,23 +202,52 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                   >
                     Contact
                   </a>
+                  <Link 
+                    href="/accelerator/portfolio" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Portfolio
+                  </Link>
+                  <Link 
+                    href="/accelerator/mentors" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Mentors
+                  </Link>
                 </>
-              )}
-              <a 
-                href="#portfolio" 
-                className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Portfolio
-              </a>
-              {!isAcceleratorPage && (
-                <a 
-                  href="#contact" 
-                  className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contact
-                </a>
+              ) : (
+                <>
+                  <a 
+                    href="#team" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Team
+                  </a>
+                  <a 
+                    href="#programs" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Programs
+                  </a>
+                  <a 
+                    href="#portfolio" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Portfolio
+                  </a>
+                  <a 
+                    href="#contact" 
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Contact
+                  </a>
+                </>
               )}
               {/* Mobile admin access - also discrete */}
               <Link href="/admin">

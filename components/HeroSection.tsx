@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
@@ -129,20 +130,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-3xl">
-            <a 
+            <Link 
               href={heroData.nonProfitUrl}
               className="bg-gray-700 hover:bg-gray-600 text-white font-black-ops font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
               {heroData.nonProfitCta}
-            </a>
-            <a 
+            </Link>
+            <Link 
               href={heroData.acceleratorUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="bg-gray-700 hover:bg-gray-600 text-white font-black-ops font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
               {heroData.acceleratorCta}
-            </a>
+            </Link>
           </div>
 
         </div>

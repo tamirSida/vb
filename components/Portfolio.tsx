@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
 import { siteData, PortfolioCompany } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
@@ -66,6 +67,12 @@ const Portfolio: React.FC = () => {
   });
   const [isStatsVisible, setIsStatsVisible] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
+  const isGridInView = useInView(gridRef, { once: true, margin: "-50px" });
+  
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
@@ -264,99 +271,199 @@ const Portfolio: React.FC = () => {
             </div>
           </EditableSection>
 
-          <EditableSection 
-            sectionName="Portfolio Header"
-            onEdit={handleEditHeader}
+          <motion.div
+            ref={headerRef}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
-                {portfolioData.title}
-              </h2>
-              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
-                {portfolioData.description}
-              </p>
-            </div>
-          </EditableSection>
+            <EditableSection 
+              sectionName="Portfolio Header"
+              onEdit={handleEditHeader}
+            >
+              <div className="text-center mb-12">
+                <motion.h2 
+                  className="text-3xl md:text-4xl font-bold text-vb-navy mb-4"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  {portfolioData.title}
+                </motion.h2>
+                <motion.p 
+                  className="text-xl text-vb-medium max-w-3xl mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  {portfolioData.description}
+                </motion.p>
+              </div>
+            </EditableSection>
+          </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <motion.div 
+          ref={gridRef}
+          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isGridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           {portfolioData.companies.map((company, index) => (
-            <div key={index} className="relative">
+            <motion.div 
+              key={index} 
+              className="relative"
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={isGridInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: 0.4 + (index * 0.05),
+                ease: "easeOut"
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                transition: { duration: 0.2 }
+              }}
+            >
               <EditableSection
                 sectionName={`${company.name}`}
                 onEdit={() => handleEditCompany(company)}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden h-full group"
+                className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden h-full group border border-gray-100 hover:border-vb-gold"
               >
-                <div 
-                  className="cursor-pointer h-full"
+                <motion.div 
+                  className="cursor-pointer h-full relative"
                   onClick={() => handleViewCompany(company)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <div className="p-6">
+                  {/* Animated background gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-vb-gold/5 to-vb-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <div className="p-6 relative z-10">
                     {/* Company Logo */}
-                    <div className="flex items-center justify-center h-16 mb-4">
+                    <motion.div 
+                      className="flex items-center justify-center h-16 mb-4"
+                      whileHover={{ scale: 1.1, rotate: 2 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <Image 
                         src={company.logo} 
                         alt={`${company.name} logo`}
                         width={120}
                         height={48}
-                        className="max-h-12 max-w-full object-contain"
+                        className="max-h-12 max-w-full object-contain filter group-hover:brightness-110 transition-all duration-300"
                       />
-                    </div>
+                    </motion.div>
                     
                     {/* Company Name */}
-                    <h3 className="text-lg font-bold text-vb-navy mb-2 text-center">
+                    <motion.h3 
+                      className="text-lg font-bold text-vb-navy mb-2 text-center group-hover:text-vb-blue transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                    >
                       {company.name}
-                    </h3>
+                    </motion.h3>
                     
                     {/* Company Description Line */}
-                    <p className="text-vb-medium text-sm text-center leading-relaxed">
+                    <p className="text-vb-medium text-sm text-center leading-relaxed group-hover:text-vb-navy transition-colors">
                       {company.description}
                     </p>
                   </div>
 
                   {/* Click Indicator */}
-                  <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="bg-vb-blue text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg">
-                      <i className="fas fa-eye text-sm"></i>
-                    </div>
-                  </div>
+                  <motion.div 
+                    className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileHover={{ scale: 1.2, rotate: 0 }}
+                    transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+                  >
+                    <motion.div 
+                      className="bg-vb-blue text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
+                      whileHover={{ 
+                        backgroundColor: "#fbbf24",
+                        scale: 1.1,
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      <motion.i 
+                        className="fas fa-eye text-sm"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    </motion.div>
+                  </motion.div>
 
                   {/* Status Flag Triangle */}
                   {(() => {
-                    console.log(`Company ${company.name} flag:`, company.flag, typeof company.flag);
                     return company.flag && (
-                      <div className="absolute bottom-0 right-0 z-10">
-                        <div className={`w-0 h-0 border-l-[80px] border-l-transparent border-b-[80px] ${
-                          company.flag === 'exited' 
-                            ? 'border-b-blue-600' 
-                            : company.flag === 'fundraising'
-                            ? 'border-b-blue-300'
-                            : 'border-b-gray-400'
-                        }`}></div>
-                        <div className="absolute bottom-2 right-2 text-white text-[10px] font-bold leading-tight text-center">
+                      <motion.div 
+                        className="absolute bottom-0 right-0 z-10"
+                        initial={{ scale: 0, rotate: 45 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ 
+                          duration: 0.5, 
+                          delay: 0.4 + (index * 0.05) + 0.3,
+                          type: "spring",
+                          stiffness: 200
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                      >
+                        <motion.div 
+                          className={`w-0 h-0 border-l-[80px] border-l-transparent border-b-[80px] ${
+                            company.flag === 'exited' 
+                              ? 'border-b-blue-600' 
+                              : company.flag === 'fundraising'
+                              ? 'border-b-blue-300'
+                              : 'border-b-gray-400'
+                          }`}
+                          whileHover={{ 
+                            filter: "brightness(1.2)",
+                            transition: { duration: 0.2 }
+                          }}
+                        />
+                        <motion.div 
+                          className="absolute bottom-2 right-2 text-white text-[10px] font-bold leading-tight text-center"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.4 + (index * 0.05) + 0.5 }}
+                          whileHover={{ scale: 1.1 }}
+                        >
                           <div>{company.flag === 'exited' ? 'EXITED' : 'FUND'}</div>
                           {company.flag === 'fundraising' && <div>RAISING</div>}
-                        </div>
-                      </div>
+                        </motion.div>
+                      </motion.div>
                     );
                   })()}
-                </div>
+                </motion.div>
               </EditableSection>
-            </div>
+            </motion.div>
           ))}
           
           {/* Add Company Button */}
-          <EditableSection 
-            sectionName="Add New Portfolio Company"
-            onEdit={handleAddCompany}
-            className="bg-gray-50/50 border-2 border-dashed border-vb-light rounded-lg p-6 flex items-center justify-center min-h-[250px]"
-            isAddButton={true}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isGridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.5, delay: 0.4 + (portfolioData.companies.length * 0.05) }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
-              <i className="fas fa-plus text-2xl mb-2"></i>
-              <p className="font-medium">Add New Portfolio Company</p>
-            </div>
-          </EditableSection>
-        </div>
+            <EditableSection 
+              sectionName="Add New Portfolio Company"
+              onEdit={handleAddCompany}
+              className="bg-gray-50/50 border-2 border-dashed border-vb-light rounded-lg p-6 flex items-center justify-center min-h-[250px] hover:border-vb-blue transition-colors"
+              isAddButton={true}
+            >
+              <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
+                <motion.i 
+                  className="fas fa-plus text-2xl mb-2"
+                  whileHover={{ rotate: 90 }}
+                  transition={{ duration: 0.2 }}
+                />
+                <p className="font-medium">Add New Portfolio Company</p>
+              </div>
+            </EditableSection>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
 

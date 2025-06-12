@@ -329,44 +329,136 @@ const AcceleratorPrograms: React.FC = () => {
 
         <div className="space-y-8">
           {acceleratorPrograms.map((program, index) => (
-            <EditableSection
+            <motion.div
               key={index}
-              sectionName={`${program.name} Program`}
-              onEdit={() => handleEditProgram(program)}
-              className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow"
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+              whileHover={{ 
+                scale: 1.02,
+                y: -5,
+                transition: { duration: 0.3 }
+              }}
             >
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-3 text-vb-navy">{program.name}</h3>
-                <p className="text-vb-medium mb-4">{program.description}</p>
-                
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <span className="text-vb-blue font-semibold">Duration:</span>
-                    <p className="text-vb-navy">{program.duration}</p>
-                  </div>
-                  <div>
-                    <span className="text-vb-blue font-semibold">Investment:</span>
-                    <p className="text-vb-navy">{program.investment}</p>
-                  </div>
-                  <div>
-                    <span className="text-vb-blue font-semibold">What You Receive:</span>
-                    <p className="text-vb-navy">{program.equity}</p>
-                  </div>
-                </div>
-              </div>
+              <EditableSection
+                sectionName={`${program.name} Program`}
+                onEdit={() => handleEditProgram(program)}
+                className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+              >
+                <div>
+                  <motion.div 
+                    className="mb-6"
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
+                  >
+                    <motion.h3 
+                      className="text-2xl font-bold mb-3 text-vb-navy"
+                      whileHover={{ scale: 1.05, color: "#2563eb" }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {program.name}
+                    </motion.h3>
+                    <motion.p 
+                      className="text-vb-medium mb-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.6, delay: index * 0.2 + 0.5 }}
+                    >
+                      {program.description}
+                    </motion.p>
+                    
+                    <motion.div 
+                      className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
+                    >
+                      <motion.div
+                        className="bg-white/50 p-4 rounded-lg border border-vb-light/30"
+                        whileHover={{ 
+                          scale: 1.05,
+                          backgroundColor: "rgba(59, 130, 246, 0.1)",
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        <span className="text-vb-blue font-semibold block mb-1">Duration:</span>
+                        <motion.p 
+                          className="text-vb-navy font-bold text-lg"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          {program.duration}
+                        </motion.p>
+                      </motion.div>
+                      <motion.div
+                        className="bg-white/50 p-4 rounded-lg border border-vb-light/30"
+                        whileHover={{ 
+                          scale: 1.05,
+                          backgroundColor: "rgba(59, 130, 246, 0.1)",
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        <span className="text-vb-blue font-semibold block mb-1">Investment:</span>
+                        <motion.p 
+                          className="text-vb-navy font-bold text-lg"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          {program.investment}
+                        </motion.p>
+                      </motion.div>
+                      <motion.div
+                        className="bg-white/50 p-4 rounded-lg border border-vb-light/30"
+                        whileHover={{ 
+                          scale: 1.05,
+                          backgroundColor: "rgba(59, 130, 246, 0.1)",
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        <span className="text-vb-blue font-semibold block mb-1">What You Receive:</span>
+                        <motion.p 
+                          className="text-vb-navy font-bold text-lg"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          {program.equity}
+                        </motion.p>
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
 
-              <div>
-                <h4 className="text-vb-blue font-semibold mb-3">Program Highlights:</h4>
-                <ul className="space-y-2">
-                  {program.highlights.map((highlight, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <span className="text-vb-blue mr-2">•</span>
-                      <span className="text-vb-medium">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </EditableSection>
+                  <motion.div
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 + 0.9 }}
+                  >
+                    <h4 className="text-vb-blue font-semibold mb-3 text-lg">Program Highlights:</h4>
+                    <ul className="space-y-3">
+                      {program.highlights.map((highlight, idx) => (
+                        <motion.li 
+                          key={idx} 
+                          className="flex items-start group"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ 
+                            duration: 0.4, 
+                            delay: index * 0.2 + 1.1 + (idx * 0.1) 
+                          }}
+                          whileHover={{ x: 5 }}
+                        >
+                          <motion.span 
+                            className="text-vb-blue mr-3 text-lg group-hover:text-vb-gold transition-colors"
+                            whileHover={{ scale: 1.3, rotate: 90 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            •
+                          </motion.span>
+                          <span className="text-vb-medium group-hover:text-vb-navy transition-colors">{highlight}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                </div>
+              </EditableSection>
+            </motion.div>
           ))}
 
           {/* Program Timeline Section */}

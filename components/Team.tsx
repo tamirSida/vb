@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
 import { siteData, TeamMember } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
@@ -11,6 +12,15 @@ const Team: React.FC = () => {
   const [isAddMode, setIsAddMode] = useState(false);
   const [teamData, setTeamData] = useState<TeamMember[]>(siteData.team);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+  
+  // Animation refs
+  const headerRef = useRef<HTMLDivElement>(null);
+  const foundersRef = useRef<HTMLDivElement>(null);
+  const teamRef = useRef<HTMLDivElement>(null);
+  
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
+  const isFoundersInView = useInView(foundersRef, { once: true, margin: "-50px" });
+  const isTeamInView = useInView(teamRef, { once: true, margin: "-50px" });
   
   const founders = teamData.filter(member => member.isFounder);
   const team = teamData.filter(member => !member.isFounder);
@@ -107,151 +117,289 @@ const Team: React.FC = () => {
   return (
     <>
       <section id="team" className="section-padding bg-primary text-dark">
+        
         <div className="container-max">
-          <EditableSection 
-            sectionName="Team Header"
-            onEdit={() => console.log('Edit team header')}
+          <motion.div
+            ref={headerRef}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="text-vb-navy">Leadership Team</span>
-              </h2>
-              <div className="flex items-center justify-center gap-4 text-xl text-vb-medium max-w-3xl mx-auto">
-                <span className="font-semibold">Combat Veterans</span>
-                <i className="fas fa-arrow-right text-vb-medium text-2xl"></i>
-                <span className="font-semibold">Entrepreneurs</span>
-                <i className="fas fa-arrow-right text-vb-medium text-2xl"></i>
-                <span className="font-semibold">Investors</span>
+            <EditableSection 
+              sectionName="Team Header"
+              onEdit={() => console.log('Edit team header')}
+            >
+              <div className="text-center mb-16">
+                <motion.h2 
+                  className="text-4xl md:text-5xl font-bold mb-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <span className="text-vb-navy">Leadership Team</span>
+                </motion.h2>
+                <motion.div 
+                  className="flex items-center justify-center gap-4 text-xl text-vb-medium max-w-3xl mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  <motion.span 
+                    className="font-semibold"
+                    whileHover={{ scale: 1.05, color: "#1e40af" }}
+                  >
+                    Combat Veterans
+                  </motion.span>
+                  <motion.i 
+                    className="fas fa-arrow-right text-vb-medium text-2xl"
+                    animate={isHeaderInView ? { x: [0, 5, 0] } : {}}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                  />
+                  <motion.span 
+                    className="font-semibold"
+                    whileHover={{ scale: 1.05, color: "#1e40af" }}
+                  >
+                    Entrepreneurs
+                  </motion.span>
+                  <motion.i 
+                    className="fas fa-arrow-right text-vb-medium text-2xl"
+                    animate={isHeaderInView ? { x: [0, 5, 0] } : {}}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
+                  />
+                  <motion.span 
+                    className="font-semibold"
+                    whileHover={{ scale: 1.05, color: "#1e40af" }}
+                  >
+                    Investors
+                  </motion.span>
+                </motion.div>
               </div>
-            </div>
-          </EditableSection>
+            </EditableSection>
+          </motion.div>
 
         {/* Founders Section */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-vb-navy mb-8 text-center">General Partners</h3>
+        <motion.div 
+          ref={foundersRef}
+          className="mb-16"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isFoundersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <motion.h3 
+            className="text-2xl font-bold text-vb-navy mb-8 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isFoundersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            General Partners
+          </motion.h3>
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {founders.map((member, index) => (
-              <EditableSection
+              <motion.div
                 key={index}
-                sectionName={`${member.name}`}
-                onEdit={() => handleEditMember(member)}
-                className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={isFoundersInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: 0.6 + (index * 0.2),
+                  ease: "easeOut"
+                }}
+                whileHover={{ 
+                  scale: 1.03,
+                  y: -5,
+                  transition: { duration: 0.2 }
+                }}
               >
-                <div className="flex justify-center pt-6 mb-6">
-                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl">
-                    <Image 
-                      src={member.image} 
-                      alt={member.name}
-                      width={128}
-                      height={128}
-                      className="w-full h-full object-cover object-center"
-                    />
+                <EditableSection
+                  sectionName={`${member.name}`}
+                  onEdit={() => handleEditMember(member)}
+                  className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl h-full"
+                >
+                  <div className="flex justify-center pt-6 mb-6">
+                    <motion.div 
+                      className="w-32 h-32 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl"
+                      whileHover={{ 
+                        scale: 1.1,
+                        borderColor: "#fbbf24",
+                        transition: { duration: 0.3 }
+                      }}
+                    >
+                      <Image 
+                        src={member.image} 
+                        alt={member.name}
+                        width={128}
+                        height={128}
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </motion.div>
                   </div>
-                </div>
-                <div className="p-5">
-                  <div className="text-center mb-4">
-                    <h4 className="text-xl font-bold text-vb-navy mb-2">{member.name}</h4>
-                    {member.title && (
-                      <p className="text-vb-blue font-semibold mb-3 text-sm">{member.title}</p>
-                    )}
-                    <p className="text-sm text-vb-medium italic">{member.military}</p>
-                  </div>
-                  
-                  {member.linkedinUrl && (
-                    <div className="flex justify-center pt-3 border-t border-secondary">
-                      <a 
-                        href={member.linkedinUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                      >
-                        <i className="fab fa-linkedin text-xl"></i>
-                      </a>
+                  <div className="p-5">
+                    <div className="text-center mb-4">
+                      <h4 className="text-xl font-bold text-vb-navy mb-2">{member.name}</h4>
+                      {member.title && (
+                        <p className="text-vb-blue font-semibold mb-3 text-sm">{member.title}</p>
+                      )}
+                      <p className="text-sm text-vb-medium italic">{member.military}</p>
                     </div>
-                  )}
-                </div>
-              </EditableSection>
+                    
+                    {member.linkedinUrl && (
+                      <div className="flex justify-center pt-3 border-t border-secondary">
+                        <motion.a 
+                          href={member.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          whileHover={{ scale: 1.2, rotate: 5 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <i className="fab fa-linkedin text-xl"></i>
+                        </motion.a>
+                      </div>
+                    )}
+                  </div>
+                </EditableSection>
+              </motion.div>
             ))}
             
             {/* Add General Partner Button */}
-            <EditableSection 
-              sectionName="Add New General Partner"
-              onEdit={() => handleAddMember(true)}
-              className="bg-light/50 border-2 border-dashed border-vb-light rounded-xl flex items-center justify-center h-80"
-              isAddButton={true}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isFoundersInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.6 + (founders.length * 0.2) }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
-                <i className="fas fa-plus text-3xl mb-4"></i>
-                <p className="font-medium">Add New General Partner</p>
-              </div>
-            </EditableSection>
-          </div>
-        </div>
-
-        {/* Team Section */}
-        <div>
-          <h3 className="text-2xl font-bold text-vb-navy mb-8 text-center">Team</h3>
-          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
-            {team.map((member, index) => (
-              <EditableSection
-                key={index}
-                sectionName={`${member.name}`}
-                onEdit={() => handleEditMember(member)}
-                className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md"
+              <EditableSection 
+                sectionName="Add New General Partner"
+                onEdit={() => handleAddMember(true)}
+                className="bg-light/50 border-2 border-dashed border-vb-light rounded-xl flex items-center justify-center h-80 hover:border-vb-blue transition-colors"
+                isAddButton={true}
               >
-                <div className="flex justify-center pt-3 mb-3">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg">
-                    <Image 
-                      src={member.image} 
-                      alt={member.name}
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover object-top scale-110"
-                      priority
-                    />
-                  </div>
-                </div>
-                <div className="p-3">
-                  <div className="text-center mb-3">
-                    <h4 className="text-base font-bold text-vb-navy mb-1">{member.name}</h4>
-                    {member.title && (
-                      <p className="text-vb-blue font-semibold text-xs mb-2">{member.title}</p>
-                    )}
-                    {member.military !== "N/A" && (
-                      <p className="text-xs text-vb-medium italic">{member.military}</p>
-                    )}
-                  </div>
-                  
-                  {member.linkedinUrl && (
-                    <div className="flex justify-center pt-2 border-t border-secondary">
-                      <a 
-                        href={member.linkedinUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                      >
-                        <i className="fab fa-linkedin text-lg"></i>
-                      </a>
-                    </div>
-                  )}
+                <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
+                  <motion.i 
+                    className="fas fa-plus text-3xl mb-4"
+                    whileHover={{ rotate: 90 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <p className="font-medium">Add New General Partner</p>
                 </div>
               </EditableSection>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Team Section */}
+        <motion.div 
+          ref={teamRef}
+          initial={{ opacity: 0, y: 50 }}
+          animate={isTeamInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <motion.h3 
+            className="text-2xl font-bold text-vb-navy mb-8 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isTeamInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            Team
+          </motion.h3>
+          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+            {team.map((member, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={isTeamInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: 0.6 + (index * 0.1),
+                  ease: "easeOut"
+                }}
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -3,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <EditableSection
+                  sectionName={`${member.name}`}
+                  onEdit={() => handleEditMember(member)}
+                  className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full"
+                >
+                  <div className="flex justify-center pt-3 mb-3">
+                    <motion.div 
+                      className="w-24 h-24 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg"
+                      whileHover={{ 
+                        scale: 1.1,
+                        borderColor: "#fbbf24",
+                        transition: { duration: 0.3 }
+                      }}
+                    >
+                      <Image 
+                        src={member.image} 
+                        alt={member.name}
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover object-top scale-110"
+                        priority
+                      />
+                    </motion.div>
+                  </div>
+                  <div className="p-3">
+                    <div className="text-center mb-3">
+                      <h4 className="text-base font-bold text-vb-navy mb-1">{member.name}</h4>
+                      {member.title && (
+                        <p className="text-vb-blue font-semibold text-xs mb-2">{member.title}</p>
+                      )}
+                      {member.military !== "N/A" && (
+                        <p className="text-xs text-vb-medium italic">{member.military}</p>
+                      )}
+                    </div>
+                    
+                    {member.linkedinUrl && (
+                      <div className="flex justify-center pt-2 border-t border-secondary">
+                        <motion.a 
+                          href={member.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          whileHover={{ scale: 1.2, rotate: 5 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <i className="fab fa-linkedin text-lg"></i>
+                        </motion.a>
+                      </div>
+                    )}
+                  </div>
+                </EditableSection>
+              </motion.div>
             ))}
             
             {/* Add Team Member Button */}
-            <EditableSection 
-              sectionName="Add New Team Member"
-              onEdit={() => handleAddMember(false)}
-              className="bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center h-48"
-              isAddButton={true}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isTeamInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.5, delay: 0.6 + (team.length * 0.1) }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
-                <i className="fas fa-plus text-2xl mb-2"></i>
-                <p className="font-medium">Add New Team Member</p>
-              </div>
-            </EditableSection>
+              <EditableSection 
+                sectionName="Add New Team Member"
+                onEdit={() => handleAddMember(false)}
+                className="bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center h-48 hover:border-vb-blue transition-colors"
+                isAddButton={true}
+              >
+                <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
+                  <motion.i 
+                    className="fas fa-plus text-2xl mb-2"
+                    whileHover={{ rotate: 90 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <p className="font-medium">Add New Team Member</p>
+                </div>
+              </EditableSection>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
 

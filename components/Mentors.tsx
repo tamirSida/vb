@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
 import { siteData, Mentor } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
@@ -15,6 +16,13 @@ const Mentors: React.FC = () => {
     mentors: siteData.mentors
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+  
+  // Animation refs
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
+  const isGridInView = useInView(gridRef, { once: true, margin: "-50px" });
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -139,75 +147,158 @@ const Mentors: React.FC = () => {
   return (
     <>
       <section className="section-padding bg-secondary">
+        
         <div className="container-max">
-          <EditableSection 
-            sectionName="Mentors Header"
-            onEdit={handleEditHeader}
+          <motion.div
+            ref={headerRef}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
-                {mentorsData.title}
-              </h2>
-              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
-                {mentorsData.description}
-              </p>
-            </div>
-          </EditableSection>
-
-        <div className="grid md:grid-cols-1 lg:grid-cols-4 gap-6">
-          {mentorsData.mentors.map((mentor, index) => (
-            <EditableSection
-              key={index}
-              sectionName={`${mentor.name}`}
-              onEdit={() => handleEditMentor(mentor)}
-              className="text-center p-6 bg-light rounded-lg hover:shadow-lg transition-shadow border border-secondary"
+            <EditableSection 
+              sectionName="Mentors Header"
+              onEdit={handleEditHeader}
             >
-              <div className="mb-4">
-                <Image 
-                  src={mentor.image} 
-                  alt={mentor.name}
-                  width={80}
-                  height={80}
-                  className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-vb-blue"
-                />
+              <div className="text-center mb-12">
+                <motion.h2 
+                  className="text-3xl md:text-4xl font-bold text-vb-navy mb-4"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  {mentorsData.title}
+                </motion.h2>
+                <motion.p 
+                  className="text-xl text-vb-medium max-w-3xl mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  {mentorsData.description}
+                </motion.p>
               </div>
-              <h3 className="font-bold text-vb-navy text-lg mb-2 flex items-center justify-center gap-2">
-                {mentor.name}
-                {mentor.flag && (
-                  <span className="text-lg">{mentor.flag}</span>
-                )}
-              </h3>
-              {mentor.company && (
-                <p className="text-vb-medium text-sm mb-3">{mentor.company}</p>
-              )}
-              {mentor.linkedinUrl && (
-                <div className="pt-3 border-t border-secondary">
-                  <a 
-                    href={mentor.linkedinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 transition-colors inline-block"
-                  >
-                    <i className="fab fa-linkedin text-xl"></i>
-                  </a>
-                </div>
-              )}
             </EditableSection>
+          </motion.div>
+
+        <motion.div 
+          ref={gridRef}
+          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isGridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          {mentorsData.mentors.map((mentor, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={isGridInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: 0.4 + (index * 0.1),
+                ease: "easeOut"
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                transition: { duration: 0.2 }
+              }}
+            >
+              <EditableSection
+                sectionName={`${mentor.name}`}
+                onEdit={() => handleEditMentor(mentor)}
+                className="text-center p-6 bg-light rounded-lg hover:shadow-xl transition-all duration-300 border border-secondary hover:border-vb-gold h-full relative overflow-hidden"
+              >
+                {/* Animated background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-vb-gold/5 to-vb-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <div className="relative z-10">
+                  <motion.div 
+                    className="mb-4"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Image 
+                      src={mentor.image} 
+                      alt={mentor.name}
+                      width={80}
+                      height={80}
+                      className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-vb-blue hover:border-vb-gold transition-colors duration-300"
+                    />
+                  </motion.div>
+                  <motion.h3 
+                    className="font-bold text-vb-navy text-lg mb-2 flex items-center justify-center gap-2 hover:text-vb-blue transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {mentor.name}
+                    {mentor.flag && (
+                      <motion.span 
+                        className="text-lg"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        {mentor.flag}
+                      </motion.span>
+                    )}
+                  </motion.h3>
+                  {mentor.company && (
+                    <motion.p 
+                      className="text-vb-medium text-sm mb-3"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 + (index * 0.1) + 0.2 }}
+                    >
+                      {mentor.company}
+                    </motion.p>
+                  )}
+                  {mentor.linkedinUrl && (
+                    <motion.div 
+                      className="pt-3 border-t border-secondary"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + (index * 0.1) + 0.3 }}
+                    >
+                      <motion.a 
+                        href={mentor.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 transition-colors inline-block"
+                        whileHover={{ scale: 1.3, rotate: 10 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <i className="fab fa-linkedin text-xl"></i>
+                      </motion.a>
+                    </motion.div>
+                  )}
+                </div>
+              </EditableSection>
+            </motion.div>
           ))}
           
           {/* Add Mentor Button */}
-          <EditableSection 
-            sectionName="Add New Mentor"
-            onEdit={handleAddMentor}
-            className="text-center p-6 bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center min-h-[200px]"
-            isAddButton={true}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isGridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.5, delay: 0.4 + (mentorsData.mentors.length * 0.1) }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <div className="text-vb-light hover:text-vb-blue transition-colors">
-              <i className="fas fa-plus text-2xl mb-2"></i>
-              <p className="font-medium">Add New Mentor</p>
-            </div>
-          </EditableSection>
-        </div>
+            <EditableSection 
+              sectionName="Add New Mentor"
+              onEdit={handleAddMentor}
+              className="text-center p-6 bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center min-h-[200px] hover:border-vb-blue transition-colors"
+              isAddButton={true}
+            >
+              <div className="text-vb-light hover:text-vb-blue transition-colors">
+                <motion.i 
+                  className="fas fa-plus text-2xl mb-2"
+                  whileHover={{ rotate: 90 }}
+                  transition={{ duration: 0.2 }}
+                />
+                <p className="font-medium">Add New Mentor</p>
+              </div>
+            </EditableSection>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
 

@@ -56,7 +56,7 @@ export default function Accelerator() {
       author: 'Andre Gomez',
       title: 'Former US Navy SEAL (BUD/s Class 229)',
       image: '/images/testimonials/andre-gomez.jpg',
-      position: 1
+      position: 1.5
     },
     {
       id: 2,
@@ -64,7 +64,7 @@ export default function Accelerator() {
       author: 'Or Yustman',
       title: 'Lieutenant-Commander (Res.) in Shayetet-13/Israel Navy SEALs',
       image: '/images/testimonials/or-yustman.jpg',
-      position: 2
+      position: 2.5
     },
     {
       id: 3,
@@ -418,96 +418,105 @@ export default function Accelerator() {
 
         {/* Page-Style Navigation Section */}
         <section className="relative">
-          {whyVBPages.map((page, index) => {
-            const pageNumber = index + 1;
-            const isFirstPage = pageNumber === 1;
+          {/* Create a combined array of pages and testimonials in order */}
+          {(() => {
+            const content = [];
             
-            return (
-              <div key={page.id} className="h-screen relative overflow-hidden" data-page={pageNumber}>
-                <img 
-                  src={page.backgroundImage} 
-                  alt={page.title} 
-                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${isFirstPage ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
-                />
-                <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
-                <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
-                <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-                  <div className={`max-w-lg ml-24 transition-all duration-700 ease-out ${isFirstPage ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform translate-x-12'}`}>
-                    <div className={`absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 transition-all duration-500 ease-out z-10 ${isFirstPage ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}>
-                      {whyVBPages.map((_, navIndex) => {
-                        const navPageNumber = navIndex + 1;
-                        const isActive = navPageNumber === pageNumber;
-                        return (
-                          <button 
-                            key={navPageNumber}
-                            onClick={() => scrollToPage(navPageNumber)} 
-                            className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer ${
-                              isActive 
-                                ? 'bg-white text-vb-navy' 
-                                : 'bg-white/20 backdrop-blur-sm text-white'
-                            }`}
-                          >
-                            <p className="text-sm font-bold">{navPageNumber}</p>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <EditableSection
-                      sectionName={`Why VB Page ${pageNumber}`}
-                      onEdit={() => {
-                        setEditingWhyVBPage(page.id);
-                        setIsWhyVBModalOpen(true);
-                      }}
-                    >
-                      <h2 className="text-3xl font-bold mb-6 text-white">{page.title}</h2>
-                      <p className="text-white/90 text-lg leading-relaxed">
-                        {page.description}
-                      </p>
-                    </EditableSection>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Render testimonials dynamically based on position */}
-          {testimonials
-            .sort((a, b) => a.position - b.position)
-            .map((testimonial, index) => {
-              // Calculate which page this testimonial should appear after
-              const afterPageIndex = Math.floor(testimonial.position);
-              const isLastTestimonial = index === testimonials.length - 1;
+            // Add each page and any testimonials that should follow it
+            whyVBPages.forEach((page, index) => {
+              const pageNumber = index + 1;
+              const isFirstPage = pageNumber === 1;
               
-              return (
-                <div key={testimonial.id} className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
-                  <div className="max-w-4xl mx-auto text-center">
-                    <EditableSection
-                      sectionName={`Testimonial - ${testimonial.author}`}
-                      onEdit={() => {
-                        setEditingTestimonial(testimonial.id);
-                        setIsTestimonialModalOpen(true);
-                      }}
-                    >
-                      <div className="mb-6">
-                        <img 
-                          src={testimonial.image} 
-                          alt={testimonial.author} 
-                          className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
-                        />
-                        <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
+              // Add the page
+              content.push(
+                <div key={`page-${page.id}`} className="h-screen relative overflow-hidden" data-page={pageNumber}>
+                  <img 
+                    src={page.backgroundImage} 
+                    alt={page.title} 
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${isFirstPage ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+                  />
+                  <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
+                  <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
+                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
+                    <div className={`max-w-lg ml-24 transition-all duration-700 ease-out ${isFirstPage ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform translate-x-12'}`}>
+                      <div className={`absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 transition-all duration-500 ease-out z-10 ${isFirstPage ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}>
+                        {whyVBPages.map((_, navIndex) => {
+                          const navPageNumber = navIndex + 1;
+                          const isActive = navPageNumber === pageNumber;
+                          return (
+                            <button 
+                              key={navPageNumber}
+                              onClick={() => scrollToPage(navPageNumber)} 
+                              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer ${
+                                isActive 
+                                  ? 'bg-white text-vb-navy' 
+                                  : 'bg-white/20 backdrop-blur-sm text-white'
+                              }`}
+                            >
+                              <p className="text-sm font-bold">{navPageNumber}</p>
+                            </button>
+                          );
+                        })}
                       </div>
-                      <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
-                        "{testimonial.quote}"
-                      </blockquote>
-                      <div className="text-white/90">
-                        <p className="font-semibold text-lg">{testimonial.author}</p>
-                        <p className="text-sm">{testimonial.title}</p>
-                      </div>
-                    </EditableSection>
+                      <EditableSection
+                        sectionName={`Why VB Page ${pageNumber}`}
+                        onEdit={() => {
+                          setEditingWhyVBPage(page.id);
+                          setIsWhyVBModalOpen(true);
+                        }}
+                      >
+                        <h2 className="text-3xl font-bold mb-6 text-white">{page.title}</h2>
+                        <p className="text-white/90 text-lg leading-relaxed">
+                          {page.description}
+                        </p>
+                      </EditableSection>
+                    </div>
                   </div>
                 </div>
               );
-            })}
+              
+              // Add any testimonials that should appear after this page
+              const testimonialsAfterThisPage = testimonials.filter(testimonial => {
+                const afterPageIndex = Math.floor(testimonial.position);
+                const isExactMatch = testimonial.position % 1 === 0.5; // e.g., 1.5, 2.5, 4.5
+                return afterPageIndex === pageNumber && isExactMatch;
+              });
+              
+              testimonialsAfterThisPage.forEach(testimonial => {
+                content.push(
+                  <div key={`testimonial-${testimonial.id}`} className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
+                    <div className="max-w-4xl mx-auto text-center">
+                      <EditableSection
+                        sectionName={`Testimonial - ${testimonial.author}`}
+                        onEdit={() => {
+                          setEditingTestimonial(testimonial.id);
+                          setIsTestimonialModalOpen(true);
+                        }}
+                      >
+                        <div className="mb-6">
+                          <img 
+                            src={testimonial.image} 
+                            alt={testimonial.author} 
+                            className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
+                          />
+                          <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
+                        </div>
+                        <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
+                          "{testimonial.quote}"
+                        </blockquote>
+                        <div className="text-white/90">
+                          <p className="font-semibold text-lg">{testimonial.author}</p>
+                          <p className="text-sm">{testimonial.title}</p>
+                        </div>
+                      </EditableSection>
+                    </div>
+                  </div>
+                );
+              });
+            });
+            
+            return content;
+          })()}
         </section>
 
 

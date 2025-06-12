@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
@@ -10,6 +11,15 @@ const ApplicationProcess: React.FC = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [applicationData, setApplicationData] = useState(siteData.applicationProcess);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+  
+  // Animation refs
+  const headerRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const commitmentsRef = useRef<HTMLDivElement>(null);
+  
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
+  const isTimelineInView = useInView(timelineRef, { once: true, margin: "-50px" });
+  const isCommitmentsInView = useInView(commitmentsRef, { once: true, margin: "-50px" });
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -103,91 +113,223 @@ const ApplicationProcess: React.FC = () => {
   return (
     <>
       <section id="applicationProcess" className="section-padding bg-secondary">
+        
         <div className="container-max">
-          <EditableSection 
-            sectionName="Application Process Header"
-            onEdit={handleEditHeader}
+          <motion.div
+            ref={headerRef}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
-                {applicationData.title}
-              </h2>
-              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
-                {applicationData.timeline} — transparent, veteran-to-veteran evaluation
-              </p>
-            </div>
-          </EditableSection>
+            <EditableSection 
+              sectionName="Application Process Header"
+              onEdit={handleEditHeader}
+            >
+              <div className="text-center mb-12">
+                <motion.h2 
+                  className="text-3xl md:text-4xl font-bold text-vb-navy mb-4"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  {applicationData.title}
+                </motion.h2>
+                <motion.p 
+                  className="text-xl text-vb-medium max-w-3xl mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                  {applicationData.timeline} — transparent, veteran-to-veteran evaluation
+                </motion.p>
+              </div>
+            </EditableSection>
+          </motion.div>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Timeline */}
-          <div>
-            <h3 className="text-2xl font-bold text-vb-navy mb-6">Application Timeline</h3>
+          <motion.div
+            ref={timelineRef}
+            initial={{ opacity: 0, x: -50 }}
+            animate={isTimelineInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <motion.h3 
+              className="text-2xl font-bold text-vb-navy mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Application Timeline
+            </motion.h3>
             <div className="space-y-6">
               {applicationData.steps.map((step, index) => (
-                <EditableSection
+                <motion.div
                   key={index}
-                  sectionName={`${step.week}`}
-                  onEdit={() => handleEditStep(index)}
-                  className="flex items-start"
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={isTimelineInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: 0.6 + (index * 0.1),
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    transition: { duration: 0.2 }
+                  }}
                 >
-                  <div className="bg-vb-navy text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-semibold">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-vb-navy text-lg">{step.week}</h4>
-                    <p className="text-vb-medium">{step.activity}</p>
-                    {step.details && (
-                      <p className="text-sm text-vb-light mt-1">{step.details}</p>
-                    )}
-                  </div>
-                </EditableSection>
+                  <EditableSection
+                    sectionName={`${step.week}`}
+                    onEdit={() => handleEditStep(index)}
+                    className="flex items-start group"
+                  >
+                    <motion.div 
+                      className="bg-vb-navy text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-semibold group-hover:bg-vb-blue transition-colors"
+                      whileHover={{ 
+                        scale: 1.1,
+                        rotate: 5,
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      {index + 1}
+                    </motion.div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-vb-navy text-lg group-hover:text-vb-blue transition-colors">{step.week}</h4>
+                      <p className="text-vb-medium">{step.activity}</p>
+                      {step.details && (
+                        <p className="text-sm text-vb-light mt-1">{step.details}</p>
+                      )}
+                    </div>
+                  </EditableSection>
+                </motion.div>
               ))}
               
               {/* Add Step Button */}
-              <EditableSection 
-                sectionName="Add New Step"
-                onEdit={handleAddStep}
-                className="flex items-center justify-center p-4 border-2 border-dashed border-vb-light rounded-lg"
-                isAddButton={true}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: 0.6 + (applicationData.steps.length * 0.1) }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
-                  <i className="fas fa-plus text-xl mb-1"></i>
-                  <p className="text-sm font-medium">Add New Step</p>
-                </div>
-              </EditableSection>
+                <EditableSection 
+                  sectionName="Add New Step"
+                  onEdit={handleAddStep}
+                  className="flex items-center justify-center p-4 border-2 border-dashed border-vb-light rounded-lg hover:border-vb-blue transition-colors"
+                  isAddButton={true}
+                >
+                  <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
+                    <motion.i 
+                      className="fas fa-plus text-xl mb-1"
+                      whileHover={{ rotate: 90 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    <p className="text-sm font-medium">Add New Step</p>
+                  </div>
+                </EditableSection>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Commitments */}
-          <div>
-            <h3 className="text-2xl font-bold text-vb-navy mb-6">Our Commitments to You</h3>
-            <EditableSection
-              sectionName="Commitments List"
-              onEdit={handleEditCommitments}
-              className="bg-light rounded-lg p-6 shadow-md border border-secondary"
+          <motion.div
+            ref={commitmentsRef}
+            initial={{ opacity: 0, x: 50 }}
+            animate={isCommitmentsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <motion.h3 
+              className="text-2xl font-bold text-vb-navy mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isCommitmentsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <ul className="space-y-4">
-                {applicationData.commitments.map((commitment, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="bg-vb-navy text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm font-bold">
-                      ✓
-                    </div>
-                    <span className="text-vb-navy">{commitment}</span>
-                  </li>
-                ))}
-              </ul>
-            </EditableSection>
+              Our Commitments to You
+            </motion.h3>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={isCommitmentsInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <EditableSection
+                sectionName="Commitments List"
+                onEdit={handleEditCommitments}
+                className="bg-light rounded-lg p-6 shadow-md border border-secondary hover:shadow-lg transition-shadow"
+              >
+                <ul className="space-y-4">
+                  {applicationData.commitments.map((commitment, index) => (
+                    <motion.li 
+                      key={index} 
+                      className="flex items-start"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={isCommitmentsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                      transition={{ 
+                        duration: 0.5, 
+                        delay: 0.8 + (index * 0.1),
+                        ease: "easeOut"
+                      }}
+                      whileHover={{ x: 5 }}
+                    >
+                      <motion.div 
+                        className="bg-vb-navy text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm font-bold"
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={isCommitmentsInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
+                        transition={{ 
+                          duration: 0.4, 
+                          delay: 0.8 + (index * 0.1) + 0.2,
+                          type: "spring",
+                          stiffness: 200
+                        }}
+                        whileHover={{ 
+                          scale: 1.2,
+                          backgroundColor: "#2563eb",
+                          transition: { duration: 0.2 }
+                        }}
+                      >
+                        ✓
+                      </motion.div>
+                      <span className="text-vb-navy">{commitment}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </EditableSection>
+            </motion.div>
 
-            <EditableSection
-              sectionName="Application CTA"
-              onEdit={() => setIsEditModalOpen(true)}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isCommitmentsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 1.0 + (applicationData.commitments.length * 0.1) }}
               className="mt-8"
             >
-              <button className="bg-vb-navy hover:bg-vb-blue text-white w-full text-lg py-4 rounded-lg font-semibold transition-colors">
-                Start Your Application
-              </button>
-            </EditableSection>
-          </div>
+              <EditableSection
+                sectionName="Application CTA"
+                onEdit={() => setIsEditModalOpen(true)}
+              >
+                <motion.button 
+                  className="bg-vb-navy hover:bg-vb-blue text-white w-full text-lg py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                  whileHover={{ 
+                    scale: 1.05,
+                    y: -2,
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.2)"
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isCommitmentsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  transition={{ duration: 0.6, delay: 1.2 + (applicationData.commitments.length * 0.1) }}
+                >
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={isCommitmentsInView ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ duration: 0.4, delay: 1.4 + (applicationData.commitments.length * 0.1) }}
+                  >
+                    Start Your Application
+                  </motion.span>
+                </motion.button>
+              </EditableSection>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

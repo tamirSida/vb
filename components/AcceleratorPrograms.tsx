@@ -1,18 +1,168 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
+// Timeline Phase Card component with connecting lines and icons
+const TimelinePhaseCard: React.FC<{ 
+  phase: any; 
+  index: number;
+  onClick: () => void;
+  isLast?: boolean;
+}> = ({ phase, index, onClick, isLast = false }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: false, margin: "-50px" });
+
+  // Get icon for each phase
+  const getPhaseIcon = (timeframe: string) => {
+    switch (timeframe) {
+      case 'JAN-MAR': return 'fas fa-clipboard-list';
+      case 'APRIL': return 'fas fa-graduation-cap';
+      case 'APRIL-MAY': return 'fas fa-handshake';
+      case 'JUNE': return 'fas fa-users';
+      case 'ONGOING': return 'fas fa-network-wired';
+      default: return 'fas fa-calendar';
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="relative flex flex-col items-center"
+    >
+      {/* Connecting Line with Arrow (before card) */}
+      {index > 0 && (
+        <div className="absolute top-6 -left-1/2 w-full z-0 flex items-center">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={isInView ? { width: 'calc(100% - 16px)' } : { width: 0 }}
+            transition={{ duration: 0.8, delay: index * 0.1 + 0.3 }}
+            className="h-0.5 bg-gradient-to-r from-vb-light to-vb-blue"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 + 0.6 }}
+            className="w-4 h-4 flex items-center justify-center"
+          >
+            <i className="fas fa-chevron-right text-vb-blue text-xs"></i>
+          </motion.div>
+        </div>
+      )}
+
+      <div 
+        className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden h-full group cursor-pointer w-full max-w-[280px]"
+        onClick={onClick}
+      >
+        <div className="p-6">
+          {/* Phase Icon */}
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-vb-blue text-white rounded-full flex items-center justify-center shadow-lg">
+              <i className={`${getPhaseIcon(phase.timeframe)} text-lg`}></i>
+            </div>
+          </div>
+
+          {/* Timeframe Badge */}
+          <div className="flex items-center justify-center mb-4">
+            <span className="inline-block bg-vb-navy text-white text-sm font-bold px-4 py-2 rounded-full">
+              {phase.timeframe === 'APRIL-MAY' ? 'APR-MAY' : 
+               phase.timeframe === 'ONGOING' ? '∞' : phase.timeframe}
+            </span>
+          </div>
+          
+          {/* Phase Title */}
+          <h3 className="text-lg font-bold text-vb-navy mb-3 text-center leading-tight">
+            {phase.title}
+          </h3>
+        </div>
+
+        {/* Click Indicator */}
+        <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="bg-vb-blue text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg">
+            <i className="fas fa-eye text-sm"></i>
+          </div>
+        </div>
+      </div>
+
+    </motion.div>
+  );
+};
+
 const AcceleratorPrograms: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
   const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about'>('header');
+  const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
+  const [selectedPhase, setSelectedPhase] = useState<any>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const isTimelineInView = useInView(timelineRef, { once: false, margin: "-100px" });
   const [acceleratorData, setAcceleratorData] = useState({
     title: 'Our Accelerator Program',
     description: 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
     about: 'adam fill here',
-    programs: siteData.programs.filter(program => program.name === 'VB Accelerator')
+    programs: siteData.programs.filter(program => program.name === 'VB Accelerator'),
+    timeline: [
+      {
+        timeframe: 'JAN-MAR',
+        title: 'Application and Selection Process',
+        description: 'Holistic assessment of founder-market fit, the uniqueness of their value proposition, and the overall market opportunity and business viability of their venture.',
+        highlights: [
+          'Comprehensive founder evaluation',
+          'Market opportunity analysis',
+          'Business viability assessment'
+        ]
+      },
+      {
+        timeframe: 'APRIL',
+        title: 'Israel Startup Bootcamp',
+        description: 'Operators experience Start-Up Nation through seasoned founders, industry experts & leading academics. They advance their early-stage ventures through a "battle-tested" dedicated curriculum and training program designed for Veterans/Reservists.',
+        highlights: [
+          '2 weeks intensive program',
+          'Access to seasoned founders',
+          'Industry expert mentorship',
+          'Battle-tested curriculum for veterans'
+        ]
+      },
+      {
+        timeframe: 'APRIL-MAY',
+        title: 'Online Acceleration Direct Mentorship',
+        description: 'Operators are paired with an experienced founder and continue to build and advance their venture during weekly check-ins and assignments.',
+        highlights: [
+          '6 weeks of direct mentorship',
+          'Paired with experienced founders',
+          'Weekly check-ins and assignments',
+          'Continuous venture advancement'
+        ]
+      },
+      {
+        timeframe: 'JUNE',
+        title: 'California Showcase',
+        description: 'Offers operators two intensive weeks in Los Angeles and the Bay Area for crucial meetings with industry experts, investors, and partners, culminating in a "pitch day" where they present their ventures to a select group of Silicon Valley investors.',
+        highlights: [
+          '2 weeks in LA and Bay Area',
+          'Meetings with industry experts',
+          'Investor networking',
+          'Final pitch day presentation'
+        ]
+      },
+      {
+        timeframe: 'ONGOING',
+        title: 'VB Portfolio Network',
+        description: 'Operators gain entry to a robust network, providing a continuous source of support and guidance as they navigate the complexities of building their startups. This enduring connection offers invaluable resources and ongoing mentorship, crucial for long-term success.',
+        isOngoing: true,
+        highlights: [
+          'Lifetime network access',
+          'Continuous support and guidance',
+          'Ongoing mentorship',
+          'Long-term success resources'
+        ]
+      }
+    ]
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
@@ -41,12 +191,18 @@ const AcceleratorPrograms: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleViewPhase = (phase: any) => {
+    setSelectedPhase(phase);
+    setIsPhaseModalOpen(true);
+  };
+
   const handleDeleteProgram = async () => {
     try {
       const updatedPrograms = acceleratorData.programs.filter(program => program.name !== editingProgram.name);
       const updatedData = {
         ...acceleratorData,
         programs: updatedPrograms,
+        timeline: acceleratorData.timeline,
         updatedAt: new Date().toISOString()
       };
       await updateDocument('acceleratorPrograms', updatedData);
@@ -68,6 +224,7 @@ const AcceleratorPrograms: React.FC = () => {
           description: data.description,
           about: acceleratorData.about,
           programs: acceleratorData.programs,
+          timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorPrograms', updatedData);
@@ -76,6 +233,7 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           ...acceleratorData,
           about: data.about,
+          timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorPrograms', updatedData);
@@ -96,6 +254,7 @@ const AcceleratorPrograms: React.FC = () => {
           const updatedData = {
             ...acceleratorData,
             programs: updatedPrograms,
+            timeline: acceleratorData.timeline,
             updatedAt: new Date().toISOString()
           };
           await updateDocument('acceleratorPrograms', updatedData);
@@ -114,6 +273,7 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           ...acceleratorData,
           programs: [...acceleratorData.programs, newProgram],
+          timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorPrograms', updatedData);
@@ -133,7 +293,13 @@ const AcceleratorPrograms: React.FC = () => {
       try {
         const data = await getDocument('acceleratorPrograms');
         if (data) {
-          setAcceleratorData(data as any);
+          // Merge with default timeline if not present in Firestore
+          const mergedData = {
+            ...acceleratorData,
+            ...data,
+            timeline: (data as any).timeline || acceleratorData.timeline
+          };
+          setAcceleratorData(mergedData as any);
         }
       } catch (error) {
         console.error('Error loading accelerator programs data:', error);
@@ -161,7 +327,7 @@ const AcceleratorPrograms: React.FC = () => {
             </div>
           </EditableSection>
 
-        <div className="grid md:grid-cols-1 gap-8 max-w-4xl mx-auto">
+        <div className="space-y-8">
           {acceleratorPrograms.map((program, index) => (
             <EditableSection
               key={index}
@@ -203,19 +369,41 @@ const AcceleratorPrograms: React.FC = () => {
             </EditableSection>
           ))}
 
-          {/* About the Program Section */}
-          <EditableSection 
-            sectionName="About the Program"
-            onEdit={handleEditAbout}
-            className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow"
-          >
-            <div className="mb-6">
-              <h3 className="text-2xl font-bold mb-4 text-vb-navy">About the Program</h3>
-              <p className="text-vb-medium">
-                {acceleratorData.about}
-              </p>
+          {/* Program Timeline Section */}
+          <div ref={timelineRef} className="bg-light text-dark rounded-xl shadow-lg border border-secondary overflow-hidden">
+            <div className="p-8">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6 }}
+                className="text-center mb-12"
+              >
+                <h3 className="text-3xl font-bold text-vb-navy mb-4">Program Timeline</h3>
+                <p className="text-xl text-vb-medium max-w-2xl mx-auto">
+                  Click on each phase to learn more about the process
+                </p>
+              </motion.div>
+              
+              {/* Timeline Cards Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 relative">
+                {acceleratorData.timeline && acceleratorData.timeline.length > 0 ? (
+                  acceleratorData.timeline.map((phase, index) => (
+                    <TimelinePhaseCard
+                      key={`${phase.timeframe}-${isTimelineInView ? 'visible' : 'hidden'}`}
+                      phase={phase}
+                      index={index}
+                      onClick={() => handleViewPhase(phase)}
+                      isLast={index === acceleratorData.timeline.length - 1}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-8 col-span-full">
+                    <p className="text-vb-medium">Loading timeline...</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </EditableSection>
+          </div>
           
           {/* Add Program Button */}
           <EditableSection 
@@ -355,6 +543,63 @@ const AcceleratorPrograms: React.FC = () => {
         </div>
       )}
     </EditModal>
+
+    {/* Phase Details Modal */}
+    {isPhaseModalOpen && selectedPhase && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            {/* Close Button */}
+            <button 
+              onClick={() => setIsPhaseModalOpen(false)}
+              className="float-right text-gray-400 hover:text-gray-600 text-2xl font-bold"
+            >
+              ×
+            </button>
+            
+            {/* Phase Header */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-vb-blue text-white rounded-full flex items-center justify-center shadow-lg">
+                  <i className={`${selectedPhase.timeframe === 'JAN-MAR' ? 'fas fa-clipboard-list' : 
+                    selectedPhase.timeframe === 'APRIL' ? 'fas fa-graduation-cap' :
+                    selectedPhase.timeframe === 'APRIL-MAY' ? 'fas fa-handshake' :
+                    selectedPhase.timeframe === 'JUNE' ? 'fas fa-users' :
+                    selectedPhase.timeframe === 'ONGOING' ? 'fas fa-network-wired' : 'fas fa-calendar'} text-lg`}></i>
+                </div>
+                <span className="inline-block bg-vb-navy text-white text-sm font-bold px-4 py-2 rounded-full">
+                  {selectedPhase.timeframe === 'APRIL-MAY' ? 'APR-MAY' : 
+                   selectedPhase.timeframe === 'ONGOING' ? '∞' : selectedPhase.timeframe}
+                </span>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-vb-navy mb-4">
+                {selectedPhase.title}
+              </h2>
+              
+              <p className="text-vb-medium text-base leading-relaxed mb-6">
+                {selectedPhase.description}
+              </p>
+            </div>
+            
+            {/* Phase Highlights */}
+            {selectedPhase.highlights && selectedPhase.highlights.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-vb-navy mb-4">Key Features:</h3>
+                <ul className="space-y-3">
+                  {selectedPhase.highlights.map((highlight: string, idx: number) => (
+                    <li key={idx} className="flex items-start">
+                      <span className="text-vb-blue mr-3 mt-1">•</span>
+                      <span className="text-vb-medium">{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
   </>
   );
 };

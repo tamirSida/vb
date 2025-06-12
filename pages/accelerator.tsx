@@ -234,17 +234,17 @@ export default function Accelerator() {
           </div>
 
           {/* Quote 1 - Andre Gomez */}
-          <div className="h-screen bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
+          <div className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
             <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-8">
+              <div className="mb-6">
                 <img 
                   src="/images/testimonials/andre-gomez.jpg" 
                   alt="Andre Gomez" 
-                  className="w-24 h-24 rounded-full mx-auto mb-6 object-cover border-4 border-vb-gold"
+                  className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
                 />
-                <i className="fas fa-quote-left text-4xl text-vb-gold mb-6 block"></i>
+                <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
               </div>
-              <blockquote className="text-xl md:text-2xl leading-relaxed mb-8 font-light italic">
+              <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
                 "Having spent my career perfecting the intelligence process and targeting of the enemy, I knew there was much to learn in the finance space. I applied to Version Bravo hoping to learn the language, process and the art of capital-raising and to understand the culture and what was required to grow a project from scratch. Thankfully, I received so much more. The program provided me the technical knowledge, language and tools to speak confidently and share my vision with investors. Today, I continue to run my government contract company, a small cleaning business and to pitch a Web3, digital sovereignty solution to give the internet back to the user."
               </blockquote>
               <div className="text-white/90">
@@ -291,17 +291,17 @@ export default function Accelerator() {
           </div>
 
           {/* Quote 2 - Or Yustman */}
-          <div className="h-screen bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
+          <div className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
             <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-8">
+              <div className="mb-6">
                 <img 
                   src="/images/testimonials/or-yustman.jpg" 
                   alt="Or Yustman" 
-                  className="w-24 h-24 rounded-full mx-auto mb-6 object-cover border-4 border-vb-gold"
+                  className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
                 />
-                <i className="fas fa-quote-left text-4xl text-vb-gold mb-6 block"></i>
+                <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
               </div>
-              <blockquote className="text-xl md:text-2xl leading-relaxed mb-8 font-light italic">
+              <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
                 "Version Bravo was an insightful experience for me, at the entrepreneurship level, but more importantly, at the emotional one. We can clearly see the growth in our ability to crystalize our business strategies and fine-tune the pitch to investors in the program's last session. But the feeling of 'safe harbor' to share your thoughts, ideas or events from the SEALs service with people that understand your point of view in the blink of an eye were beyond my expectations."
               </blockquote>
               <div className="text-white/90">
@@ -383,6 +383,27 @@ export default function Accelerator() {
             </div>
           </div>
 
+          {/* Quote 3 - Jonathan Cleck */}
+          <div className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="mb-6">
+                <img 
+                  src="/images/testimonials/jonathan-cleck.jpg" 
+                  alt="Jonathan Cleck" 
+                  className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
+                />
+                <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
+              </div>
+              <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
+                "I was fortunate to find Version Bravo at a time when my venture was ready for growth but I recognized that I had some gaps in my ability to lead the company to its next level. My experience in the SEAL teams had given me the confidence to take on the challenge, but to scale, I needed knowledge in specialized areas and a trusted support team to be my sounding board as we grew. That's exactly what I found with AFINS' Version Bravo program. Since starting the program, our venture has put numerous structures, people and processes in-place to help us prepare for and even get ahead of our future growth—all things directly attributable to what I learned and the group of mentors that I have come to rely on through Version Bravo. We are on track to create a lot of jobs, to disrupt our industry and to generate a lot of revenue."
+              </blockquote>
+              <div className="text-white/90">
+                <p className="font-semibold text-lg">Jonathan Cleck</p>
+                <p className="text-sm">Former US Navy SEAL (BUD/s Class 213), CXO of Concihairge</p>
+              </div>
+            </div>
+          </div>
+
           {/* Page 5 - Experienced Advisory Board */}
           <div className="h-screen relative overflow-hidden" data-page="5">
             <img 
@@ -420,26 +441,6 @@ export default function Accelerator() {
           </div>
         </section>
 
-        {/* Quote 3 - Jonathan Cleck */}
-        <div className="h-screen bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="mb-8">
-              <img 
-                src="/images/testimonials/jonathan-cleck.jpg" 
-                alt="Jonathan Cleck" 
-                className="w-24 h-24 rounded-full mx-auto mb-6 object-cover border-4 border-vb-gold"
-              />
-              <i className="fas fa-quote-left text-4xl text-vb-gold mb-6 block"></i>
-            </div>
-            <blockquote className="text-lg md:text-xl leading-relaxed mb-8 font-light italic">
-              "I was fortunate to find Version Bravo at a time when my venture was ready for growth but I recognized that I had some gaps in my ability to lead the company to its next level. My experience in the SEAL teams had given me the confidence to take on the challenge, but to scale, I needed knowledge in specialized areas and a trusted support team to be my sounding board as we grew. That's exactly what I found with AFINS' Version Bravo program. Since starting the program, our venture has put numerous structures, people and processes in-place to help us prepare for and even get ahead of our future growth—all things directly attributable to what I learned and the group of mentors that I have come to rely on through Version Bravo. We are on track to create a lot of jobs, to disrupt our industry and to generate a lot of revenue."
-            </blockquote>
-            <div className="text-white/90">
-              <p className="font-semibold text-lg">Jonathan Cleck</p>
-              <p className="text-sm">Former US Navy SEAL (BUD/s Class 213), CXO of Concihairge</p>
-            </div>
-          </div>
-        </div>
 
         {/* Navigation to Subpages */}
         <section className="section-padding bg-vb-light">

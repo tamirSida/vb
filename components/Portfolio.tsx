@@ -7,7 +7,9 @@ import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const Portfolio: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [editingType, setEditingType] = useState<'header' | 'company' | 'add'>('header');
   const [portfolioData, setPortfolioData] = useState({
     title: 'Portfolio Highlights',
@@ -25,6 +27,11 @@ const Portfolio: React.FC = () => {
     setEditingCompany(company);
     setEditingType('company');
     setIsEditModalOpen(true);
+  };
+
+  const handleViewCompany = (company: any) => {
+    setSelectedCompany(company);
+    setIsCompanyModalOpen(true);
   };
 
   const handleAddCompany = () => {
@@ -70,6 +77,9 @@ const Portfolio: React.FC = () => {
           name: data.name,
           description: data.description,
           logo: data.logo,
+          websiteUrl: data.websiteUrl,
+          blurb: data.blurb,
+          flag: data.flag || null,
           metrics: {
             investment: data.investment,
             valuation: data.valuation,
@@ -94,6 +104,9 @@ const Portfolio: React.FC = () => {
             name: data.name,
             description: data.description,
             logo: data.logo,
+            websiteUrl: data.websiteUrl,
+            blurb: data.blurb,
+            flag: data.flag || null,
             metrics: {
               investment: data.investment,
               valuation: data.valuation,
@@ -119,20 +132,19 @@ const Portfolio: React.FC = () => {
     }
   };
 
-  // Load Portfolio data from Firestore on component mount
+  // Force use static data to bypass Firestore sync issues
   useEffect(() => {
-    const loadPortfolioData = async () => {
-      try {
-        const data = await getDocument('portfolio');
-        if (data) {
-          setPortfolioData(data as any);
-        }
-      } catch (error) {
-        console.error('Error loading portfolio data:', error);
-      }
-    };
+    console.log('Loading static portfolio data with flags:', siteData.portfolio.map(c => ({ 
+      name: c.name, 
+      flag: c.flag,
+      hasFlag: !!c.flag 
+    })));
     
-    loadPortfolioData();
+    setPortfolioData({
+      title: 'Portfolio Highlights',
+      description: 'Proven track record of successful investments in veteran-led companies',
+      companies: siteData.portfolio
+    });
   }, []);
 
   return (
@@ -153,62 +165,70 @@ const Portfolio: React.FC = () => {
             </div>
           </EditableSection>
 
-        <div className="grid md:grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {portfolioData.companies.map((company, index) => (
-            <EditableSection
-              key={index}
-              sectionName={`${company.name}`}
-              onEdit={() => handleEditCompany(company)}
-              className="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-center justify-center h-16 mb-4">
-                <Image 
-                  src={company.logo} 
-                  alt={`${company.name} logo`}
-                  width={120}
-                  height={48}
-                  className="max-h-12 max-w-full object-contain"
-                />
-              </div>
-              
-              <h3 className="text-lg font-bold text-vb-navy mb-2 text-center">
-                {company.name}
-              </h3>
-              
-              <p className="text-vb-medium text-sm mb-4 text-center">
-                {company.description}
-              </p>
+            <div key={index} className="relative">
+              <EditableSection
+                sectionName={`${company.name}`}
+                onEdit={() => handleEditCompany(company)}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden h-full group"
+              >
+                <div 
+                  className="cursor-pointer h-full"
+                  onClick={() => handleViewCompany(company)}
+                >
+                  <div className="p-6">
+                    {/* Company Logo */}
+                    <div className="flex items-center justify-center h-16 mb-4">
+                      <Image 
+                        src={company.logo} 
+                        alt={`${company.name} logo`}
+                        width={120}
+                        height={48}
+                        className="max-h-12 max-w-full object-contain"
+                      />
+                    </div>
+                    
+                    {/* Company Name */}
+                    <h3 className="text-lg font-bold text-vb-navy mb-2 text-center">
+                      {company.name}
+                    </h3>
+                    
+                    {/* Company Description Line */}
+                    <p className="text-vb-medium text-sm text-center leading-relaxed">
+                      {company.description}
+                    </p>
+                  </div>
 
-              {company.metrics && (
-                <div className="border-t pt-4 space-y-2">
-                  {company.metrics.investment && (
-                    <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-vb-light">Investment:</span>
-                      <span className="text-sm text-vb-blue font-semibold">{company.metrics.investment}</span>
+                  {/* Click Indicator */}
+                  <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="bg-vb-blue text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg">
+                      <i className="fas fa-eye text-sm"></i>
                     </div>
-                  )}
-                  {company.metrics.tvpi && (
-                    <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-vb-light">TVPI:</span>
-                      <span className="text-sm text-vb-blue font-bold">{company.metrics.tvpi}</span>
-                    </div>
-                  )}
-                  {company.metrics.irr && (
-                    <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-vb-light">IRR:</span>
-                      <span className="text-sm text-vb-blue font-bold">{company.metrics.irr}</span>
-                    </div>
-                  )}
-                  {company.metrics.status && (
-                    <div className="mt-3">
-                      <span className="inline-block bg-vb-navy text-white text-xs px-2 py-1 rounded-full">
-                        {company.metrics.status}
-                      </span>
-                    </div>
-                  )}
+                  </div>
+
+                  {/* Status Flag Triangle */}
+                  {(() => {
+                    console.log(`Company ${company.name} flag:`, company.flag, typeof company.flag);
+                    return company.flag && (
+                      <div className="absolute bottom-0 right-0 z-10">
+                        <div className={`w-0 h-0 border-l-[80px] border-l-transparent border-b-[80px] ${
+                          company.flag === 'exited' 
+                            ? 'border-b-red-500' 
+                            : company.flag === 'fundraising'
+                            ? 'border-b-green-500'
+                            : 'border-b-gray-400'
+                        }`}></div>
+                        <div className="absolute bottom-2 right-2 text-white text-[10px] font-bold leading-tight text-center">
+                          <div>{company.flag === 'exited' ? 'EXITED' : 'FUND'}</div>
+                          {company.flag === 'fundraising' && <div>RAISING</div>}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
-              )}
-            </EditableSection>
+              </EditableSection>
+            </div>
           ))}
           
           {/* Add Company Button */}
@@ -291,6 +311,37 @@ const Portfolio: React.FC = () => {
               placeholder="/images/portfolio/company-logo.png"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Website URL</label>
+            <input
+              type="text"
+              name="websiteUrl"
+              defaultValue={editingCompany?.websiteUrl || ''}
+              className="admin-input w-full"
+              placeholder="https://www.company.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Company Blurb</label>
+            <textarea
+              name="blurb"
+              defaultValue={editingCompany?.blurb || ''}
+              className="admin-input w-full h-24 resize-none"
+              placeholder="Detailed description about the company for the modal"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Status Flag</label>
+            <select
+              name="flag"
+              defaultValue={editingCompany?.flag || ''}
+              className="admin-input w-full"
+            >
+              <option value="">No Flag</option>
+              <option value="exited">Exited</option>
+              <option value="fundraising">Fundraising</option>
+            </select>
+          </div>
           
           <div className="border-t border-gray-600 pt-4">
             <h4 className="text-gray-300 font-medium mb-3">Investment Metrics</h4>
@@ -361,6 +412,61 @@ const Portfolio: React.FC = () => {
         </div>
       )}
     </EditModal>
+
+    {/* Company Details Modal */}
+    {isCompanyModalOpen && selectedCompany && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            {/* Close Button */}
+            <button 
+              onClick={() => setIsCompanyModalOpen(false)}
+              className="float-right text-gray-400 hover:text-gray-600 text-2xl font-bold"
+            >
+              ×
+            </button>
+            
+            {/* Company Logo */}
+            <div className="flex items-center justify-center h-20 mb-6">
+              <Image 
+                src={selectedCompany.logo} 
+                alt={`${selectedCompany.name} logo`}
+                width={200}
+                height={80}
+                className="max-h-16 max-w-full object-contain"
+              />
+            </div>
+            
+            {/* Company Name */}
+            <h2 className="text-2xl font-bold text-vb-navy mb-4 text-center">
+              {selectedCompany.name}
+            </h2>
+            
+            {/* Company Blurb */}
+            {selectedCompany.blurb && (
+              <p className="text-vb-medium text-base leading-relaxed mb-6 text-center">
+                {selectedCompany.blurb}
+              </p>
+            )}
+            
+            {/* Website Link */}
+            {selectedCompany.websiteUrl && (
+              <div className="text-center">
+                <a 
+                  href={selectedCompany.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center bg-vb-blue hover:bg-vb-navy text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                >
+                  <i className="fas fa-external-link-alt mr-2"></i>
+                  Visit Website
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
   </>
   );
 };

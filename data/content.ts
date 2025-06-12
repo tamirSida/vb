@@ -15,6 +15,9 @@ export interface PortfolioCompany {
   name: string;
   description: string;
   logo: string;
+  flag?: 'exited' | 'fundraising' | null;
+  websiteUrl?: string;
+  blurb?: string;
   metrics?: {
     investment?: string;
     valuation?: string;
@@ -171,6 +174,8 @@ export const siteData = {
       name: "Defiance ETFs",
       description: "Defense and aerospace focused ETF",
       logo: "/images/portfolio/defiance.png",
+      websiteUrl: "https://www.defianceetfs.com",
+      blurb: "",
       metrics: {
         investment: "$260K pre-seed",
         valuation: "$200M",
@@ -180,8 +185,10 @@ export const siteData = {
     },
     {
       name: "TrialKit",
-      description: "Clinical trial management platform",
+      description: "Clinical trial management platform for TrialKit",
       logo: "/images/portfolio/trialkit.png",
+      websiteUrl: "https://www.trialkit.ai",
+      blurb: "",
       metrics: {
         investment: "$25K → $150K",
         irr: "1,726%",
@@ -192,6 +199,9 @@ export const siteData = {
       name: "Guild",
       description: "Security and defense solutions (Kaj Larsen)",
       logo: "/images/portfolio/guild.png",
+      flag: "exited",
+      websiteUrl: "https://www.guild.com",
+      blurb: "",
       metrics: {
         status: "Acquired by Siebert (SIEB)"
       }
@@ -200,6 +210,9 @@ export const siteData = {
       name: "Skana Robotics",
       description: "Expendable naval drones led by veteran fighters",
       logo: "/images/portfolio/skana.png",
+      flag: "exited",
+      websiteUrl: "https://www.skanarobotics.com",
+      blurb: "",
       metrics: {
         status: "Preparing seed round"
       }
@@ -208,6 +221,8 @@ export const siteData = {
       name: "Brecourt Solutions",
       description: "Non-violent tech for gun violence protection",
       logo: "/images/portfolio/brecourt.png",
+      websiteUrl: "https://www.brecourtsolutions.com",
+      blurb: "",
       metrics: {
         status: "Jeff Ross joined as Network Lead"
       }
@@ -216,6 +231,9 @@ export const siteData = {
       name: "Protego Health",
       description: "AI-powered appeals automation for denied medical claims",
       logo: "/images/portfolio/protego.png",
+      flag: "fundraising",
+      websiteUrl: "https://www.protegohealth.com",
+      blurb: "",
       metrics: {
         status: "Planning Seed Q2 2025"
       }

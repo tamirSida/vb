@@ -90,8 +90,11 @@ Press this sequence of keys in order:
 
 **Portfolio Section**
 - Add/edit/delete portfolio companies
-- Company details: name, description, logo
+- Company details: name, description, logo, website URL, company blurb
 - Investment metrics: investment amount, valuation, TVPI, IRR, status
+- **Status flags**: Triangular corner flags (red "EXITED" or green "FUND RAISING")
+- **Interactive cards**: Click to open company modal with logo, blurb, and website link
+- **Visual indicators**: Hover effects with eye icon showing cards are clickable
 
 ### Accelerator-Specific Sections
 **Our Accelerator Program**

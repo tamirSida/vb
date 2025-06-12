@@ -1,25 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { siteData, PortfolioCompany } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
+// Counting animation component
+const CountingNumber: React.FC<{ end: number; duration: number; label: string; isVisible: boolean }> = ({ end, duration, label, isVisible }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (isVisible) {
+      setCount(0); // Reset count when becoming visible
+      let startTime: number;
+      let animationFrame: number;
+
+      const animate = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        setCount(Math.floor(easeOutQuart * end));
+
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(animate);
+        }
+      };
+
+      animationFrame = requestAnimationFrame(animate);
+      return () => cancelAnimationFrame(animationFrame);
+    } else {
+      setCount(0); // Reset to 0 when not visible
+    }
+  }, [isVisible, end, duration]);
+
+  return (
+    <div className="text-center">
+      <div className="text-4xl md:text-5xl font-bold text-vb-navy mb-2">
+        {count}
+      </div>
+      <div className="text-sm md:text-base text-vb-medium font-medium uppercase tracking-wide">
+        {label}
+      </div>
+    </div>
+  );
+};
+
 const Portfolio: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<any>(null);
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
-  const [editingType, setEditingType] = useState<'header' | 'company' | 'add'>('header');
+  const [editingType, setEditingType] = useState<'header' | 'company' | 'add' | 'stats'>('header');
   const [portfolioData, setPortfolioData] = useState({
     title: 'Portfolio Highlights',
     description: 'Proven track record of successful investments in veteran-led companies',
-    companies: siteData.portfolio
+    companies: siteData.portfolio,
+    stats: {
+      title: 'Companies Accelerated',
+      israeliCompanies: 40,
+      totalCompanies: 77,
+      americanCompanies: 37
+    }
   });
+  const [isStatsVisible, setIsStatsVisible] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHeader = () => {
     setEditingType('header');
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditStats = () => {
+    setEditingType('stats');
     setIsEditModalOpen(true);
   };
 
@@ -61,12 +116,26 @@ const Portfolio: React.FC = () => {
 
   const handleSave = async (data: any) => {
     try {
-      if (editingType === 'header') {
+      if (editingType === 'stats') {
+        // Update stats section
+        const updatedData = {
+          ...portfolioData,
+          stats: {
+            title: data.statsTitle,
+            israeliCompanies: parseInt(data.israeliCompanies) || 0,
+            totalCompanies: parseInt(data.totalCompanies) || 0,
+            americanCompanies: parseInt(data.americanCompanies) || 0
+          },
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('portfolio', updatedData);
+        setPortfolioData(updatedData);
+      } else if (editingType === 'header') {
         // Update section header
         const updatedData = {
+          ...portfolioData,
           title: data.title,
           description: data.description,
-          companies: portfolioData.companies,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('portfolio', updatedData);
@@ -79,14 +148,7 @@ const Portfolio: React.FC = () => {
           logo: data.logo,
           websiteUrl: data.websiteUrl,
           blurb: data.blurb,
-          flag: data.flag || null,
-          metrics: {
-            investment: data.investment,
-            valuation: data.valuation,
-            tvpi: data.tvpi,
-            irr: data.irr,
-            status: data.status
-          }
+          flag: data.flag || null
         };
         const updatedData = {
           ...portfolioData,
@@ -106,14 +168,7 @@ const Portfolio: React.FC = () => {
             logo: data.logo,
             websiteUrl: data.websiteUrl,
             blurb: data.blurb,
-            flag: data.flag || null,
-            metrics: {
-              investment: data.investment,
-              valuation: data.valuation,
-              tvpi: data.tvpi,
-              irr: data.irr,
-              status: data.status
-            }
+            flag: data.flag || null
           };
           const updatedData = {
             ...portfolioData,
@@ -132,6 +187,26 @@ const Portfolio: React.FC = () => {
     }
   };
 
+  // Intersection observer for stats animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsStatsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.3 }
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => {
+      if (statsRef.current) {
+        observer.unobserve(statsRef.current);
+      }
+    };
+  }, []);
+
   // Force use static data to bypass Firestore sync issues
   useEffect(() => {
     console.log('Loading static portfolio data with flags:', siteData.portfolio.map(c => ({ 
@@ -143,7 +218,13 @@ const Portfolio: React.FC = () => {
     setPortfolioData({
       title: 'Portfolio Highlights',
       description: 'Proven track record of successful investments in veteran-led companies',
-      companies: siteData.portfolio
+      companies: siteData.portfolio,
+      stats: {
+        title: 'Companies Accelerated',
+        israeliCompanies: 40,
+        totalCompanies: 77,
+        americanCompanies: 37
+      }
     });
   }, []);
 
@@ -151,6 +232,38 @@ const Portfolio: React.FC = () => {
     <>
       <section id="portfolio" className="section-padding bg-white">
         <div className="container-max">
+          {/* Companies Accelerated Hero Stats */}
+          <EditableSection 
+            sectionName="Portfolio Stats"
+            onEdit={handleEditStats}
+          >
+            <div ref={statsRef} className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-12">
+                {portfolioData.stats.title}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <CountingNumber 
+                  end={portfolioData.stats.israeliCompanies} 
+                  duration={2000} 
+                  label="Israeli Companies" 
+                  isVisible={isStatsVisible}
+                />
+                <CountingNumber 
+                  end={portfolioData.stats.totalCompanies} 
+                  duration={2500} 
+                  label="Total Companies" 
+                  isVisible={isStatsVisible}
+                />
+                <CountingNumber 
+                  end={portfolioData.stats.americanCompanies} 
+                  duration={2000} 
+                  label="American Companies" 
+                  isVisible={isStatsVisible}
+                />
+              </div>
+            </div>
+          </EditableSection>
+
           <EditableSection 
             sectionName="Portfolio Header"
             onEdit={handleEditHeader}
@@ -253,14 +366,60 @@ const Portfolio: React.FC = () => {
       onClose={() => setIsEditModalOpen(false)}
       onSave={handleSave}
       title={
-        editingType === 'header' 
-          ? "Edit Portfolio Section" 
-          : editingType === 'add'
-            ? "Add New Portfolio Company"
-            : `Edit ${editingCompany?.name || 'Company'}`
+        editingType === 'stats'
+          ? "Edit Portfolio Statistics"
+          : editingType === 'header' 
+            ? "Edit Portfolio Section" 
+            : editingType === 'add'
+              ? "Add New Portfolio Company"
+              : `Edit ${editingCompany?.name || 'Company'}`
       }
     >
-      {editingType === 'header' ? (
+      {editingType === 'stats' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
+            <input
+              type="text"
+              name="statsTitle"
+              defaultValue={portfolioData.stats.title}
+              className="admin-input w-full"
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Israeli Companies</label>
+              <input
+                type="number"
+                name="israeliCompanies"
+                defaultValue={portfolioData.stats.israeliCompanies}
+                className="admin-input w-full"
+                placeholder="40"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Total Companies</label>
+              <input
+                type="number"
+                name="totalCompanies"
+                defaultValue={portfolioData.stats.totalCompanies}
+                className="admin-input w-full"
+                placeholder="77"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">American Companies</label>
+              <input
+                type="number"
+                name="americanCompanies"
+                defaultValue={portfolioData.stats.americanCompanies}
+                className="admin-input w-full"
+                placeholder="37"
+              />
+            </div>
+          </div>
+        </div>
+      ) : editingType === 'header' ? (
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
@@ -341,62 +500,6 @@ const Portfolio: React.FC = () => {
               <option value="exited">Exited</option>
               <option value="fundraising">Fundraising</option>
             </select>
-          </div>
-          
-          <div className="border-t border-gray-600 pt-4">
-            <h4 className="text-gray-300 font-medium mb-3">Investment Metrics</h4>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Investment</label>
-                <input
-                  type="text"
-                  name="investment"
-                  defaultValue={editingCompany?.metrics?.investment || ''}
-                  className="admin-input w-full"
-                  placeholder="e.g., $260K pre-seed"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Valuation</label>
-                <input
-                  type="text"
-                  name="valuation"
-                  defaultValue={editingCompany?.metrics?.valuation || ''}
-                  className="admin-input w-full"
-                  placeholder="e.g., $200M"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">TVPI</label>
-                <input
-                  type="text"
-                  name="tvpi"
-                  defaultValue={editingCompany?.metrics?.tvpi || ''}
-                  className="admin-input w-full"
-                  placeholder="e.g., 14.61"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">IRR</label>
-                <input
-                  type="text"
-                  name="irr"
-                  defaultValue={editingCompany?.metrics?.irr || ''}
-                  className="admin-input w-full"
-                  placeholder="e.g., 1,726%"
-                />
-              </div>
-            </div>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-300 mb-1">Status</label>
-              <input
-                type="text"
-                name="status"
-                defaultValue={editingCompany?.metrics?.status || ''}
-                className="admin-input w-full"
-                placeholder="e.g., Active, Acquired, etc."
-              />
-            </div>
           </div>
           
           {editingType === 'company' && (

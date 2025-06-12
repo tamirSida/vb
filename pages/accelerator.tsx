@@ -13,7 +13,7 @@ import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/Disc
 
 export default function Accelerator() {
   const [sections, setSections] = useState([
-    'whyVB', 'programs', 'team', 'mentors', 'portfolio', 'applicationProcess', 'cta'
+    'whyVB', 'programs', 'team', 'portfolio', 'mentors', 'applicationProcess', 'cta'
   ]);
 
   // Enable discrete admin access methods

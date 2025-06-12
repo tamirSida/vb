@@ -16,6 +16,115 @@ export default function Accelerator() {
     }
   };
 
+  useEffect(() => {
+    // Intersection Observer for page transitions and navigation updates
+    const observerOptions = {
+      threshold: 0.5, // Trigger when 50% of the page is visible
+      rootMargin: '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const pageElement = entry.target as HTMLElement;
+        const pageNumber = pageElement.getAttribute('data-page');
+        
+        if (entry.isIntersecting && pageNumber) {
+          // Update active navigation state
+          updateActiveNavigation(parseInt(pageNumber));
+          
+          // Trigger page appearance animation
+          animatePageAppearance(pageElement);
+        } else if (!entry.isIntersecting && pageNumber) {
+          // Reset page when it leaves viewport
+          resetPageAppearance(pageElement);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all page elements
+    const pages = document.querySelectorAll('[data-page]');
+    pages.forEach(page => observer.observe(page));
+
+    // Initial animation for the first page
+    setTimeout(() => {
+      const firstPage = document.querySelector('[data-page="1"]');
+      if (firstPage) {
+        animatePageAppearance(firstPage as HTMLElement);
+        updateActiveNavigation(1);
+      }
+    }, 500);
+
+    // Cleanup
+    return () => {
+      pages.forEach(page => observer.unobserve(page));
+    };
+  }, []);
+
+  // Function to update active navigation state
+  const updateActiveNavigation = (activePageNumber: number) => {
+    // Update navigation buttons across all pages
+    document.querySelectorAll('[data-page]').forEach(page => {
+      const navButtons = page.querySelectorAll('button');
+      navButtons.forEach((button, index) => {
+        const buttonPageNumber = index + 1;
+        
+        if (buttonPageNumber === activePageNumber) {
+          // Active state
+          button.className = "w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
+        } else {
+          // Inactive state
+          button.className = "w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
+        }
+      });
+    });
+  };
+
+  // Function to animate page appearance
+  const animatePageAppearance = (pageElement: HTMLElement) => {
+    const content = pageElement.querySelector('.max-w-lg');
+    const navContainer = pageElement.querySelector('.absolute.left-2');
+    const backgroundImage = pageElement.querySelector('img');
+    
+    if (content && navContainer && backgroundImage) {
+      // Animate background image first
+      setTimeout(() => {
+        backgroundImage.classList.remove('opacity-0', 'scale-105');
+        backgroundImage.classList.add('opacity-100', 'scale-100');
+      }, 0);
+      
+      // Trigger content animations with slight delay
+      setTimeout(() => {
+        content.classList.remove('opacity-0', 'translate-x-12');
+        content.classList.add('opacity-100', 'translate-x-0');
+      }, 200);
+      
+      setTimeout(() => {
+        navContainer.classList.remove('opacity-0', '-translate-x-5');
+        navContainer.classList.add('opacity-100', 'translate-x-0');
+      }, 400);
+    }
+  };
+
+  // Function to reset page appearance when leaving viewport
+  const resetPageAppearance = (pageElement: HTMLElement) => {
+    const content = pageElement.querySelector('.max-w-lg');
+    const navContainer = pageElement.querySelector('.absolute.left-2');
+    const backgroundImage = pageElement.querySelector('img');
+    
+    if (content && navContainer && backgroundImage) {
+      // Reset background image
+      backgroundImage.classList.remove('opacity-100', 'scale-100');
+      backgroundImage.classList.add('opacity-0', 'scale-105');
+      
+      // Reset to initial hidden state
+      content.classList.remove('opacity-100', 'translate-x-0');
+      content.classList.add('opacity-0', 'translate-x-12');
+      
+      navContainer.classList.remove('opacity-100', 'translate-x-0');
+      navContainer.classList.add('opacity-0', '-translate-x-5');
+    }
+  };
+
   return (
     <>
       <Head>
@@ -84,12 +193,12 @@ export default function Accelerator() {
             <img 
               src="/images/accelerator/whyvb1.jpg" 
               alt="Team of successful operators" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
             />
             <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-16">
-                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3">
+              <div className="max-w-lg ml-16 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
+                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out">
                   <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
                     <p className="text-sm font-bold">1</p>
                   </button>
@@ -119,12 +228,12 @@ export default function Accelerator() {
             <img 
               src="/images/accelerator/whyvb2.jpg" 
               alt="Veteran entrepreneur network" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
             />
             <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-16">
-                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3">
+              <div className="max-w-lg ml-16 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
+                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out">
                   <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
                     <p className="text-sm font-bold">1</p>
                   </button>
@@ -154,12 +263,12 @@ export default function Accelerator() {
             <img 
               src="/images/accelerator/whyvb3.jpg" 
               alt="Veteran entrepreneurs" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
             />
             <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-16">
-                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3">
+              <div className="max-w-lg ml-16 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
+                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out">
                   <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
                     <p className="text-sm font-bold">1</p>
                   </button>
@@ -189,12 +298,12 @@ export default function Accelerator() {
             <img 
               src="/images/accelerator/whyvb4.jpg" 
               alt="Accelerator program" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
             />
             <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-16">
-                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3">
+              <div className="max-w-lg ml-16 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
+                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out">
                   <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
                     <p className="text-sm font-bold">1</p>
                   </button>
@@ -224,12 +333,12 @@ export default function Accelerator() {
             <img 
               src="/images/accelerator/whyvb5.jpg" 
               alt="Experienced advisory board" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
             />
             <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-16">
-                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3">
+              <div className="max-w-lg ml-16 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
+                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out">
                   <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
                     <p className="text-sm font-bold">1</p>
                   </button>

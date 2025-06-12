@@ -95,7 +95,7 @@ export default function Accelerator() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await getDocument('acceleratorContent');
+        const data = await getDocument('acceleratorContent') as any;
         if (data) {
           if (data.hero) setHeroData(data.hero);
           if (data.whyVBPages) setWhyVBPages(data.whyVBPages);
@@ -112,7 +112,7 @@ export default function Accelerator() {
   // Save functions
   const saveHeroData = async (data: any) => {
     try {
-      const currentData = await getDocument('acceleratorContent') || {};
+      const currentData = (await getDocument('acceleratorContent') as any) || {};
       await updateDocument('acceleratorContent', {
         ...currentData,
         hero: data,
@@ -130,7 +130,7 @@ export default function Accelerator() {
       const updatedPages = whyVBPages.map(page => 
         page.id === editingWhyVBPage ? { ...page, ...data } : page
       );
-      const currentData = await getDocument('acceleratorContent') || {};
+      const currentData = (await getDocument('acceleratorContent') as any) || {};
       await updateDocument('acceleratorContent', {
         ...currentData,
         whyVBPages: updatedPages,
@@ -149,7 +149,7 @@ export default function Accelerator() {
       const updatedTestimonials = testimonials.map(testimonial => 
         testimonial.id === editingTestimonial ? { ...testimonial, ...data } : testimonial
       );
-      const currentData = await getDocument('acceleratorContent') || {};
+      const currentData = (await getDocument('acceleratorContent') as any) || {};
       await updateDocument('acceleratorContent', {
         ...currentData,
         testimonials: updatedTestimonials,
@@ -165,7 +165,7 @@ export default function Accelerator() {
 
   const saveExploreData = async (data: any) => {
     try {
-      const currentData = await getDocument('acceleratorContent') || {};
+      const currentData = (await getDocument('acceleratorContent') as any) || {};
       await updateDocument('acceleratorContent', {
         ...currentData,
         explore: data,

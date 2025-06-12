@@ -327,9 +327,9 @@ const Portfolio: React.FC = () => {
                       <div className="absolute bottom-0 right-0 z-10">
                         <div className={`w-0 h-0 border-l-[80px] border-l-transparent border-b-[80px] ${
                           company.flag === 'exited' 
-                            ? 'border-b-red-500' 
+                            ? 'border-b-blue-600' 
                             : company.flag === 'fundraising'
-                            ? 'border-b-green-500'
+                            ? 'border-b-blue-300'
                             : 'border-b-gray-400'
                         }`}></div>
                         <div className="absolute bottom-2 right-2 text-white text-[10px] font-bold leading-tight text-center">

@@ -43,9 +43,29 @@ export default function Accelerator() {
       });
     }, observerOptions);
 
+    // Intersection Observer for Explore Accelerator section
+    const exploreObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cards = entry.target.querySelectorAll('.accelerator-card');
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.add('animate-in');
+            }, index * 100);
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+
     // Observe all page elements
     const pages = document.querySelectorAll('[data-page]');
     pages.forEach(page => observer.observe(page));
+
+    // Observe the explore accelerator section
+    const exploreSection = document.querySelector('.explore-accelerator-section');
+    if (exploreSection) {
+      exploreObserver.observe(exploreSection);
+    }
 
     // Initial setup for the first page
     setTimeout(() => {
@@ -55,6 +75,9 @@ export default function Accelerator() {
     // Cleanup
     return () => {
       pages.forEach(page => observer.unobserve(page));
+      if (exploreSection) {
+        exploreObserver.unobserve(exploreSection);
+      }
     };
   }, []);
 
@@ -159,6 +182,29 @@ export default function Accelerator() {
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Version Bravo Ventures" />
         <link rel="canonical" href="https://versionbravo.ventures/accelerator" />
+        
+        {/* Custom CSS for animations */}
+        <style jsx>{`
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .accelerator-card {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
+          }
+          .accelerator-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        `}</style>
         
         {/* Schema.org structured data */}
         <script
@@ -443,101 +489,82 @@ export default function Accelerator() {
 
 
         {/* Navigation to Subpages */}
-        <section className="section-padding bg-vb-light">
+        <section className="section-padding bg-white explore-accelerator-section">
           <div className="container-max">
-            <h2 className="text-3xl font-bold text-vb-navy mb-12 text-center">
+            <h2 className="text-4xl font-bold text-vb-navy mb-16 text-center">
               Explore Our Accelerator
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              <Link href="/accelerator/program" className="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2">
-                <div className="w-16 h-16 mx-auto mb-6 bg-vb-gold rounded-full flex items-center justify-center group-hover:bg-vb-navy transition-colors duration-300">
-                  <i className="fas fa-graduation-cap text-2xl text-vb-navy group-hover:text-vb-gold transition-colors duration-300"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-vb-navy group-hover:text-vb-gold transition-colors">
-                  Our Program
-                </h3>
-                <p className="text-vb-medium mb-6 leading-relaxed">
-                  Intensive 10-week program designed for veteran entrepreneurs ready to scale
-                </p>
-                <div className="text-vb-gold font-medium group-hover:text-vb-navy transition-colors">
-                  View Program →
-                </div>
-              </Link>
+            <div className="max-w-6xl mx-auto">
+              {/* First row - 3 cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <Link href="/accelerator/program" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                    <i className="fas fa-graduation-cap text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
+                  </div>
+                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                    Our Program
+                  </h3>
+                  <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
+                    <span>View Program</span>
+                    <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
+                  </div>
+                </Link>
+                
+                <Link href="/accelerator/application" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                    <i className="fas fa-file-alt text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
+                  </div>
+                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                    Application Process
+                  </h3>
+                  <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
+                    <span>Apply Now</span>
+                    <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
+                  </div>
+                </Link>
+                
+                <Link href="/accelerator/team" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                    <i className="fas fa-users text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
+                  </div>
+                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                    Our Team
+                  </h3>
+                  <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
+                    <span>Meet the Team</span>
+                    <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
+                  </div>
+                </Link>
+              </div>
               
-              <Link href="/accelerator/application" className="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2">
-                <div className="w-16 h-16 mx-auto mb-6 bg-vb-gold rounded-full flex items-center justify-center group-hover:bg-vb-navy transition-colors duration-300">
-                  <i className="fas fa-file-alt text-2xl text-vb-navy group-hover:text-vb-gold transition-colors duration-300"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-vb-navy group-hover:text-vb-gold transition-colors">
-                  Application Process
-                </h3>
-                <p className="text-vb-medium mb-6 leading-relaxed">
-                  3-week streamlined process with transparent, veteran-to-veteran evaluation
-                </p>
-                <div className="text-vb-gold font-medium group-hover:text-vb-navy transition-colors">
-                  Apply Now →
-                </div>
-              </Link>
-              
-              <Link href="/accelerator/team" className="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2">
-                <div className="w-16 h-16 mx-auto mb-6 bg-vb-gold rounded-full flex items-center justify-center group-hover:bg-vb-navy transition-colors duration-300">
-                  <i className="fas fa-users text-2xl text-vb-navy group-hover:text-vb-gold transition-colors duration-300"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-vb-navy group-hover:text-vb-gold transition-colors">
-                  Our Team
-                </h3>
-                <p className="text-vb-medium mb-6 leading-relaxed">
-                  Meet our leadership team of combat veterans, entrepreneurs, and investors
-                </p>
-                <div className="text-vb-gold font-medium group-hover:text-vb-navy transition-colors">
-                  Meet the Team →
-                </div>
-              </Link>
-              
-              <Link href="/accelerator/portfolio" className="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2">
-                <div className="w-16 h-16 mx-auto mb-6 bg-vb-gold rounded-full flex items-center justify-center group-hover:bg-vb-navy transition-colors duration-300">
-                  <i className="fas fa-briefcase text-2xl text-vb-navy group-hover:text-vb-gold transition-colors duration-300"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-vb-navy group-hover:text-vb-gold transition-colors">
-                  Portfolio
-                </h3>
-                <p className="text-vb-medium mb-6 leading-relaxed">
-                  63 companies accelerated with proven track record of successful investments
-                </p>
-                <div className="text-vb-gold font-medium group-hover:text-vb-navy transition-colors">
-                  View Portfolio →
-                </div>
-              </Link>
-              
-              <Link href="/accelerator/mentors" className="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2">
-                <div className="w-16 h-16 mx-auto mb-6 bg-vb-gold rounded-full flex items-center justify-center group-hover:bg-vb-navy transition-colors duration-300">
-                  <i className="fas fa-handshake text-2xl text-vb-navy group-hover:text-vb-gold transition-colors duration-300"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-vb-navy group-hover:text-vb-gold transition-colors">
-                  Mentors
-                </h3>
-                <p className="text-vb-medium mb-6 leading-relaxed">
-                  Industry experts and successful entrepreneurs providing guidance
-                </p>
-                <div className="text-vb-gold font-medium group-hover:text-vb-navy transition-colors">
-                  Meet Our Mentors →
-                </div>
-              </Link>
-              
-              <Link href="/accelerator/why-vb" className="group bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2">
-                <div className="w-16 h-16 mx-auto mb-6 bg-vb-gold rounded-full flex items-center justify-center group-hover:bg-vb-navy transition-colors duration-300">
-                  <i className="fas fa-star text-2xl text-vb-navy group-hover:text-vb-gold transition-colors duration-300"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 text-vb-navy group-hover:text-vb-gold transition-colors">
-                  Why Choose VB
-                </h3>
-                <p className="text-vb-medium mb-6 leading-relaxed">
-                  Detailed breakdown of what makes Version Bravo different
-                </p>
-                <div className="text-vb-gold font-medium group-hover:text-vb-navy transition-colors">
-                  Learn More →
-                </div>
-              </Link>
+              {/* Second row - 2 cards centered */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <Link href="/accelerator/portfolio" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                    <i className="fas fa-briefcase text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
+                  </div>
+                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                    Portfolio
+                  </h3>
+                  <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
+                    <span>View Portfolio</span>
+                    <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
+                  </div>
+                </Link>
+                
+                <Link href="/accelerator/mentors" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                    <i className="fas fa-handshake text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
+                  </div>
+                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                    Mentors
+                  </h3>
+                  <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
+                    <span>Meet Our Mentors</span>
+                    <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </section>

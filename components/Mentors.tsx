@@ -33,6 +33,25 @@ const Mentors: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleDeleteMentor = async () => {
+    try {
+      const updatedMentors = mentorsData.mentors.filter(mentor => mentor.name !== editingMentor.name);
+      const updatedData = {
+        ...mentorsData,
+        mentors: updatedMentors,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('mentors', updatedData);
+      setMentorsData(updatedData);
+      
+      console.log('Mentor deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingMentor(null);
+    } catch (error) {
+      console.error('Error deleting mentor:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingType === 'header') {
@@ -250,7 +269,7 @@ const Mentors: React.FC = () => {
           {editingType === 'mentor' && (
             <div className="pt-4 border-t border-gray-600">
               <button 
-                onClick={() => console.log('Delete mentor', editingMentor?.name)}
+                onClick={handleDeleteMentor}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
 <i className="fas fa-trash mr-2"></i>Delete Mentor

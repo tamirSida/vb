@@ -29,6 +29,25 @@ const WhyVB: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleDeletePoint = async () => {
+    try {
+      const updatedPoints = whyVBData.points.filter((_, index) => index !== editingPointIndex);
+      const updatedData = {
+        ...whyVBData,
+        points: updatedPoints,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('whyVB', updatedData);
+      setWhyVBData(updatedData);
+      
+      console.log('WhyVB point deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingPointIndex(-1);
+    } catch (error) {
+      console.error('Error deleting WhyVB point:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingPointIndex === null) {
@@ -192,7 +211,7 @@ const WhyVB: React.FC = () => {
           {editingPointIndex >= 0 && (
             <div className="pt-4 border-t border-gray-600">
               <button 
-                onClick={() => console.log('Delete point', editingPointIndex)}
+                onClick={handleDeletePoint}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
 <i className="fas fa-trash mr-2"></i>Delete This Point

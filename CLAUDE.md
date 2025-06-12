@@ -1,4 +1,4 @@
-# VBV Website - CMS Admin Access
+# VBV Website - Full CMS Documentation
 
 ## Website Structure
 
@@ -7,6 +7,13 @@
 - Three main paths: Non-Profit, Accelerator, Investment Fund
 - Uses VB logo without text for clean design
 - No navigation menu for focused user experience
+- **Full CMS Integration**: Hero section, WhyVB, Programs, Team, Portfolio
+
+### Accelerator Page (/accelerator)
+- Dedicated accelerator program showcase
+- **Full CMS Integration**: All sections editable
+- Comprehensive program information and application process
+- Mentor network display with LinkedIn integration
 
 ### Fund Page (/fund)
 - Complete VBV investment fund website
@@ -57,48 +64,112 @@ Press this sequence of keys in order:
 - Press the letter **I**
 - Press the letter **N**
 
-## CMS Features
+## Complete CMS Features
 
-### Editable Sections
-All website sections are fully editable:
-- Hero Section (headlines, subheadline, all 3 buttons & URLs)
-- Why Choose VB section
-- Our Programs section
-- Team section (name, title, military background, LinkedIn) 
-- Mentor Network section (with LinkedIn links)
-- Portfolio Highlights section
-- Fund Structure section
-- Application & Diligence Process section
-- Ready to Join the Mission CTA section
+### Core Sections (All Pages)
+**Hero Section**
+- Editable headline and subheadline
+- Three customizable CTA buttons with URLs
+- Real-time Firestore sync
 
-### Team Management
-- Clean cards with: Name, Title, Military Background, LinkedIn icon
-- General Partners section (founders)
-- Team & Advisors section
-- Add/delete functionality
-- LinkedIn integration with real profile links
+**WhyVB Section**
+- Editable section title
+- Add/edit/delete bullet points
+- Dynamic content management
 
-### Advanced Features
-- **Add New Section**: Insert custom sections anywhere on the page
-- **FontAwesome Icon Selector**: Visual dropdown with 24 popular icons
-- **Glass Morphism Styling**: Kizna-inspired electric blue design
-- **Firebase Infrastructure**: Ready for SDK integration
-- **Auto-logout Redirect**: Returns to home page on logout
-- **Back to Website** links on all admin pages
+**Programs Section**
+- Add/edit/delete programs
+- Full program details: name, description, duration, investment, equity
+- Program highlights with line-by-line editing
 
-## Known Issues & Fixes
+**Team Section**
+- Add/edit/delete team members
+- Profile management: name, title, military background
+- Photo uploads and LinkedIn integration
+- General Partners vs Team member categorization
 
-### Missing Media Files
-The public directory was excluded from git. To fix:
-1. Remove `public` from .gitignore (line 83)
-2. Add all public files: `git add public/`
-3. Commit and push to deploy images and assets
+**Portfolio Section**
+- Add/edit/delete portfolio companies
+- Company details: name, description, logo
+- Investment metrics: investment amount, valuation, TVPI, IRR, status
 
-### TypeScript Build Fixes
-- Updated useFirestore hook with proper type constraints
-- Added FirestoreDocument interface for Firestore integration
-- Fixed TeamMember and PortfolioCompany interfaces with optional id
-- Removed deprecated bio field references
+### Accelerator-Specific Sections
+**Our Accelerator Program**
+- Program title and description editing
+- "About the Program" content section
+- Program details management
+
+**Mentor Network**
+- Add/edit/delete mentors
+- Mentor profiles: name, company, photo, LinkedIn
+- Visual mentor grid display
+
+**Application & Diligence Process**
+- Edit process title and timeline
+- Add/edit/delete application steps
+- Week-by-week process breakdown
+- Commitment list management
+
+**Ready to Join the Mission CTA**
+- Customizable headline and description
+- Dual CTA buttons with custom text and URLs
+- Professional call-to-action management
+
+### Technical Infrastructure
+**Firestore Integration**
+- Real-time data persistence
+- Automatic fallback to static content
+- CORS-resistant simple read/write operations
+- Production-ready security rules
+
+**Admin Authentication**
+- Firebase Authentication integration
+- Manual admin user management
+- Secure role-based access
+
+**UI/UX Features**
+- FontAwesome icons throughout (no emojis)
+- Glass morphism styling with Kizna color scheme
+- Hover-activated edit buttons
+- Professional admin interface
+- Mobile-responsive design
+
+## Production Deployment
+
+### Firestore Security Rules
+Production-ready rules are in `firestore-production-rules.js`:
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /siteContent/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+```
+
+### Admin User Management
+1. Go to Firebase Console → Authentication → Users
+2. Add admin users manually with email/password
+3. Only create accounts for actual admins
+4. Users access admin via discrete methods on website
+
+### Assets & Media
+- All images stored in `/public/images/` directory
+- VB logo fixed: converted from TIFF to proper PNG format
+- Chrome compatibility issue resolved
+- All assets committed to repository
+
+### Performance Optimizations
+- Firestore operations use simple read/write (no real-time listeners)
+- CORS error handling prevents UI breaks
+- Automatic fallback to static content
+- Optimized image loading with Next.js Image component
 
 ## Development Commands
 - `npm run dev` - Start development server

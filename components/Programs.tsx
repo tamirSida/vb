@@ -32,6 +32,25 @@ const Programs: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleDeleteProgram = async () => {
+    try {
+      const updatedPrograms = programsData.programs.filter(program => program.name !== editingProgram.name);
+      const updatedData = {
+        ...programsData,
+        programs: updatedPrograms,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('programs', updatedData);
+      setProgramsData(updatedData);
+      
+      console.log('Program deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingProgram(null);
+    } catch (error) {
+      console.error('Error deleting program:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingType === 'header') {
@@ -277,7 +296,7 @@ const Programs: React.FC = () => {
           {editingType === 'program' && (
             <div className="pt-4 border-t border-gray-600">
               <button 
-                onClick={() => console.log('Delete program', editingProgram?.name)}
+                onClick={handleDeleteProgram}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
 <i className="fas fa-trash mr-2"></i>Delete Program

@@ -37,6 +37,25 @@ const ApplicationProcess: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleDeleteStep = async () => {
+    try {
+      const updatedSteps = applicationData.steps.filter((_, index) => index !== editingIndex);
+      const updatedData = {
+        ...applicationData,
+        steps: updatedSteps,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('applicationProcess', updatedData);
+      setApplicationData(updatedData);
+      
+      console.log('Application step deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingIndex(-1);
+    } catch (error) {
+      console.error('Error deleting application step:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingType === 'header') {
@@ -241,7 +260,7 @@ const ApplicationProcess: React.FC = () => {
           {editingType === 'step' && (
             <div className="pt-4 border-t border-gray-600">
               <button 
-                onClick={() => console.log('Delete step', editingIndex)}
+                onClick={handleDeleteStep}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
 <i className="fas fa-trash mr-2"></i>Delete Step

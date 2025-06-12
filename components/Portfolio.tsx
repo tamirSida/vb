@@ -33,6 +33,25 @@ const Portfolio: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleDeleteCompany = async () => {
+    try {
+      const updatedCompanies = portfolioData.companies.filter(company => company.name !== editingCompany.name);
+      const updatedData = {
+        ...portfolioData,
+        companies: updatedCompanies,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('portfolio', updatedData);
+      setPortfolioData(updatedData);
+      
+      console.log('Portfolio company deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingCompany(null);
+    } catch (error) {
+      console.error('Error deleting portfolio company:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingType === 'header') {
@@ -332,7 +351,7 @@ const Portfolio: React.FC = () => {
           {editingType === 'company' && (
             <div className="pt-4 border-t border-gray-600">
               <button 
-                onClick={() => console.log('Delete company', editingCompany?.name)}
+                onClick={handleDeleteCompany}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
 <i className="fas fa-trash mr-2"></i>Delete Portfolio Company

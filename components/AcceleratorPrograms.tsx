@@ -41,6 +41,25 @@ const AcceleratorPrograms: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleDeleteProgram = async () => {
+    try {
+      const updatedPrograms = acceleratorData.programs.filter(program => program.name !== editingProgram.name);
+      const updatedData = {
+        ...acceleratorData,
+        programs: updatedPrograms,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('acceleratorPrograms', updatedData);
+      setAcceleratorData(updatedData);
+      
+      console.log('Accelerator program deleted successfully');
+      setIsEditModalOpen(false);
+      setEditingProgram(null);
+    } catch (error) {
+      console.error('Error deleting accelerator program:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingType === 'header') {
@@ -282,7 +301,7 @@ const AcceleratorPrograms: React.FC = () => {
           {editingType === 'program' && (
             <div className="pt-4 border-t border-gray-600">
               <button 
-                onClick={() => console.log('Delete program', editingProgram?.name)}
+                onClick={handleDeleteProgram}
                 className="admin-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white w-full"
               >
 <i className="fas fa-trash mr-2"></i>Delete Program

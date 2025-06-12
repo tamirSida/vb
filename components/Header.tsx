@@ -79,6 +79,9 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
           {isAcceleratorPage ? (
             <div className="hidden md:flex items-center justify-center flex-1">
               <nav className="flex items-center space-x-8">
+                <Link href="http://localhost:3000/accelerator/" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                  Why VB
+                </Link>
                 <Link href="/accelerator/team" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Team
                 </Link>
@@ -88,15 +91,6 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                 <Link href="/accelerator/application" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Application
                 </Link>
-                <EditableSection
-                  sectionName="Contact Email"
-                  onEdit={handleEditNavigation}
-                  className="inline-block"
-                >
-                  <a href={`mailto:${navigationData.contactEmail}`} className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
-                    Contact
-                  </a>
-                </EditableSection>
                 <Link href="/accelerator/portfolio" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Portfolio
                 </Link>
@@ -140,15 +134,26 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
             )}
             
             {isAcceleratorPage && (
-              <EditableSection
-                sectionName="Apply Now Button"
-                onEdit={handleEditNavigation}
-                className="inline-block"
-              >
-                <a href={navigationData.applyNowUrl} className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors no-underline">
-                  Apply Now
-                </a>
-              </EditableSection>
+              <div className="hidden md:flex items-center space-x-3">
+                <EditableSection
+                  sectionName="Apply Now Button"
+                  onEdit={handleEditNavigation}
+                  className="inline-block"
+                >
+                  <a href={navigationData.applyNowUrl} className="bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors no-underline">
+                    Apply Now
+                  </a>
+                </EditableSection>
+                <EditableSection
+                  sectionName="Contact Email"
+                  onEdit={handleEditNavigation}
+                  className="inline-block"
+                >
+                  <a href={`mailto:${navigationData.contactEmail}`} className="bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors no-underline">
+                    Get in Touch
+                  </a>
+                </EditableSection>
+              </div>
             )}
             
             {/* Mobile Menu Button */}
@@ -175,6 +180,13 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
               {isAcceleratorPage ? (
                 <>
                   <Link 
+                    href="http://localhost:3000/accelerator/"
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Why VB
+                  </Link>
+                  <Link 
                     href="/accelerator/team" 
                     className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
@@ -195,13 +207,6 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                   >
                     Application
                   </Link>
-                  <a 
-                    href={`mailto:${navigationData.contactEmail}`}
-                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Contact
-                  </a>
                   <Link 
                     href="/accelerator/portfolio" 
                     className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
@@ -258,13 +263,24 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                   <div className="w-3 h-3 bg-gray-400 hover:bg-kizna-electric rounded-full opacity-40 hover:opacity-100 transition-all"></div>
                 </div>
               </Link>
-              <a 
-                href={isAcceleratorPage ? navigationData.applyNowUrl : '#'}
-                className="block w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Apply Now
-              </a>
+              <div className="space-y-3">
+                <a 
+                  href={isAcceleratorPage ? navigationData.applyNowUrl : '#'}
+                  className="block w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Apply Now
+                </a>
+                {isAcceleratorPage && (
+                  <a 
+                    href={`mailto:${navigationData.contactEmail}`}
+                    className="block w-full bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Get in Touch
+                  </a>
+                )}
+              </div>
             </nav>
           </div>
         )}

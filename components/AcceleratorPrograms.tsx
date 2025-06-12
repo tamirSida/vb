@@ -80,6 +80,44 @@ const AcceleratorPrograms: React.FC = () => {
         };
         await updateDocument('acceleratorPrograms', updatedData);
         setAcceleratorData(updatedData);
+      } else if (editingType === 'program') {
+        // Update existing program
+        const programIndex = acceleratorData.programs.findIndex(p => p.name === editingProgram.name);
+        if (programIndex !== -1) {
+          const updatedPrograms = [...acceleratorData.programs];
+          updatedPrograms[programIndex] = {
+            name: data.name,
+            description: data.description,
+            duration: data.duration,
+            investment: data.investment,
+            equity: data.equity,
+            highlights: data.highlights.split('\n').filter((h: string) => h.trim())
+          };
+          const updatedData = {
+            ...acceleratorData,
+            programs: updatedPrograms,
+            updatedAt: new Date().toISOString()
+          };
+          await updateDocument('acceleratorPrograms', updatedData);
+          setAcceleratorData(updatedData);
+        }
+      } else if (editingType === 'add') {
+        // Add new program
+        const newProgram = {
+          name: data.name,
+          description: data.description,
+          duration: data.duration,
+          investment: data.investment,
+          equity: data.equity,
+          highlights: data.highlights.split('\n').filter((h: string) => h.trim())
+        };
+        const updatedData = {
+          ...acceleratorData,
+          programs: [...acceleratorData.programs, newProgram],
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorPrograms', updatedData);
+        setAcceleratorData(updatedData);
       }
       console.log('Accelerator programs data saved successfully');
       setIsEditModalOpen(false);
@@ -248,6 +286,7 @@ const AcceleratorPrograms: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Program Name</label>
             <input
               type="text"
+              name="name"
               defaultValue={editingProgram?.name || ''}
               className="admin-input w-full"
               placeholder="e.g., VB Accelerator"
@@ -256,6 +295,7 @@ const AcceleratorPrograms: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
             <textarea
+              name="description"
               defaultValue={editingProgram?.description || ''}
               className="admin-input w-full h-20 resize-none"
               placeholder="Brief description of the program"
@@ -266,6 +306,7 @@ const AcceleratorPrograms: React.FC = () => {
               <label className="block text-sm font-medium text-gray-300 mb-1">Duration</label>
               <input
                 type="text"
+                name="duration"
                 defaultValue={editingProgram?.duration || ''}
                 className="admin-input w-full"
                 placeholder="e.g., 10 weeks"
@@ -275,6 +316,7 @@ const AcceleratorPrograms: React.FC = () => {
               <label className="block text-sm font-medium text-gray-300 mb-1">Investment</label>
               <input
                 type="text"
+                name="investment"
                 defaultValue={editingProgram?.investment || ''}
                 className="admin-input w-full"
                 placeholder="e.g., $100,000"
@@ -285,6 +327,7 @@ const AcceleratorPrograms: React.FC = () => {
             <label className="block text-sm font-medium text-gray-300 mb-1">Equity</label>
             <input
               type="text"
+              name="equity"
               defaultValue={editingProgram?.equity || ''}
               className="admin-input w-full"
               placeholder="e.g., 3.33%"
@@ -293,6 +336,7 @@ const AcceleratorPrograms: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Highlights (one per line)</label>
             <textarea
+              name="highlights"
               defaultValue={editingProgram?.highlights?.join('\n') || ''}
               className="admin-input w-full h-24 resize-none"
               placeholder="Program highlight 1&#10;Program highlight 2&#10;Program highlight 3"

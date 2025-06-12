@@ -266,7 +266,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
               <div className="space-y-3">
                 <a 
                   href={isAcceleratorPage ? navigationData.applyNowUrl : '#'}
-                  className="block w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
+                  className="block w-full bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Apply Now

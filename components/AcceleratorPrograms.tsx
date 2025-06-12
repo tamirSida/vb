@@ -183,7 +183,7 @@ const AcceleratorPrograms: React.FC = () => {
                     <p className="text-vb-navy">{program.investment}</p>
                   </div>
                   <div>
-                    <span className="text-vb-blue font-semibold">Equity:</span>
+                    <span className="text-vb-blue font-semibold">What You Receive:</span>
                     <p className="text-vb-navy">{program.equity}</p>
                   </div>
                 </div>
@@ -324,7 +324,7 @@ const AcceleratorPrograms: React.FC = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Equity</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">What You Receive</label>
             <input
               type="text"
               name="equity"

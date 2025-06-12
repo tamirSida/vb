@@ -120,8 +120,9 @@ const WhyVB: React.FC = () => {
             </div>
           </EditableSection>
         
+        {/* First 3 items in standard grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {whyVBData.points.map((point, index) => {
+          {whyVBData.points.slice(0, 3).map((point, index) => {
             const icons = [
               "fas fa-users", // Team of successful operators
               "fas fa-network-wired", // Unparalleled network
@@ -147,6 +148,40 @@ const WhyVB: React.FC = () => {
             );
           })}
         </div>
+        
+        {/* Remaining items centered */}
+        {whyVBData.points.length > 3 && (
+          <div className="flex justify-center mt-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-2xl">
+              {whyVBData.points.slice(3).map((point, index) => {
+                const actualIndex = index + 3;
+                const icons = [
+                  "fas fa-users", // Team of successful operators
+                  "fas fa-network-wired", // Unparalleled network
+                  "fas fa-handshake", // We understand the veteran entrepreneur
+                  "fas fa-graduation-cap", // Accelerator built by veterans
+                  "fas fa-star" // Experienced advisory board
+                ];
+                
+                return (
+                  <EditableSection
+                    key={actualIndex}
+                    sectionName={`Why VB Point ${actualIndex + 1}`}
+                    onEdit={() => handleEditPoint(actualIndex)}
+                    className="bg-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-secondary"
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-gray-700 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                        <i className={`${icons[actualIndex]} text-lg`}></i>
+                      </div>
+                      <p className="text-dark leading-relaxed">{point}</p>
+                    </div>
+                  </EditableSection>
+                );
+              })}
+            </div>
+          </div>
+        )}
         
         {/* Add Point Button - only visible in admin mode */}
         <EditableSection 

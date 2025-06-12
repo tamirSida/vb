@@ -121,24 +121,24 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
 
           <div className="mb-3 sm:mb-4 md:mb-6">
             <div className="inline-flex items-center bg-gray-800/40 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full border border-gray-500/30 mb-3 sm:mb-6">
-              <span className="text-gray-200 font-semibold text-xs sm:text-sm uppercase tracking-wider">
+              <span className="text-gray-200 font-black-ops font-semibold text-xs sm:text-sm uppercase tracking-wider">
                 Combat Veterans • Proven Operators
               </span>
             </div>
           </div>
           
-          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-3 sm:mb-6 md:mb-6">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black-ops font-bold leading-tight mb-3 sm:mb-6 md:mb-6">
             <span className="block text-white">{heroData.headline}</span>
           </h1>
           
-          <p className="text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 text-gray-200 max-w-3xl leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 text-gray-200 max-w-3xl leading-relaxed font-black-ops">
             {heroData.subheadline}
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-3xl">
             <a 
               href={heroData.nonProfitUrl}
-              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
+              className="bg-gray-700 hover:bg-gray-600 text-white font-black-ops font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
               {heroData.nonProfitCta}
             </a>
@@ -146,7 +146,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               href={heroData.acceleratorUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
+              className="bg-gray-700 hover:bg-gray-600 text-white font-black-ops font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
             >
               {heroData.acceleratorCta}
             </a>

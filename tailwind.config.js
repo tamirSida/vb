@@ -30,6 +30,7 @@ module.exports = {
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'black-ops': ['Black Ops One', 'cursive'],
       },
     },
   },

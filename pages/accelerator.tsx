@@ -67,8 +67,8 @@ export default function Accelerator() {
         const buttonPageNumber = index + 1;
         
         if (buttonPageNumber === activePageNumber) {
-          // Active state
-          button.className = "w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
+          // Active state - white background with navy text
+          button.className = "w-10 h-10 rounded-full bg-white text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
         } else {
           // Inactive state
           button.className = "w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
@@ -209,7 +209,7 @@ export default function Accelerator() {
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
               <div className="max-w-lg ml-24 opacity-100 transform translate-x-0 transition-all duration-700 ease-out">
                 <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 opacity-100 translate-x-0 transition-all duration-500 ease-out z-10">
-                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
+                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
                     <p className="text-sm font-bold">1</p>
                   </button>
                   <button onClick={() => scrollToPage(2)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">

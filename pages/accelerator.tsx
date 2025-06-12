@@ -1,12 +1,182 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/DiscreteAdminAccess';
+import EditableSection from '../components/admin/EditableSection';
+import EditModal from '../components/admin/EditModal';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 export default function Accelerator() {
   // Enable discrete admin access methods
   useUrlAdminAccess();
+
+  // CMS State Management
+  const [heroData, setHeroData] = useState({
+    title: 'Why Entrepreneurs Choose Version Bravo'
+  });
+
+  const [whyVBPages, setWhyVBPages] = useState([
+    {
+      id: 1,
+      title: 'Team of Successful Operators',
+      description: 'We are not passive investors; we\'re in the trenches with our founders. Our track record as value-add advisors means hands-on support when you need it most.',
+      backgroundImage: '/images/accelerator/whyvb1.jpg'
+    },
+    {
+      id: 2,
+      title: 'Unparalleled Network',
+      description: 'Access to entrepreneurs, industry experts, veteran foundations, and military transition organizations. Our network becomes your network.',
+      backgroundImage: '/images/accelerator/whyvb2.jpg'
+    },
+    {
+      id: 3,
+      title: 'We Understand Veterans',
+      description: 'Shared experience, trust, and mindset. We understand the veteran entrepreneur because we are veteran entrepreneurs.',
+      backgroundImage: '/images/accelerator/whyvb3.jpg'
+    },
+    {
+      id: 4,
+      title: 'Built by Veterans, for Veterans',
+      description: '4 years of experience, 58 combat veteran founders graduated. Our accelerator was purpose-built for the veteran entrepreneur journey.',
+      backgroundImage: '/images/accelerator/whyvb4.jpg'
+    },
+    {
+      id: 5,
+      title: 'Experienced Advisory Board',
+      description: 'Decades of VC and technical expertise across sectors and stages. Strategic guidance from those who\'ve built successful companies.',
+      backgroundImage: '/images/accelerator/whyvb5.jpg'
+    }
+  ]);
+
+  const [testimonials, setTestimonials] = useState([
+    {
+      id: 1,
+      quote: 'Having spent my career perfecting the intelligence process and targeting of the enemy, I knew there was much to learn in the finance space. I applied to Version Bravo hoping to learn the language, process and the art of capital-raising and to understand the culture and what was required to grow a project from scratch. Thankfully, I received so much more. The program provided me the technical knowledge, language and tools to speak confidently and share my vision with investors. Today, I continue to run my government contract company, a small cleaning business and to pitch a Web3, digital sovereignty solution to give the internet back to the user.',
+      author: 'Andre Gomez',
+      title: 'Former US Navy SEAL (BUD/s Class 229)',
+      image: '/images/testimonials/andre-gomez.jpg',
+      position: 1
+    },
+    {
+      id: 2,
+      quote: 'Version Bravo was an insightful experience for me, at the entrepreneurship level, but more importantly, at the emotional one. We can clearly see the growth in our ability to crystalize our business strategies and fine-tune the pitch to investors in the program\'s last session. But the feeling of \'safe harbor\' to share your thoughts, ideas or events from the SEALs service with people that understand your point of view in the blink of an eye were beyond my expectations.',
+      author: 'Or Yustman',
+      title: 'Lieutenant-Commander (Res.) in Shayetet-13/Israel Navy SEALs',
+      image: '/images/testimonials/or-yustman.jpg',
+      position: 2
+    },
+    {
+      id: 3,
+      quote: 'I was fortunate to find Version Bravo at a time when my venture was ready for growth but I recognized that I had some gaps in my ability to lead the company to its next level. My experience in the SEAL teams had given me the confidence to take on the challenge, but to scale, I needed knowledge in specialized areas and a trusted support team to be my sounding board as we grew. That\'s exactly what I found with AFINS\' Version Bravo program. Since starting the program, our venture has put numerous structures, people and processes in-place to help us prepare for and even get ahead of our future growth—all things directly attributable to what I learned and the group of mentors that I have come to rely on through Version Bravo. We are on track to create a lot of jobs, to disrupt our industry and to generate a lot of revenue.',
+      author: 'Jonathan Cleck',
+      title: 'Former US Navy SEAL (BUD/s Class 213), CXO of Concihairge',
+      image: '/images/testimonials/jonathan-cleck.jpg',
+      position: 4.5
+    }
+  ]);
+
+  const [exploreData, setExploreData] = useState({
+    title: 'Explore Our Accelerator'
+  });
+
+  // Modal states
+  const [isHeroModalOpen, setIsHeroModalOpen] = useState(false);
+  const [isWhyVBModalOpen, setIsWhyVBModalOpen] = useState(false);
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
+  const [isExploreModalOpen, setIsExploreModalOpen] = useState(false);
+  const [editingWhyVBPage, setEditingWhyVBPage] = useState(null);
+  const [editingTestimonial, setEditingTestimonial] = useState(null);
+
+  // Firestore integration
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+
+  // Load data from Firestore
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('acceleratorContent');
+        if (data) {
+          if (data.hero) setHeroData(data.hero);
+          if (data.whyVBPages) setWhyVBPages(data.whyVBPages);
+          if (data.testimonials) setTestimonials(data.testimonials);
+          if (data.explore) setExploreData(data.explore);
+        }
+      } catch (error) {
+        console.error('Error loading accelerator data:', error);
+      }
+    };
+    loadData();
+  }, []);
+
+  // Save functions
+  const saveHeroData = async (data: any) => {
+    try {
+      const currentData = await getDocument('acceleratorContent') || {};
+      await updateDocument('acceleratorContent', {
+        ...currentData,
+        hero: data,
+        updatedAt: new Date().toISOString()
+      });
+      setHeroData(data);
+      setIsHeroModalOpen(false);
+    } catch (error) {
+      console.error('Error saving hero data:', error);
+    }
+  };
+
+  const saveWhyVBPage = async (data: any) => {
+    try {
+      const updatedPages = whyVBPages.map(page => 
+        page.id === editingWhyVBPage ? { ...page, ...data } : page
+      );
+      const currentData = await getDocument('acceleratorContent') || {};
+      await updateDocument('acceleratorContent', {
+        ...currentData,
+        whyVBPages: updatedPages,
+        updatedAt: new Date().toISOString()
+      });
+      setWhyVBPages(updatedPages);
+      setIsWhyVBModalOpen(false);
+      setEditingWhyVBPage(null);
+    } catch (error) {
+      console.error('Error saving Why VB page:', error);
+    }
+  };
+
+  const saveTestimonial = async (data: any) => {
+    try {
+      const updatedTestimonials = testimonials.map(testimonial => 
+        testimonial.id === editingTestimonial ? { ...testimonial, ...data } : testimonial
+      );
+      const currentData = await getDocument('acceleratorContent') || {};
+      await updateDocument('acceleratorContent', {
+        ...currentData,
+        testimonials: updatedTestimonials,
+        updatedAt: new Date().toISOString()
+      });
+      setTestimonials(updatedTestimonials);
+      setIsTestimonialModalOpen(false);
+      setEditingTestimonial(null);
+    } catch (error) {
+      console.error('Error saving testimonial:', error);
+    }
+  };
+
+  const saveExploreData = async (data: any) => {
+    try {
+      const currentData = await getDocument('acceleratorContent') || {};
+      await updateDocument('acceleratorContent', {
+        ...currentData,
+        explore: data,
+        updatedAt: new Date().toISOString()
+      });
+      setExploreData(data);
+      setIsExploreModalOpen(false);
+    } catch (error) {
+      console.error('Error saving explore data:', error);
+    }
+  };
 
   // Function to handle smooth scrolling to specific page
   const scrollToPage = (pageNumber: number) => {
@@ -235,265 +405,123 @@ export default function Accelerator() {
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-br from-vb-navy to-vb-medium text-white relative overflow-hidden">
           <div className="container-max text-center relative z-10">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">
-              Why Entrepreneurs Choose Version Bravo
-            </h1>
+            <EditableSection
+              sectionName="Accelerator Hero"
+              onEdit={() => setIsHeroModalOpen(true)}
+            >
+              <h1 className="text-3xl md:text-5xl font-bold mb-6">
+                {heroData.title}
+              </h1>
+            </EditableSection>
           </div>
         </section>
 
         {/* Page-Style Navigation Section */}
         <section className="relative">
-          {/* Page 1 - Team of Successful Operators */}
-          <div className="h-screen relative overflow-hidden" data-page="1">
-            <img 
-              src="/images/accelerator/whyvb1.jpg" 
-              alt="Team of successful operators" 
-              className="absolute inset-0 w-full h-full object-cover opacity-100 scale-100 transition-all duration-1000 ease-out"
-            />
-            <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
-            <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
-            <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-24 opacity-100 transform translate-x-0 transition-all duration-700 ease-out">
-                <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 opacity-100 translate-x-0 transition-all duration-500 ease-out z-10">
-                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">1</p>
-                  </button>
-                  <button onClick={() => scrollToPage(2)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">2</p>
-                  </button>
-                  <button onClick={() => scrollToPage(3)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">3</p>
-                  </button>
-                  <button onClick={() => scrollToPage(4)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">4</p>
-                  </button>
-                  <button onClick={() => scrollToPage(5)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">5</p>
-                  </button>
-                </div>
-                <h2 className="text-3xl font-bold mb-6 text-white">Team of Successful Operators</h2>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  We are not passive investors; we're in the trenches with our founders. Our track record as value-add advisors means hands-on support when you need it most.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Quote 1 - Andre Gomez */}
-          <div className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-6">
+          {whyVBPages.map((page, index) => {
+            const pageNumber = index + 1;
+            const isFirstPage = pageNumber === 1;
+            
+            return (
+              <div key={page.id} className="h-screen relative overflow-hidden" data-page={pageNumber}>
                 <img 
-                  src="/images/testimonials/andre-gomez.jpg" 
-                  alt="Andre Gomez" 
-                  className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
+                  src={page.backgroundImage} 
+                  alt={page.title} 
+                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${isFirstPage ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
                 />
-                <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
-              </div>
-              <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
-                "Having spent my career perfecting the intelligence process and targeting of the enemy, I knew there was much to learn in the finance space. I applied to Version Bravo hoping to learn the language, process and the art of capital-raising and to understand the culture and what was required to grow a project from scratch. Thankfully, I received so much more. The program provided me the technical knowledge, language and tools to speak confidently and share my vision with investors. Today, I continue to run my government contract company, a small cleaning business and to pitch a Web3, digital sovereignty solution to give the internet back to the user."
-              </blockquote>
-              <div className="text-white/90">
-                <p className="font-semibold text-lg">Andre Gomez</p>
-                <p className="text-sm">Former US Navy SEAL (BUD/s Class 229)</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Page 2 - Unparalleled Network */}
-          <div className="h-screen relative overflow-hidden" data-page="2">
-            <img 
-              src="/images/accelerator/whyvb2.jpg" 
-              alt="Veteran entrepreneur network" 
-              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
-            />
-            <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
-            <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
-            <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-24 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
-                <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out z-10">
-                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">1</p>
-                  </button>
-                  <button onClick={() => scrollToPage(2)} className="w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">2</p>
-                  </button>
-                  <button onClick={() => scrollToPage(3)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">3</p>
-                  </button>
-                  <button onClick={() => scrollToPage(4)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">4</p>
-                  </button>
-                  <button onClick={() => scrollToPage(5)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">5</p>
-                  </button>
+                <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
+                <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
+                <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
+                  <div className={`max-w-lg ml-24 transition-all duration-700 ease-out ${isFirstPage ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform translate-x-12'}`}>
+                    <div className={`absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 transition-all duration-500 ease-out z-10 ${isFirstPage ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}>
+                      {whyVBPages.map((_, navIndex) => {
+                        const navPageNumber = navIndex + 1;
+                        const isActive = navPageNumber === pageNumber;
+                        return (
+                          <button 
+                            key={navPageNumber}
+                            onClick={() => scrollToPage(navPageNumber)} 
+                            className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer ${
+                              isActive 
+                                ? 'bg-white text-vb-navy' 
+                                : 'bg-white/20 backdrop-blur-sm text-white'
+                            }`}
+                          >
+                            <p className="text-sm font-bold">{navPageNumber}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <EditableSection
+                      sectionName={`Why VB Page ${pageNumber}`}
+                      onEdit={() => {
+                        setEditingWhyVBPage(page.id);
+                        setIsWhyVBModalOpen(true);
+                      }}
+                    >
+                      <h2 className="text-3xl font-bold mb-6 text-white">{page.title}</h2>
+                      <p className="text-white/90 text-lg leading-relaxed">
+                        {page.description}
+                      </p>
+                    </EditableSection>
+                  </div>
                 </div>
-                <h2 className="text-3xl font-bold mb-6 text-white">Unparalleled Network</h2>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  Access to entrepreneurs, industry experts, veteran foundations, and military transition organizations. Our network becomes your network.
-                </p>
               </div>
-            </div>
-          </div>
+            );
+          })}
 
-          {/* Quote 2 - Or Yustman */}
-          <div className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-6">
-                <img 
-                  src="/images/testimonials/or-yustman.jpg" 
-                  alt="Or Yustman" 
-                  className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
-                />
-                <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
-              </div>
-              <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
-                "Version Bravo was an insightful experience for me, at the entrepreneurship level, but more importantly, at the emotional one. We can clearly see the growth in our ability to crystalize our business strategies and fine-tune the pitch to investors in the program's last session. But the feeling of 'safe harbor' to share your thoughts, ideas or events from the SEALs service with people that understand your point of view in the blink of an eye were beyond my expectations."
-              </blockquote>
-              <div className="text-white/90">
-                <p className="font-semibold text-lg">Or Yustman</p>
-                <p className="text-sm">Lieutenant-Commander (Res.) in Shayetet-13/Israel Navy SEALs</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Page 3 - We Understand Veterans */}
-          <div className="h-screen relative overflow-hidden" data-page="3">
-            <img 
-              src="/images/accelerator/whyvb3.jpg" 
-              alt="Veteran entrepreneurs" 
-              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
-            />
-            <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
-            <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
-            <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-24 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
-                <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out z-10">
-                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">1</p>
-                  </button>
-                  <button onClick={() => scrollToPage(2)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">2</p>
-                  </button>
-                  <button onClick={() => scrollToPage(3)} className="w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">3</p>
-                  </button>
-                  <button onClick={() => scrollToPage(4)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">4</p>
-                  </button>
-                  <button onClick={() => scrollToPage(5)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">5</p>
-                  </button>
+          {/* Render testimonials dynamically based on position */}
+          {testimonials
+            .sort((a, b) => a.position - b.position)
+            .map((testimonial, index) => {
+              // Calculate which page this testimonial should appear after
+              const afterPageIndex = Math.floor(testimonial.position);
+              const isLastTestimonial = index === testimonials.length - 1;
+              
+              return (
+                <div key={testimonial.id} className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
+                  <div className="max-w-4xl mx-auto text-center">
+                    <EditableSection
+                      sectionName={`Testimonial - ${testimonial.author}`}
+                      onEdit={() => {
+                        setEditingTestimonial(testimonial.id);
+                        setIsTestimonialModalOpen(true);
+                      }}
+                    >
+                      <div className="mb-6">
+                        <img 
+                          src={testimonial.image} 
+                          alt={testimonial.author} 
+                          className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
+                        />
+                        <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
+                      </div>
+                      <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
+                        "{testimonial.quote}"
+                      </blockquote>
+                      <div className="text-white/90">
+                        <p className="font-semibold text-lg">{testimonial.author}</p>
+                        <p className="text-sm">{testimonial.title}</p>
+                      </div>
+                    </EditableSection>
+                  </div>
                 </div>
-                <h2 className="text-3xl font-bold mb-6 text-white">We Understand Veterans</h2>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  Shared experience, trust, and mindset. We understand the veteran entrepreneur because we are veteran entrepreneurs.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Page 4 - Built by Veterans, for Veterans */}
-          <div className="h-screen relative overflow-hidden" data-page="4">
-            <img 
-              src="/images/accelerator/whyvb4.jpg" 
-              alt="Accelerator program" 
-              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
-            />
-            <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
-            <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
-            <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-24 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
-                <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out z-10">
-                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">1</p>
-                  </button>
-                  <button onClick={() => scrollToPage(2)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">2</p>
-                  </button>
-                  <button onClick={() => scrollToPage(3)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">3</p>
-                  </button>
-                  <button onClick={() => scrollToPage(4)} className="w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">4</p>
-                  </button>
-                  <button onClick={() => scrollToPage(5)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">5</p>
-                  </button>
-                </div>
-                <h2 className="text-3xl font-bold mb-6 text-white">Built by Veterans, for Veterans</h2>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  4 years of experience, 58 combat veteran founders graduated. Our accelerator was purpose-built for the veteran entrepreneur journey.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Quote 3 - Jonathan Cleck */}
-          <div className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-6">
-                <img 
-                  src="/images/testimonials/jonathan-cleck.jpg" 
-                  alt="Jonathan Cleck" 
-                  className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
-                />
-                <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
-              </div>
-              <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
-                "I was fortunate to find Version Bravo at a time when my venture was ready for growth but I recognized that I had some gaps in my ability to lead the company to its next level. My experience in the SEAL teams had given me the confidence to take on the challenge, but to scale, I needed knowledge in specialized areas and a trusted support team to be my sounding board as we grew. That's exactly what I found with AFINS' Version Bravo program. Since starting the program, our venture has put numerous structures, people and processes in-place to help us prepare for and even get ahead of our future growth—all things directly attributable to what I learned and the group of mentors that I have come to rely on through Version Bravo. We are on track to create a lot of jobs, to disrupt our industry and to generate a lot of revenue."
-              </blockquote>
-              <div className="text-white/90">
-                <p className="font-semibold text-lg">Jonathan Cleck</p>
-                <p className="text-sm">Former US Navy SEAL (BUD/s Class 213), CXO of Concihairge</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Page 5 - Experienced Advisory Board */}
-          <div className="h-screen relative overflow-hidden" data-page="5">
-            <img 
-              src="/images/accelerator/whyvb5.jpg" 
-              alt="Experienced advisory board" 
-              className="absolute inset-0 w-full h-full object-cover opacity-0 scale-105 transition-all duration-1000 ease-out"
-            />
-            <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
-            <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
-            <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-              <div className="max-w-lg ml-24 opacity-0 transform translate-x-12 transition-all duration-700 ease-out">
-                <div className="absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 opacity-0 -translate-x-5 transition-all duration-500 ease-out z-10">
-                  <button onClick={() => scrollToPage(1)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">1</p>
-                  </button>
-                  <button onClick={() => scrollToPage(2)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">2</p>
-                  </button>
-                  <button onClick={() => scrollToPage(3)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">3</p>
-                  </button>
-                  <button onClick={() => scrollToPage(4)} className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">4</p>
-                  </button>
-                  <button onClick={() => scrollToPage(5)} className="w-10 h-10 rounded-full bg-vb-gold text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
-                    <p className="text-sm font-bold">5</p>
-                  </button>
-                </div>
-                <h2 className="text-3xl font-bold mb-6 text-white">Experienced Advisory Board</h2>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  Decades of VC and technical expertise across sectors and stages. Strategic guidance from those who've built successful companies.
-                </p>
-              </div>
-            </div>
-          </div>
+              );
+            })}
         </section>
 
 
         {/* Navigation to Subpages */}
         <section className="section-padding bg-white explore-accelerator-section">
           <div className="container-max">
-            <h2 className="text-4xl font-bold text-vb-navy mb-16 text-center">
-              Explore Our Accelerator
-            </h2>
+            <EditableSection
+              sectionName="Explore Section"
+              onEdit={() => setIsExploreModalOpen(true)}
+            >
+              <h2 className="text-4xl font-bold text-vb-navy mb-16 text-center">
+                {exploreData.title}
+              </h2>
+            </EditableSection>
             <div className="max-w-6xl mx-auto">
               {/* First row - 3 cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
@@ -572,6 +600,156 @@ export default function Accelerator() {
       
       {/* Discrete admin access methods */}
       <DiscreteAdminAccess />
+
+      {/* Edit Modals */}
+      <EditModal
+        isOpen={isHeroModalOpen}
+        onClose={() => setIsHeroModalOpen(false)}
+        onSave={saveHeroData}
+        title="Edit Hero Section"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={heroData.title}
+              className="admin-input w-full"
+              placeholder="Why Entrepreneurs Choose Version Bravo"
+            />
+          </div>
+        </div>
+      </EditModal>
+
+      <EditModal
+        isOpen={isWhyVBModalOpen}
+        onClose={() => {
+          setIsWhyVBModalOpen(false);
+          setEditingWhyVBPage(null);
+        }}
+        onSave={saveWhyVBPage}
+        title={`Edit Why VB Page ${editingWhyVBPage}`}
+      >
+        {editingWhyVBPage && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
+              <input
+                type="text"
+                name="title"
+                defaultValue={whyVBPages.find(p => p.id === editingWhyVBPage)?.title}
+                className="admin-input w-full"
+                placeholder="Page title"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+              <textarea
+                name="description"
+                defaultValue={whyVBPages.find(p => p.id === editingWhyVBPage)?.description}
+                className="admin-input w-full h-32"
+                placeholder="Page description"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Background Image URL</label>
+              <input
+                type="text"
+                name="backgroundImage"
+                defaultValue={whyVBPages.find(p => p.id === editingWhyVBPage)?.backgroundImage}
+                className="admin-input w-full"
+                placeholder="/images/accelerator/whyvb1.jpg"
+              />
+            </div>
+          </div>
+        )}
+      </EditModal>
+
+      <EditModal
+        isOpen={isTestimonialModalOpen}
+        onClose={() => {
+          setIsTestimonialModalOpen(false);
+          setEditingTestimonial(null);
+        }}
+        onSave={saveTestimonial}
+        title={`Edit Testimonial - ${testimonials.find(t => t.id === editingTestimonial)?.author}`}
+      >
+        {editingTestimonial && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Quote</label>
+              <textarea
+                name="quote"
+                defaultValue={testimonials.find(t => t.id === editingTestimonial)?.quote}
+                className="admin-input w-full h-40"
+                placeholder="Testimonial quote"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Author Name</label>
+              <input
+                type="text"
+                name="author"
+                defaultValue={testimonials.find(t => t.id === editingTestimonial)?.author}
+                className="admin-input w-full"
+                placeholder="John Doe"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Author Title</label>
+              <input
+                type="text"
+                name="title"
+                defaultValue={testimonials.find(t => t.id === editingTestimonial)?.title}
+                className="admin-input w-full"
+                placeholder="Former US Navy SEAL"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Author Image URL</label>
+              <input
+                type="text"
+                name="image"
+                defaultValue={testimonials.find(t => t.id === editingTestimonial)?.image}
+                className="admin-input w-full"
+                placeholder="/images/testimonials/author.jpg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Position (determines placement between pages)</label>
+              <input
+                type="number"
+                step="0.5"
+                name="position"
+                defaultValue={testimonials.find(t => t.id === editingTestimonial)?.position}
+                className="admin-input w-full"
+                placeholder="1.5 (between page 1 and 2)"
+              />
+            </div>
+          </div>
+        )}
+      </EditModal>
+
+      <EditModal
+        isOpen={isExploreModalOpen}
+        onClose={() => setIsExploreModalOpen(false)}
+        onSave={saveExploreData}
+        title="Edit Explore Section"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Section Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={exploreData.title}
+              className="admin-input w-full"
+              placeholder="Explore Our Accelerator"
+            />
+          </div>
+        </div>
+      </EditModal>
     </>
   );
 }

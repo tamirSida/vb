@@ -1,13 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
+import EditableSection from './admin/EditableSection';
+import EditModal from './admin/EditModal';
 
 interface HeaderProps {
   showNavigation?: boolean;
+  isAcceleratorPage?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
+const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPage = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [navigationData, setNavigationData] = useState({
+    applicationUrl: '#',
+    contactEmail: 'adam@versionbravo.com',
+    applyNowUrl: '#'
+  });
+  const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+
+  // Load navigation data from Firestore
+  useEffect(() => {
+    if (isAcceleratorPage) {
+      const loadData = async () => {
+        try {
+          const data = await getDocument('navigation');
+          if (data) {
+            setNavigationData(data as any);
+          }
+        } catch (error) {
+          console.error('Error loading navigation data:', error);
+        }
+      };
+      loadData();
+    }
+  }, [isAcceleratorPage]);
+
+  const handleEditNavigation = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveNavigation = async (data: any) => {
+    try {
+      const updatedData = {
+        applicationUrl: data.applicationUrl,
+        contactEmail: data.contactEmail,
+        applyNowUrl: data.applyNowUrl,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('navigation', updatedData);
+      setNavigationData(updatedData);
+      setIsEditModalOpen(false);
+      console.log('Navigation data saved successfully');
+    } catch (error) {
+      console.error('Error saving navigation data:', error);
+    }
+  };
 
   return (
     <header className="bg-light shadow-sm border-b border-secondary sticky top-0 z-30">
@@ -26,14 +75,42 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
             </Link>
           </div>
           
-          {/* Center section with Combat Veterans text */}
-          <div className="hidden md:flex items-center justify-center flex-1">
-            <div className="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
-              <span className="text-gray-700 font-black-ops font-semibold text-xs uppercase tracking-wider">
-                Combat Veterans • Proven Operators
-              </span>
+          {/* Center section - different for accelerator page */}
+          {isAcceleratorPage ? (
+            <div className="hidden md:flex items-center justify-center flex-1">
+              <nav className="flex items-center space-x-8">
+                <a href="#team" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                  Team
+                </a>
+                <a href="#programs" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                  Accelerator
+                </a>
+                <a href="#applicationProcess" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                  Application
+                </a>
+                <EditableSection
+                  sectionName="Contact Email"
+                  onEdit={handleEditNavigation}
+                  className="inline-block"
+                >
+                  <a href={`mailto:${navigationData.contactEmail}`} className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                    Contact
+                  </a>
+                </EditableSection>
+                <a href="#portfolio" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                  Portfolio
+                </a>
+              </nav>
             </div>
-          </div>
+          ) : (
+            <div className="hidden md:flex items-center justify-center flex-1">
+              <div className="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+                <span className="text-gray-700 font-black-ops font-semibold text-xs uppercase tracking-wider">
+                  Combat Veterans • Proven Operators
+                </span>
+              </div>
+            </div>
+          )}
           
           <div className="flex items-center space-x-3">
             {/* Hidden Admin Access - Multiple Options */}
@@ -53,14 +130,26 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
               <div className="hidden md:block w-8 h-8 cursor-pointer"></div>
             </Link> */}
             
-            {showNavigation && (
+            {showNavigation && !isAcceleratorPage && (
               <button className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white font-black-ops px-4 py-2 rounded-lg font-medium transition-colors">
                 Apply Now
               </button>
             )}
             
+            {isAcceleratorPage && (
+              <EditableSection
+                sectionName="Apply Now Button"
+                onEdit={handleEditNavigation}
+                className="inline-block"
+              >
+                <a href={navigationData.applyNowUrl} className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors no-underline">
+                  Apply Now
+                </a>
+              </EditableSection>
+            )}
+            
             {/* Mobile Menu Button */}
-            {showNavigation && (
+            {(showNavigation || isAcceleratorPage) && (
               <button 
                 className="md:hidden p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -77,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
         </div>
         
         {/* Mobile Menu */}
-        {showNavigation && isMenuOpen && (
+        {(showNavigation || isAcceleratorPage) && isMenuOpen && (
           <div className="md:hidden bg-light border-t border-secondary">
             <nav className="px-4 py-4 space-y-3">
               <a 
@@ -92,8 +181,26 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
                 className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Programs
+                {isAcceleratorPage ? 'Accelerator' : 'Programs'}
               </a>
+              {isAcceleratorPage && (
+                <>
+                  <a 
+                    href="#applicationProcess"
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Application
+                  </a>
+                  <a 
+                    href={`mailto:${navigationData.contactEmail}`}
+                    className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Contact
+                  </a>
+                </>
+              )}
               <a 
                 href="#portfolio" 
                 className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
@@ -101,13 +208,15 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
               >
                 Portfolio
               </a>
-              <a 
-                href="#contact" 
-                className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </a>
+              {!isAcceleratorPage && (
+                <a 
+                  href="#contact" 
+                  className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Contact
+                </a>
+              )}
               {/* Mobile admin access - also discrete */}
               <Link href="/admin">
                 <div 
@@ -117,16 +226,50 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
                   <div className="w-3 h-3 bg-gray-400 hover:bg-kizna-electric rounded-full opacity-40 hover:opacity-100 transition-all"></div>
                 </div>
               </Link>
-              <button 
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+              <a 
+                href={isAcceleratorPage ? navigationData.applyNowUrl : '#'}
+                className="block w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Apply Now
-              </button>
+              </a>
             </nav>
           </div>
         )}
       </div>
+      
+      {/* Edit Modal for Navigation */}
+      {isAcceleratorPage && (
+        <EditModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveNavigation}
+          title="Edit Navigation Links"
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Apply Now URL</label>
+              <input
+                type="text"
+                name="applyNowUrl"
+                defaultValue={navigationData.applyNowUrl}
+                className="admin-input w-full"
+                placeholder="https://apply.versionbravoventures.com"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Contact Email</label>
+              <input
+                type="email"
+                name="contactEmail"
+                defaultValue={navigationData.contactEmail}
+                className="admin-input w-full"
+                placeholder="adam@versionbravo.com"
+              />
+            </div>
+          </div>
+        </EditModal>
+      )}
     </header>
   );
 };

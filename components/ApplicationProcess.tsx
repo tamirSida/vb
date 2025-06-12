@@ -102,7 +102,7 @@ const ApplicationProcess: React.FC = () => {
   
   return (
     <>
-      <section className="section-padding bg-secondary">
+      <section id="applicationProcess" className="section-padding bg-secondary">
         <div className="container-max">
           <EditableSection 
             sectionName="Application Process Header"

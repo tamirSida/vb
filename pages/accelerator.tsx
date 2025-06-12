@@ -101,7 +101,7 @@ export default function Accelerator() {
         />
       </Head>
 
-      <Header />
+      <Header isAcceleratorPage={true} />
       <main>
         {sections.map((sectionType, index) => (
           <div key={`section-${index}`}>

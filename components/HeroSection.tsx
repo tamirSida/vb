@@ -119,13 +119,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
             />
           </div>
 
-          <div className="mb-3 sm:mb-4 md:mb-6">
-            <div className="inline-flex items-center bg-gray-800/40 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full border border-gray-500/30 mb-3 sm:mb-6">
-              <span className="text-gray-200 font-black-ops font-semibold text-xs sm:text-sm uppercase tracking-wider">
-                Combat Veterans • Proven Operators
-              </span>
-            </div>
-          </div>
           
           <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black-ops font-bold leading-tight mb-3 sm:mb-6 md:mb-6">
             <span className="block text-white">{heroData.headline}</span>

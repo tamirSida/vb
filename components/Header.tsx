@@ -26,14 +26,14 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
             </Link>
           </div>
           
-          {showNavigation && (
-            <nav className="hidden md:flex space-x-8">
-              <a href="#team" className="text-dark hover:text-gray-700 font-medium transition-colors">Team</a>
-              <a href="#programs" className="text-dark hover:text-gray-700 font-medium transition-colors">Programs</a>
-              <a href="#portfolio" className="text-dark hover:text-gray-700 font-medium transition-colors">Portfolio</a>
-              <a href="#contact" className="text-dark hover:text-gray-700 font-medium transition-colors">Contact</a>
-            </nav>
-          )}
+          {/* Center section with Combat Veterans text */}
+          <div className="hidden md:flex items-center justify-center flex-1">
+            <div className="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+              <span className="text-gray-700 font-black-ops font-semibold text-xs uppercase tracking-wider">
+                Combat Veterans • Proven Operators
+              </span>
+            </div>
+          </div>
           
           <div className="flex items-center space-x-3">
             {/* Hidden Admin Access - Multiple Options */}
@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true }) => {
             </Link> */}
             
             {showNavigation && (
-              <button className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+              <button className="hidden md:block bg-gray-700 hover:bg-gray-600 text-white font-black-ops px-4 py-2 rounded-lg font-medium transition-colors">
                 Apply Now
               </button>
             )}

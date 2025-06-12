@@ -33,6 +33,14 @@ export interface Program {
   highlights: string[];
 }
 
+export interface Mentor {
+  name: string;
+  company: string;
+  image: string;
+  linkedinUrl: string;
+  flag?: string;
+}
+
 export const siteData = {
   hero: {
     headline: "Version Bravo",
@@ -215,15 +223,15 @@ export const siteData = {
   ] as PortfolioCompany[],
 
   mentors: [
-    { name: "Rami Lachter", company: "Co-Founder - Flare", image: "/images/mentors/rami-lachter.jpg", linkedinUrl: "https://www.linkedin.com/in/ramilachter/" },
-    { name: "Isaac Zafarani", company: "Co-Founder - Vero, EXO (Acq.)", image: "/images/mentors/isaac-zafarani.jpg", linkedinUrl: "https://www.linkedin.com/in/isaac-zafarani-a9752313/" },
-    { name: "Tal Brown", company: "Co-Founder - Zone 7", image: "/images/mentors/tal-brown.jpg", linkedinUrl: "https://www.linkedin.com/in/talbrown/" },
-    { name: "Avner Braverman", company: "Founder - Voia", image: "/images/mentors/avner-braverman.jpg", linkedinUrl: "https://www.linkedin.com/in/avnerbraverman/" },
-    { name: "Oriel Raveh", company: "Founder - Tipping Point", image: "/images/mentors/oriel-raveh.jpg", linkedinUrl: "https://www.linkedin.com/in/oriel-raveh/" },
-    { name: "Sonny Tai", company: "Founder - Acute", image: "/images/mentors/sonny-tai.jpg", linkedinUrl: "https://www.linkedin.com/in/sonny-tai/" },
-    { name: "Yochai Rozenblat", company: "Serial Entrepreneur", image: "/images/mentors/yochai-rozenblat.jpg", linkedinUrl: "https://www.linkedin.com/in/yochai-rozenblat-b8845412/" },
-    { name: "Rob Huberty", company: "Co-Founder - ZeroEyes", image: "/images/mentors/rob-huberty.jpg", linkedinUrl: "https://www.linkedin.com/in/rob-huberty-605991a2/" }
-  ],
+    { name: "Rami Lachter", company: "Co-Founder - Flare", image: "/images/mentors/rami-lachter.jpg", linkedinUrl: "https://www.linkedin.com/in/ramilachter/", flag: "🇮🇱" },
+    { name: "Isaac Zafarani", company: "Co-Founder - Vero, EXO (Acq.)", image: "/images/mentors/isaac-zafarani.jpg", linkedinUrl: "https://www.linkedin.com/in/isaac-zafarani-a9752313/", flag: "🇺🇸" },
+    { name: "Tal Brown", company: "Co-Founder - Zone 7", image: "/images/mentors/tal-brown.jpg", linkedinUrl: "https://www.linkedin.com/in/talbrown/", flag: "🇺🇸" },
+    { name: "Avner Braverman", company: "Founder - Voia", image: "/images/mentors/avner-braverman.jpg", linkedinUrl: "https://www.linkedin.com/in/avnerbraverman/", flag: "🇺🇸" },
+    { name: "Oriel Raveh", company: "Founder - Tipping Point", image: "/images/mentors/oriel-raveh.jpg", linkedinUrl: "https://www.linkedin.com/in/oriel-raveh/", flag: "🇮🇱" },
+    { name: "Sonny Tai", company: "Founder - Acute", image: "/images/mentors/sonny-tai.jpg", linkedinUrl: "https://www.linkedin.com/in/sonny-tai/", flag: "🇺🇸" },
+    { name: "Yochai Rozenblat", company: "Serial Entrepreneur", image: "/images/mentors/yochai-rozenblat.jpg", linkedinUrl: "https://www.linkedin.com/in/yochai-rozenblat-b8845412/", flag: "🇮🇱" },
+    { name: "Rob Huberty", company: "Co-Founder - ZeroEyes", image: "/images/mentors/rob-huberty.jpg", linkedinUrl: "https://www.linkedin.com/in/rob-huberty-605991a2/", flag: "🇺🇸" }
+  ] as Mentor[],
 
   investmentCriteria: {
     title: "Investment Criteria",

@@ -11,8 +11,11 @@ const AcceleratorCTA: React.FC = () => {
     description: "Whether you're a veteran entrepreneur ready to scale or an investor looking to back the next generation of military-trained founders, we're here to help.",
     primaryButtonText: 'Apply to Accelerator',
     primaryButtonUrl: '#',
-    secondaryButtonText: 'Become an LP',
+    secondaryButtonText: 'Contact Us',
     secondaryButtonUrl: '#'
+  });
+  const [navigationData, setNavigationData] = useState({
+    contactEmail: 'adam@versionbravo.com'
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
@@ -60,9 +63,15 @@ const AcceleratorCTA: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await getDocument('acceleratorCTA');
-        if (data) {
-          setCTAData(data as any);
+        const [ctaData, navData] = await Promise.all([
+          getDocument('acceleratorCTA'),
+          getDocument('navigation')
+        ]);
+        if (ctaData) {
+          setCTAData(ctaData as any);
+        }
+        if (navData) {
+          setNavigationData(navData as any);
         }
       } catch (error) {
         console.error('Error loading accelerator CTA data:', error);
@@ -84,7 +93,7 @@ const AcceleratorCTA: React.FC = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 {ctaData.title}
               </h2>
-              <p className="text-xl mb-8 text-vb-light max-w-3xl mx-auto">
+              <p className="text-xl mb-8 text-gray-200 max-w-3xl mx-auto">
                 {ctaData.description}
               </p>
             </EditableSection>
@@ -97,9 +106,9 @@ const AcceleratorCTA: React.FC = () => {
             <button className="btn-primary bg-gray-100 hover:bg-white text-vb-navy flex-1">
               {ctaData.primaryButtonText}
             </button>
-            <button className="btn-secondary border-white text-white hover:bg-white hover:text-vb-navy flex-1">
-              {ctaData.secondaryButtonText}
-            </button>
+            <a href={`mailto:${navigationData.contactEmail}`} className="btn-secondary border-white text-white hover:bg-white hover:text-vb-navy flex-1 text-center no-underline flex items-center justify-center">
+              Contact Us
+            </a>
           </div>
         </EditableSection>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { siteData } from '../data/content';
+import { siteData, Mentor } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
@@ -68,7 +68,8 @@ const Mentors: React.FC = () => {
           name: data.name,
           company: data.company,
           image: data.image,
-          linkedinUrl: data.linkedinUrl
+          linkedinUrl: data.linkedinUrl,
+          flag: data.flag || ''
         };
         const updatedData = {
           ...mentorsData,
@@ -86,7 +87,8 @@ const Mentors: React.FC = () => {
             name: data.name,
             company: data.company,
             image: data.image,
-            linkedinUrl: data.linkedinUrl
+            linkedinUrl: data.linkedinUrl,
+            flag: data.flag || ''
           };
           const updatedData = {
             ...mentorsData,
@@ -111,7 +113,20 @@ const Mentors: React.FC = () => {
       try {
         const data = await getDocument('mentors');
         if (data) {
-          setMentorsData(data as any);
+          // Merge Firestore data with static data to preserve flags
+          const firestoreData = data as any;
+          const mergedMentors = firestoreData.mentors?.map((firestoreMentor: any) => {
+            const staticMentor = siteData.mentors.find(m => m.name === firestoreMentor.name);
+            return {
+              ...firestoreMentor,
+              flag: firestoreMentor.flag || staticMentor?.flag || ''
+            };
+          }) || siteData.mentors;
+          
+          setMentorsData({
+            ...firestoreData,
+            mentors: mergedMentors
+          });
         }
       } catch (error) {
         console.error('Error loading mentors data:', error);
@@ -156,7 +171,12 @@ const Mentors: React.FC = () => {
                   className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-vb-blue"
                 />
               </div>
-              <h3 className="font-bold text-vb-navy text-lg mb-2">{mentor.name}</h3>
+              <h3 className="font-bold text-vb-navy text-lg mb-2 flex items-center justify-center gap-2">
+                {mentor.name}
+                {mentor.flag && (
+                  <span className="text-lg">{mentor.flag}</span>
+                )}
+              </h3>
               {mentor.company && (
                 <p className="text-vb-medium text-sm mb-3">{mentor.company}</p>
               )}
@@ -265,6 +285,18 @@ const Mentors: React.FC = () => {
               className="admin-input w-full"
               placeholder="https://linkedin.com/in/username"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Flag (optional)</label>
+            <select
+              name="flag"
+              defaultValue={editingMentor?.flag || ''}
+              className="admin-input w-full"
+            >
+              <option value="">No flag</option>
+              <option value="🇺🇸">🇺🇸 United States</option>
+              <option value="🇮🇱">🇮🇱 Israel</option>
+            </select>
           </div>
           {editingType === 'mentor' && (
             <div className="pt-4 border-t border-gray-600">

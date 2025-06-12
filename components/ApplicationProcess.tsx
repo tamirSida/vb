@@ -109,10 +109,10 @@ const ApplicationProcess: React.FC = () => {
             onEdit={handleEditHeader}
           >
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
                 {applicationData.title}
               </h2>
-              <p className="text-xl text-medium max-w-3xl mx-auto">
+              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
                 {applicationData.timeline} — transparent, veteran-to-veteran evaluation
               </p>
             </div>
@@ -121,7 +121,7 @@ const ApplicationProcess: React.FC = () => {
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Timeline */}
           <div>
-            <h3 className="text-2xl font-bold text-dark mb-6">Application Timeline</h3>
+            <h3 className="text-2xl font-bold text-vb-navy mb-6">Application Timeline</h3>
             <div className="space-y-6">
               {applicationData.steps.map((step, index) => (
                 <EditableSection
@@ -130,14 +130,14 @@ const ApplicationProcess: React.FC = () => {
                   onEdit={() => handleEditStep(index)}
                   className="flex items-start"
                 >
-                  <div className="bg-gray-700 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-semibold">
+                  <div className="bg-vb-navy text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0 font-semibold">
                     {index + 1}
                   </div>
                   <div>
-                    <h4 className="font-semibold text-dark text-lg">{step.week}</h4>
-                    <p className="text-medium">{step.activity}</p>
+                    <h4 className="font-semibold text-vb-navy text-lg">{step.week}</h4>
+                    <p className="text-vb-medium">{step.activity}</p>
                     {step.details && (
-                      <p className="text-sm text-gray-600 mt-1">{step.details}</p>
+                      <p className="text-sm text-vb-light mt-1">{step.details}</p>
                     )}
                   </div>
                 </EditableSection>
@@ -147,10 +147,10 @@ const ApplicationProcess: React.FC = () => {
               <EditableSection 
                 sectionName="Add New Step"
                 onEdit={handleAddStep}
-                className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg"
+                className="flex items-center justify-center p-4 border-2 border-dashed border-vb-light rounded-lg"
                 isAddButton={true}
               >
-                <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
+                <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
                   <i className="fas fa-plus text-xl mb-1"></i>
                   <p className="text-sm font-medium">Add New Step</p>
                 </div>
@@ -160,7 +160,7 @@ const ApplicationProcess: React.FC = () => {
 
           {/* Commitments */}
           <div>
-            <h3 className="text-2xl font-bold text-dark mb-6">Our Commitments to You</h3>
+            <h3 className="text-2xl font-bold text-vb-navy mb-6">Our Commitments to You</h3>
             <EditableSection
               sectionName="Commitments List"
               onEdit={handleEditCommitments}
@@ -169,10 +169,10 @@ const ApplicationProcess: React.FC = () => {
               <ul className="space-y-4">
                 {applicationData.commitments.map((commitment, index) => (
                   <li key={index} className="flex items-start">
-                    <div className="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm font-bold">
+                    <div className="bg-vb-navy text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 text-sm font-bold">
                       ✓
                     </div>
-                    <span className="text-dark">{commitment}</span>
+                    <span className="text-vb-navy">{commitment}</span>
                   </li>
                 ))}
               </ul>
@@ -183,7 +183,7 @@ const ApplicationProcess: React.FC = () => {
               onEdit={() => setIsEditModalOpen(true)}
               className="mt-8"
             >
-              <button className="bg-gray-700 hover:bg-gray-600 text-white w-full text-lg py-4 rounded-lg font-semibold transition-colors">
+              <button className="bg-vb-navy hover:bg-vb-blue text-white w-full text-lg py-4 rounded-lg font-semibold transition-colors">
                 Start Your Application
               </button>
             </EditableSection>

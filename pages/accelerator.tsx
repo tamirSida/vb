@@ -39,10 +39,10 @@ export default function Accelerator() {
         return (
           <div key={`custom-${index}`} className="section-padding bg-gray-100">
             <div className="container-max text-center">
-              <h2 className="text-2xl font-bold text-gray-700 mb-4">
+              <h2 className="text-2xl font-bold text-vb-navy mb-4">
                 New {sectionType.charAt(0).toUpperCase() + sectionType.slice(1)} Section
               </h2>
-              <p className="text-gray-600">
+              <p className="text-vb-medium">
                 This is a placeholder for the new {sectionType} section. Content can be customized through the CMS.
               </p>
             </div>

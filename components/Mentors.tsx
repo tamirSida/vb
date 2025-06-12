@@ -130,10 +130,10 @@ const Mentors: React.FC = () => {
             onEdit={handleEditHeader}
           >
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
                 {mentorsData.title}
               </h2>
-              <p className="text-xl text-medium max-w-3xl mx-auto">
+              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
                 {mentorsData.description}
               </p>
             </div>
@@ -153,12 +153,12 @@ const Mentors: React.FC = () => {
                   alt={mentor.name}
                   width={80}
                   height={80}
-                  className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-gray-700"
+                  className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-vb-blue"
                 />
               </div>
-              <h3 className="font-bold text-gray-700 text-lg mb-2">{mentor.name}</h3>
+              <h3 className="font-bold text-vb-navy text-lg mb-2">{mentor.name}</h3>
               {mentor.company && (
-                <p className="text-medium text-sm mb-3">{mentor.company}</p>
+                <p className="text-vb-medium text-sm mb-3">{mentor.company}</p>
               )}
               {mentor.linkedinUrl && (
                 <div className="pt-3 border-t border-secondary">
@@ -179,10 +179,10 @@ const Mentors: React.FC = () => {
           <EditableSection 
             sectionName="Add New Mentor"
             onEdit={handleAddMentor}
-            className="text-center p-6 bg-light/50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center min-h-[200px]"
+            className="text-center p-6 bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center min-h-[200px]"
             isAddButton={true}
           >
-            <div className="text-gray-500 hover:text-gray-700 transition-colors">
+            <div className="text-vb-light hover:text-vb-blue transition-colors">
               <i className="fas fa-plus text-2xl mb-2"></i>
               <p className="font-medium">Add New Mentor</p>
             </div>

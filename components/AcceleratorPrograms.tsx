@@ -152,10 +152,10 @@ const AcceleratorPrograms: React.FC = () => {
             onEdit={handleEditHeader}
           >
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
                 {acceleratorData.title}
               </h2>
-              <p className="text-xl text-medium max-w-3xl mx-auto">
+              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
                 {acceleratorData.description}
               </p>
             </div>
@@ -170,32 +170,32 @@ const AcceleratorPrograms: React.FC = () => {
               className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow"
             >
               <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-3 text-gray-700">{program.name}</h3>
-                <p className="text-medium mb-4">{program.description}</p>
+                <h3 className="text-2xl font-bold mb-3 text-vb-navy">{program.name}</h3>
+                <p className="text-vb-medium mb-4">{program.description}</p>
                 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <span className="text-gray-700 font-semibold">Duration:</span>
-                    <p className="text-dark">{program.duration}</p>
+                    <span className="text-vb-blue font-semibold">Duration:</span>
+                    <p className="text-vb-navy">{program.duration}</p>
                   </div>
                   <div>
-                    <span className="text-gray-700 font-semibold">Investment:</span>
-                    <p className="text-dark">{program.investment}</p>
+                    <span className="text-vb-blue font-semibold">Investment:</span>
+                    <p className="text-vb-navy">{program.investment}</p>
                   </div>
                   <div>
-                    <span className="text-gray-700 font-semibold">Equity:</span>
-                    <p className="text-dark">{program.equity}</p>
+                    <span className="text-vb-blue font-semibold">Equity:</span>
+                    <p className="text-vb-navy">{program.equity}</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h4 className="text-gray-700 font-semibold mb-3">Program Highlights:</h4>
+                <h4 className="text-vb-blue font-semibold mb-3">Program Highlights:</h4>
                 <ul className="space-y-2">
                   {program.highlights.map((highlight, idx) => (
                     <li key={idx} className="flex items-start">
-                      <span className="text-gray-700 mr-2">•</span>
-                      <span className="text-medium">{highlight}</span>
+                      <span className="text-vb-blue mr-2">•</span>
+                      <span className="text-vb-medium">{highlight}</span>
                     </li>
                   ))}
                 </ul>
@@ -210,8 +210,8 @@ const AcceleratorPrograms: React.FC = () => {
             className="bg-light text-dark p-8 rounded-xl shadow-lg border border-secondary hover:shadow-xl transition-shadow"
           >
             <div className="mb-6">
-              <h3 className="text-2xl font-bold mb-4 text-gray-700">About the Program</h3>
-              <p className="text-medium text-gray-600">
+              <h3 className="text-2xl font-bold mb-4 text-vb-navy">About the Program</h3>
+              <p className="text-vb-medium">
                 {acceleratorData.about}
               </p>
             </div>
@@ -221,10 +221,10 @@ const AcceleratorPrograms: React.FC = () => {
           <EditableSection 
             sectionName="Add New Program"
             onEdit={handleAddProgram}
-            className="bg-light/50 border-2 border-dashed border-gray-300 p-8 rounded-xl flex items-center justify-center min-h-[300px]"
+            className="bg-light/50 border-2 border-dashed border-vb-light p-8 rounded-xl flex items-center justify-center min-h-[300px]"
             isAddButton={true}
           >
-            <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
+            <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
               <i className="fas fa-plus text-3xl mb-4"></i>
               <p className="font-medium">Add New Program</p>
             </div>

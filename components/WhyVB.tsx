@@ -114,7 +114,7 @@ const WhyVB: React.FC = () => {
             onEdit={handleEditSection}
           >
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-dark mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
                 {whyVBData.title}
               </h2>
             </div>
@@ -139,10 +139,10 @@ const WhyVB: React.FC = () => {
                 className="bg-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-secondary"
               >
                 <div className="flex items-start">
-                  <div className="bg-gray-700 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                  <div className="bg-vb-navy text-white rounded-full w-12 h-12 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                     <i className={`${icons[index]} text-lg`}></i>
                   </div>
-                  <p className="text-dark leading-relaxed">{point}</p>
+                  <p className="text-vb-navy leading-relaxed">{point}</p>
                 </div>
               </EditableSection>
             );
@@ -171,10 +171,10 @@ const WhyVB: React.FC = () => {
                     className="bg-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-secondary"
                   >
                     <div className="flex items-start">
-                      <div className="bg-gray-700 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                      <div className="bg-vb-navy text-white rounded-full w-12 h-12 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
                         <i className={`${icons[actualIndex]} text-lg`}></i>
                       </div>
-                      <p className="text-dark leading-relaxed">{point}</p>
+                      <p className="text-vb-navy leading-relaxed">{point}</p>
                     </div>
                   </EditableSection>
                 );
@@ -190,10 +190,10 @@ const WhyVB: React.FC = () => {
           className="mt-8 text-center"
           isAddButton={true}
         >
-          <div className="bg-light/50 border-2 border-dashed border-gray-300 p-8 rounded-lg">
+          <div className="bg-light/50 border-2 border-dashed border-vb-light p-8 rounded-lg">
             <button 
               onClick={handleAddPoint}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-vb-light hover:text-vb-blue transition-colors"
             >
               <i className="fas fa-plus text-2xl mb-2"></i>
               <p>Add New Point</p>

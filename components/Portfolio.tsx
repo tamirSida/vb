@@ -144,10 +144,10 @@ const Portfolio: React.FC = () => {
             onEdit={handleEditHeader}
           >
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-700 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-vb-navy mb-4">
                 {portfolioData.title}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-vb-medium max-w-3xl mx-auto">
                 {portfolioData.description}
               </p>
             </div>
@@ -171,11 +171,11 @@ const Portfolio: React.FC = () => {
                 />
               </div>
               
-              <h3 className="text-lg font-bold text-gray-700 mb-2 text-center">
+              <h3 className="text-lg font-bold text-vb-navy mb-2 text-center">
                 {company.name}
               </h3>
               
-              <p className="text-gray-600 text-sm mb-4 text-center">
+              <p className="text-vb-medium text-sm mb-4 text-center">
                 {company.description}
               </p>
 
@@ -183,25 +183,25 @@ const Portfolio: React.FC = () => {
                 <div className="border-t pt-4 space-y-2">
                   {company.metrics.investment && (
                     <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-gray-500">Investment:</span>
-                      <span className="text-sm text-gray-700 font-semibold">{company.metrics.investment}</span>
+                      <span className="text-xs font-semibold text-vb-light">Investment:</span>
+                      <span className="text-sm text-vb-blue font-semibold">{company.metrics.investment}</span>
                     </div>
                   )}
                   {company.metrics.tvpi && (
                     <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-gray-500">TVPI:</span>
-                      <span className="text-sm text-gray-700 font-bold">{company.metrics.tvpi}</span>
+                      <span className="text-xs font-semibold text-vb-light">TVPI:</span>
+                      <span className="text-sm text-vb-blue font-bold">{company.metrics.tvpi}</span>
                     </div>
                   )}
                   {company.metrics.irr && (
                     <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-gray-500">IRR:</span>
-                      <span className="text-sm text-gray-700 font-bold">{company.metrics.irr}</span>
+                      <span className="text-xs font-semibold text-vb-light">IRR:</span>
+                      <span className="text-sm text-vb-blue font-bold">{company.metrics.irr}</span>
                     </div>
                   )}
                   {company.metrics.status && (
                     <div className="mt-3">
-                      <span className="inline-block bg-gray-700 text-white text-xs px-2 py-1 rounded-full">
+                      <span className="inline-block bg-vb-navy text-white text-xs px-2 py-1 rounded-full">
                         {company.metrics.status}
                       </span>
                     </div>
@@ -215,10 +215,10 @@ const Portfolio: React.FC = () => {
           <EditableSection 
             sectionName="Add New Portfolio Company"
             onEdit={handleAddCompany}
-            className="bg-gray-50/50 border-2 border-dashed border-gray-300 rounded-lg p-6 flex items-center justify-center min-h-[250px]"
+            className="bg-gray-50/50 border-2 border-dashed border-vb-light rounded-lg p-6 flex items-center justify-center min-h-[250px]"
             isAddButton={true}
           >
-            <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
+            <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
               <i className="fas fa-plus text-2xl mb-2"></i>
               <p className="font-medium">Add New Portfolio Company</p>
             </div>

@@ -20,6 +20,13 @@ module.exports = {
         'vbv-gold': '#d69e2e', 
         'vbv-gray': '#2d3748',
         
+        // Blue hierarchy inspired by Version Bravo
+        'vb-navy': '#1a365d',        // Main headings (darkest)
+        'vb-blue': '#2b4c7d',        // Secondary headings  
+        'vb-medium': '#4a6b9e',      // Body text
+        'vb-light': '#6b7fbf',       // Supporting text
+        'vb-accent': '#0137b7',      // Icons and accents
+        
         // Kizna CMS colors for admin interface
         'kizna-navy': '#0a1628',
         'kizna-dark': '#1a202c', 

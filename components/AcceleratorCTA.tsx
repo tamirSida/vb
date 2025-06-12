@@ -74,7 +74,7 @@ const AcceleratorCTA: React.FC = () => {
 
   return (
     <>
-      <section id="contact" className="section-padding bg-gradient-to-r from-vbv-gray to-gray-700 text-white">
+      <section id="contact" className="section-padding bg-gradient-to-r from-vb-navy to-vb-blue text-white">
         <div className="container-max">
           <div className="text-center">
             <EditableSection 
@@ -84,7 +84,7 @@ const AcceleratorCTA: React.FC = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 {ctaData.title}
               </h2>
-              <p className="text-xl mb-8 text-gray-200 max-w-3xl mx-auto">
+              <p className="text-xl mb-8 text-vb-light max-w-3xl mx-auto">
                 {ctaData.description}
               </p>
             </EditableSection>
@@ -94,10 +94,10 @@ const AcceleratorCTA: React.FC = () => {
           onEdit={handleEditButtons}
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-            <button className="btn-primary bg-gray-100 hover:bg-white text-gray-700 flex-1">
+            <button className="btn-primary bg-gray-100 hover:bg-white text-vb-navy flex-1">
               {ctaData.primaryButtonText}
             </button>
-            <button className="btn-secondary border-white text-white hover:bg-white hover:text-gray-700 flex-1">
+            <button className="btn-secondary border-white text-white hover:bg-white hover:text-vb-navy flex-1">
               {ctaData.secondaryButtonText}
             </button>
           </div>

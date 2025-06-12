@@ -114,13 +114,13 @@ const Team: React.FC = () => {
           >
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="text-dark">Leadership</span> <span className="text-gray-700">Team</span>
+                <span className="text-vb-navy">Leadership Team</span>
               </h2>
-              <div className="flex items-center justify-center gap-4 text-xl text-medium max-w-3xl mx-auto">
+              <div className="flex items-center justify-center gap-4 text-xl text-vb-medium max-w-3xl mx-auto">
                 <span className="font-semibold">Combat Veterans</span>
-                <i className="fas fa-arrow-right text-gray-700 text-2xl"></i>
+                <i className="fas fa-arrow-right text-vb-medium text-2xl"></i>
                 <span className="font-semibold">Entrepreneurs</span>
-                <i className="fas fa-arrow-right text-gray-700 text-2xl"></i>
+                <i className="fas fa-arrow-right text-vb-medium text-2xl"></i>
                 <span className="font-semibold">Investors</span>
               </div>
             </div>
@@ -128,17 +128,17 @@ const Team: React.FC = () => {
 
         {/* Founders Section */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">General Partners</h3>
+          <h3 className="text-2xl font-bold text-vb-navy mb-8 text-center">General Partners</h3>
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {founders.map((member, index) => (
               <EditableSection
                 key={index}
                 sectionName={`${member.name}`}
                 onEdit={() => handleEditMember(member)}
-                className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <div className="flex justify-center pt-6 mb-6">
-                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700 shadow-xl">
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl">
                     <Image 
                       src={member.image} 
                       alt={member.name}
@@ -150,11 +150,11 @@ const Team: React.FC = () => {
                 </div>
                 <div className="p-5">
                   <div className="text-center mb-4">
-                    <h4 className="text-xl font-bold text-dark mb-2">{member.name}</h4>
+                    <h4 className="text-xl font-bold text-vb-navy mb-2">{member.name}</h4>
                     {member.title && (
-                      <p className="text-gray-700 font-semibold mb-3 text-sm">{member.title}</p>
+                      <p className="text-vb-blue font-semibold mb-3 text-sm">{member.title}</p>
                     )}
-                    <p className="text-sm text-medium italic">{member.military}</p>
+                    <p className="text-sm text-vb-medium italic">{member.military}</p>
                   </div>
                   
                   {member.linkedinUrl && (
@@ -177,10 +177,10 @@ const Team: React.FC = () => {
             <EditableSection 
               sectionName="Add New General Partner"
               onEdit={() => handleAddMember(true)}
-              className="bg-light/50 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center h-80"
+              className="bg-light/50 border-2 border-dashed border-vb-light rounded-xl flex items-center justify-center h-80"
               isAddButton={true}
             >
-              <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
+              <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
                 <i className="fas fa-plus text-3xl mb-4"></i>
                 <p className="font-medium">Add New General Partner</p>
               </div>
@@ -190,7 +190,7 @@ const Team: React.FC = () => {
 
         {/* Team Section */}
         <div>
-          <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">Team</h3>
+          <h3 className="text-2xl font-bold text-vb-navy mb-8 text-center">Team</h3>
           <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
             {team.map((member, index) => (
               <EditableSection
@@ -200,7 +200,7 @@ const Team: React.FC = () => {
                 className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md"
               >
                 <div className="flex justify-center pt-3 mb-3">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg">
                     <Image 
                       src={member.image} 
                       alt={member.name}
@@ -213,12 +213,12 @@ const Team: React.FC = () => {
                 </div>
                 <div className="p-3">
                   <div className="text-center mb-3">
-                    <h4 className="text-base font-bold text-dark mb-1">{member.name}</h4>
+                    <h4 className="text-base font-bold text-vb-navy mb-1">{member.name}</h4>
                     {member.title && (
-                      <p className="text-gray-700 font-semibold text-xs mb-2">{member.title}</p>
+                      <p className="text-vb-blue font-semibold text-xs mb-2">{member.title}</p>
                     )}
                     {member.military !== "N/A" && (
-                      <p className="text-xs text-medium italic">{member.military}</p>
+                      <p className="text-xs text-vb-medium italic">{member.military}</p>
                     )}
                   </div>
                   
@@ -242,10 +242,10 @@ const Team: React.FC = () => {
             <EditableSection 
               sectionName="Add New Team Member"
               onEdit={() => handleAddMember(false)}
-              className="bg-light/50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center h-48"
+              className="bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center h-48"
               isAddButton={true}
             >
-              <div className="text-center text-gray-500 hover:text-gray-700 transition-colors">
+              <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
                 <i className="fas fa-plus text-2xl mb-2"></i>
                 <p className="font-medium">Add New Team Member</p>
               </div>

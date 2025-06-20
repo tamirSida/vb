@@ -3,14 +3,51 @@ import { motion, useInView } from 'framer-motion';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import ImageInsert from './admin/ImageInsert';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const ApplicationProcess: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingType, setEditingType] = useState<'header' | 'step' | 'commitments' | 'add-step' | 'add-commitment'>('header');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [applicationData, setApplicationData] = useState(siteData.applicationProcess);
+  const [applicationData, setApplicationData] = useState({
+    ...siteData.applicationProcess,
+    images: [] as any[]
+  });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+
+  // Handle image operations
+  const handleImageSave = async (imageData: any) => {
+    try {
+      const updatedImages = [...applicationData.images, imageData];
+      const updatedData = {
+        ...applicationData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('applicationProcess', updatedData);
+      setApplicationData(updatedData);
+      console.log('Image added successfully');
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    try {
+      const updatedImages = applicationData.images.filter((img: any) => img.id !== imageId);
+      const updatedData = {
+        ...applicationData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('applicationProcess', updatedData);
+      setApplicationData(updatedData);
+      console.log('Image deleted successfully');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
   
   // Animation refs
   const headerRef = useRef<HTMLDivElement>(null);
@@ -53,6 +90,7 @@ const ApplicationProcess: React.FC = () => {
       const updatedData = {
         ...applicationData,
         steps: updatedSteps,
+        images: applicationData.images,
         updatedAt: new Date().toISOString()
       };
       await updateDocument('applicationProcess', updatedData);
@@ -73,6 +111,7 @@ const ApplicationProcess: React.FC = () => {
           ...applicationData,
           title: data.title,
           timeline: data.timeline,
+          images: applicationData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('applicationProcess', updatedData);
@@ -81,6 +120,7 @@ const ApplicationProcess: React.FC = () => {
         const updatedData = {
           ...applicationData,
           commitments: data.commitments.split('\n').filter((c: string) => c.trim()),
+          images: applicationData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('applicationProcess', updatedData);
@@ -100,7 +140,10 @@ const ApplicationProcess: React.FC = () => {
       try {
         const data = await getDocument('applicationProcess');
         if (data) {
-          setApplicationData(data as any);
+          setApplicationData({
+            ...(data as any),
+            images: (data as any).images || []
+          });
         }
       } catch (error) {
         console.error('Error loading application process data:', error);
@@ -145,6 +188,26 @@ const ApplicationProcess: React.FC = () => {
               </div>
             </EditableSection>
           </motion.div>
+
+          {/* Image insertion after header */}
+          {applicationData.images
+            .filter((img: any) => img.position === 1)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={1}
+                sectionName="Application Header Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={1}
+            sectionName="Add Image After Header"
+            isAddButton={true}
+          />
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Timeline */}
@@ -331,6 +394,26 @@ const ApplicationProcess: React.FC = () => {
             </motion.div>
           </motion.div>
         </div>
+
+        {/* Image insertion after application process */}
+        {applicationData.images
+          .filter((img: any) => img.position === 2)
+          .map((img: any) => (
+            <ImageInsert
+              key={img.id}
+              imageData={img}
+              onSave={handleImageSave}
+              onDelete={handleImageDelete}
+              position={2}
+              sectionName="Application Process Image"
+            />
+          ))}
+        <ImageInsert
+          onSave={handleImageSave}
+          position={2}
+          sectionName="Add Image After Process"
+          isAddButton={true}
+        />
       </div>
     </section>
 

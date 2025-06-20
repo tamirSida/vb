@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import { siteData, PortfolioCompany } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import ImageInsert from './admin/ImageInsert';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 // Counting animation component
@@ -58,6 +59,7 @@ const Portfolio: React.FC = () => {
     title: 'Portfolio Highlights',
     description: 'Proven track record of successful investments in veteran-led companies',
     companies: siteData.portfolio,
+    images: [] as any[],
     stats: {
       title: 'Companies Accelerated',
       israeliCompanies: 40,
@@ -74,6 +76,39 @@ const Portfolio: React.FC = () => {
   const isGridInView = useInView(gridRef, { once: true, margin: "-50px" });
   
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+
+  // Handle image operations
+  const handleImageSave = async (imageData: any) => {
+    try {
+      const updatedImages = [...portfolioData.images, imageData];
+      const updatedData = {
+        ...portfolioData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('portfolio', updatedData);
+      setPortfolioData(updatedData);
+      console.log('Image added successfully');
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    try {
+      const updatedImages = portfolioData.images.filter((img: any) => img.id !== imageId);
+      const updatedData = {
+        ...portfolioData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('portfolio', updatedData);
+      setPortfolioData(updatedData);
+      console.log('Image deleted successfully');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
 
   const handleEditHeader = () => {
     setEditingType('header');
@@ -108,6 +143,7 @@ const Portfolio: React.FC = () => {
       const updatedData = {
         ...portfolioData,
         companies: updatedCompanies,
+        images: portfolioData.images,
         updatedAt: new Date().toISOString()
       };
       await updateDocument('portfolio', updatedData);
@@ -133,6 +169,7 @@ const Portfolio: React.FC = () => {
             totalCompanies: parseInt(data.totalCompanies) || 0,
             americanCompanies: parseInt(data.americanCompanies) || 0
           },
+          images: portfolioData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('portfolio', updatedData);
@@ -143,6 +180,7 @@ const Portfolio: React.FC = () => {
           ...portfolioData,
           title: data.title,
           description: data.description,
+          images: portfolioData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('portfolio', updatedData);
@@ -160,6 +198,7 @@ const Portfolio: React.FC = () => {
         const updatedData = {
           ...portfolioData,
           companies: [...portfolioData.companies, newCompany],
+          images: portfolioData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('portfolio', updatedData);
@@ -180,6 +219,7 @@ const Portfolio: React.FC = () => {
           const updatedData = {
             ...portfolioData,
             companies: updatedCompanies,
+            images: portfolioData.images,
             updatedAt: new Date().toISOString()
           };
           await updateDocument('portfolio', updatedData);
@@ -224,6 +264,7 @@ const Portfolio: React.FC = () => {
             title: (data as any).title || 'Portfolio Highlights',
             description: (data as any).description || 'Proven track record of successful investments in veteran-led companies',
             companies: (data as any).companies,
+            images: (data as any).images || [],
             stats: (data as any).stats || {
               title: 'Companies Accelerated',
               israeliCompanies: 40,
@@ -240,6 +281,7 @@ const Portfolio: React.FC = () => {
           title: 'Portfolio Highlights',
           description: 'Proven track record of successful investments in veteran-led companies',
           companies: siteData.portfolio,
+          images: [],
           stats: {
             title: 'Companies Accelerated',
             israeliCompanies: 40,
@@ -289,6 +331,26 @@ const Portfolio: React.FC = () => {
             </div>
           </EditableSection>
 
+          {/* Image insertion after stats */}
+          {portfolioData.images
+            .filter((img: any) => img.position === 1)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={1}
+                sectionName="Portfolio Stats Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={1}
+            sectionName="Add Image After Stats"
+            isAddButton={true}
+          />
+
           <motion.div
             ref={headerRef}
             initial={{ opacity: 0, y: 50 }}
@@ -319,6 +381,26 @@ const Portfolio: React.FC = () => {
               </div>
             </EditableSection>
           </motion.div>
+
+          {/* Image insertion after header */}
+          {portfolioData.images
+            .filter((img: any) => img.position === 2)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={2}
+                sectionName="Portfolio Header Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={2}
+            sectionName="Add Image After Header"
+            isAddButton={true}
+          />
 
         <motion.div 
           ref={gridRef}
@@ -482,6 +564,26 @@ const Portfolio: React.FC = () => {
             </EditableSection>
           </motion.div>
         </motion.div>
+
+        {/* Image insertion after portfolio grid */}
+        {portfolioData.images
+          .filter((img: any) => img.position === 3)
+          .map((img: any) => (
+            <ImageInsert
+              key={img.id}
+              imageData={img}
+              onSave={handleImageSave}
+              onDelete={handleImageDelete}
+              position={3}
+              sectionName="Portfolio Grid Image"
+            />
+          ))}
+        <ImageInsert
+          onSave={handleImageSave}
+          position={3}
+          sectionName="Add Image After Portfolio"
+          isAddButton={true}
+        />
       </div>
     </section>
 

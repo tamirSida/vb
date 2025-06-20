@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion';
 import { siteData, Mentor } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import ImageInsert from './admin/ImageInsert';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const Mentors: React.FC = () => {
@@ -13,9 +14,43 @@ const Mentors: React.FC = () => {
   const [mentorsData, setMentorsData] = useState({
     title: 'Mentor Network',
     description: 'Industry experts and successful entrepreneurs providing guidance to our portfolio companies',
-    mentors: siteData.mentors
+    mentors: siteData.mentors,
+    images: [] as any[]
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+
+  // Handle image operations
+  const handleImageSave = async (imageData: any) => {
+    try {
+      const updatedImages = [...mentorsData.images, imageData];
+      const updatedData = {
+        ...mentorsData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('mentors', updatedData);
+      setMentorsData(updatedData);
+      console.log('Image added successfully');
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    try {
+      const updatedImages = mentorsData.images.filter((img: any) => img.id !== imageId);
+      const updatedData = {
+        ...mentorsData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('mentors', updatedData);
+      setMentorsData(updatedData);
+      console.log('Image deleted successfully');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
   
   // Animation refs
   const headerRef = useRef<HTMLDivElement>(null);
@@ -47,6 +82,7 @@ const Mentors: React.FC = () => {
       const updatedData = {
         ...mentorsData,
         mentors: updatedMentors,
+        images: mentorsData.images,
         updatedAt: new Date().toISOString()
       };
       await updateDocument('mentors', updatedData);
@@ -67,6 +103,7 @@ const Mentors: React.FC = () => {
           title: data.title,
           description: data.description,
           mentors: mentorsData.mentors,
+          images: mentorsData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('mentors', updatedData);
@@ -82,6 +119,7 @@ const Mentors: React.FC = () => {
         const updatedData = {
           ...mentorsData,
           mentors: [...mentorsData.mentors, newMentor],
+          images: mentorsData.images,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('mentors', updatedData);
@@ -101,6 +139,7 @@ const Mentors: React.FC = () => {
           const updatedData = {
             ...mentorsData,
             mentors: updatedMentors,
+            images: mentorsData.images,
             updatedAt: new Date().toISOString()
           };
           await updateDocument('mentors', updatedData);
@@ -133,7 +172,8 @@ const Mentors: React.FC = () => {
           
           setMentorsData({
             ...firestoreData,
-            mentors: mergedMentors
+            mentors: mergedMentors,
+            images: firestoreData.images || []
           });
         }
       } catch (error) {
@@ -179,6 +219,26 @@ const Mentors: React.FC = () => {
               </div>
             </EditableSection>
           </motion.div>
+
+          {/* Image insertion after header */}
+          {mentorsData.images
+            .filter((img: any) => img.position === 1)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={1}
+                sectionName="Mentors Header Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={1}
+            sectionName="Add Image After Header"
+            isAddButton={true}
+          />
 
         <motion.div 
           ref={gridRef}
@@ -299,6 +359,26 @@ const Mentors: React.FC = () => {
             </EditableSection>
           </motion.div>
         </motion.div>
+
+        {/* Image insertion after mentors grid */}
+        {mentorsData.images
+          .filter((img: any) => img.position === 2)
+          .map((img: any) => (
+            <ImageInsert
+              key={img.id}
+              imageData={img}
+              onSave={handleImageSave}
+              onDelete={handleImageDelete}
+              position={2}
+              sectionName="Mentors Grid Image"
+            />
+          ))}
+        <ImageInsert
+          onSave={handleImageSave}
+          position={2}
+          sectionName="Add Image After Mentors"
+          isAddButton={true}
+        />
       </div>
     </section>
 

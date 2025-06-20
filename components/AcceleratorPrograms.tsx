@@ -3,6 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
+import ImageInsert from './admin/ImageInsert';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 // Timeline Phase Card component with connecting lines and icons
@@ -106,6 +107,7 @@ const AcceleratorPrograms: React.FC = () => {
     description: 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
     about: 'adam fill here',
     programs: siteData.programs.filter(program => program.name === 'VB Accelerator'),
+    images: [] as any[],
     timeline: [
       {
         timeframe: 'JAN-MAR',
@@ -166,6 +168,39 @@ const AcceleratorPrograms: React.FC = () => {
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
+  // Handle image operations
+  const handleImageSave = async (imageData: any) => {
+    try {
+      const updatedImages = [...acceleratorData.images, imageData];
+      const updatedData = {
+        ...acceleratorData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('acceleratorPrograms', updatedData);
+      setAcceleratorData(updatedData);
+      console.log('Image added successfully');
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    try {
+      const updatedImages = acceleratorData.images.filter((img: any) => img.id !== imageId);
+      const updatedData = {
+        ...acceleratorData,
+        images: updatedImages,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('acceleratorPrograms', updatedData);
+      setAcceleratorData(updatedData);
+      console.log('Image deleted successfully');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
+
   // Only show the VB Accelerator program
   const acceleratorPrograms = acceleratorData.programs;
 
@@ -202,6 +237,7 @@ const AcceleratorPrograms: React.FC = () => {
       const updatedData = {
         ...acceleratorData,
         programs: updatedPrograms,
+        images: acceleratorData.images,
         timeline: acceleratorData.timeline,
         updatedAt: new Date().toISOString()
       };
@@ -224,6 +260,7 @@ const AcceleratorPrograms: React.FC = () => {
           description: data.description,
           about: acceleratorData.about,
           programs: acceleratorData.programs,
+          images: acceleratorData.images,
           timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
@@ -233,6 +270,7 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           ...acceleratorData,
           about: data.about,
+          images: acceleratorData.images,
           timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
@@ -254,6 +292,7 @@ const AcceleratorPrograms: React.FC = () => {
           const updatedData = {
             ...acceleratorData,
             programs: updatedPrograms,
+            images: acceleratorData.images,
             timeline: acceleratorData.timeline,
             updatedAt: new Date().toISOString()
           };
@@ -273,6 +312,7 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           ...acceleratorData,
           programs: [...acceleratorData.programs, newProgram],
+          images: acceleratorData.images,
           timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
@@ -293,11 +333,12 @@ const AcceleratorPrograms: React.FC = () => {
       try {
         const data = await getDocument('acceleratorPrograms');
         if (data) {
-          // Merge with default timeline if not present in Firestore
+          // Merge with default timeline and images if not present in Firestore
           const mergedData = {
             ...acceleratorData,
             ...data,
-            timeline: (data as any).timeline || acceleratorData.timeline
+            timeline: (data as any).timeline || acceleratorData.timeline,
+            images: (data as any).images || []
           };
           setAcceleratorData(mergedData as any);
         }
@@ -326,6 +367,26 @@ const AcceleratorPrograms: React.FC = () => {
               </p>
             </div>
           </EditableSection>
+
+          {/* Image insertion after header */}
+          {acceleratorData.images
+            .filter((img: any) => img.position === 1)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={1}
+                sectionName="Header Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={1}
+            sectionName="Add Image After Header"
+            isAddButton={true}
+          />
 
         <div className="space-y-8">
           {acceleratorPrograms.map((program, index) => (
@@ -461,6 +522,26 @@ const AcceleratorPrograms: React.FC = () => {
             </motion.div>
           ))}
 
+          {/* Image insertion between programs and timeline */}
+          {acceleratorData.images
+            .filter((img: any) => img.position === 2)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={2}
+                sectionName="Programs Section Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={2}
+            sectionName="Add Image Before Timeline"
+            isAddButton={true}
+          />
+
           {/* Program Timeline Section */}
           <div ref={timelineRef} className="bg-light text-dark rounded-xl shadow-lg border border-secondary overflow-hidden">
             <div className="p-8">
@@ -496,6 +577,26 @@ const AcceleratorPrograms: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Image insertion after timeline */}
+          {acceleratorData.images
+            .filter((img: any) => img.position === 3)
+            .map((img: any) => (
+              <ImageInsert
+                key={img.id}
+                imageData={img}
+                onSave={handleImageSave}
+                onDelete={handleImageDelete}
+                position={3}
+                sectionName="Timeline Section Image"
+              />
+            ))}
+          <ImageInsert
+            onSave={handleImageSave}
+            position={3}
+            sectionName="Add Image After Timeline"
+            isAddButton={true}
+          />
           
           {/* Add Program Button */}
           <EditableSection 

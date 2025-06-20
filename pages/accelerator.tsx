@@ -52,6 +52,8 @@ export default function Accelerator() {
   // Swipe interface state
   const [currentPage, setCurrentPage] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState<{[key: number]: boolean}>({});
+  const [pageLoaded, setPageLoaded] = useState(false);
 
   const [testimonials, setTestimonials] = useState([
     {
@@ -113,13 +115,31 @@ export default function Accelerator() {
     loadData();
   }, []);
 
-  // Preload images for smooth transitions
+  // Preload images for smooth transitions and track loading
   useEffect(() => {
-    whyVBPages.forEach(page => {
+    let loadedCount = 0;
+    const totalImages = whyVBPages.length;
+    
+    whyVBPages.forEach((page, index) => {
       const img = new Image();
+      img.onload = () => {
+        setImagesLoaded(prev => ({ ...prev, [index + 1]: true }));
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setTimeout(() => setPageLoaded(true), 100); // Small delay for smooth effect
+        }
+      };
       img.src = page.backgroundImage;
     });
   }, [whyVBPages]);
+
+  // Initial page load animation trigger
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!pageLoaded) setPageLoaded(true); // Fallback if images don't load
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Save functions
   const saveHeroData = async (data: any) => {
@@ -341,8 +361,20 @@ export default function Accelerator() {
       <main>
         {/* Combined Hero + Swipe Interface Section */}
         <section className="relative overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
+          {/* Loading overlay */}
+          {!pageLoaded && (
+            <div className="absolute inset-0 bg-vb-navy z-50 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-12 h-12 border-4 border-vb-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-white text-lg font-medium">Loading Experience...</p>
+              </div>
+            </div>
+          )}
+
           {/* Hero Title Overlay */}
-          <div className="absolute top-0 left-0 w-full z-30 bg-gradient-to-b from-black/60 to-transparent">
+          <div className={`absolute top-0 left-0 w-full z-30 bg-gradient-to-b from-black/60 to-transparent transition-all duration-1000 ${
+            pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+          }`}>
             <div className="container-max text-center pt-4 pb-6">
               <EditableSection
                 sectionName="Accelerator Hero"
@@ -375,7 +407,13 @@ export default function Accelerator() {
                   <img 
                     src={page.backgroundImage} 
                     alt={page.title} 
-                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${
+                      pageLoaded && isActive 
+                        ? 'opacity-100 scale-100' 
+                        : pageLoaded && !isActive
+                          ? 'opacity-100 scale-100'
+                          : 'opacity-0 scale-110'
+                    }`}
                     loading="eager"
                     style={{ willChange: 'opacity, transform' }}
                   />
@@ -393,10 +431,51 @@ export default function Accelerator() {
                         }}
                       >
                         <h2 className="text-3xl font-bold mb-6 text-white">{page.title}</h2>
-                        <p className="text-white/90 text-lg leading-relaxed">
+                        <p className="text-white/90 text-lg leading-relaxed mb-8">
                           {page.description}
                         </p>
                       </EditableSection>
+                      
+                      {/* Add testimonials to pages 1, 3, and 5 */}
+                      {(pageNumber === 1 || pageNumber === 3 || pageNumber === 5) && (() => {
+                        const testimonial = testimonials.find(t => {
+                          if (pageNumber === 1) return t.id === 1; // Andre Gomez
+                          if (pageNumber === 3) return t.id === 2; // Or Yustman  
+                          if (pageNumber === 5) return t.id === 3; // Jonathan Cleck
+                          return false;
+                        });
+                        
+                        if (!testimonial) return null;
+                        
+                        return (
+                          <EditableSection
+                            sectionName={`Testimonial - ${testimonial.author}`}
+                            onEdit={() => {
+                              setEditingTestimonial(testimonial.id);
+                              setIsTestimonialModalOpen(true);
+                            }}
+                          >
+                            <div className="border-t border-white/20 pt-6">
+                              <div className="flex items-start space-x-4">
+                                <img 
+                                  src={testimonial.image} 
+                                  alt={testimonial.author} 
+                                  className="w-12 h-12 rounded-full object-cover border-2 border-vb-gold flex-shrink-0"
+                                />
+                                <div>
+                                  <blockquote className="text-white/90 text-sm italic leading-relaxed mb-3">
+                                    "{testimonial.quote.substring(0, 200)}..."
+                                  </blockquote>
+                                  <div className="text-white/80">
+                                    <p className="font-semibold text-sm">{testimonial.author}</p>
+                                    <p className="text-xs">{testimonial.title}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </EditableSection>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -404,7 +483,9 @@ export default function Accelerator() {
             })}
             
             {/* Navigation dots - Horizontal at bottom center */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+            <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20 transition-all duration-1000 delay-500 ${
+              pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}>
               {whyVBPages.map((_, index) => {
                 const pageNumber = index + 1;
                 const isActive = pageNumber === currentPage;
@@ -426,7 +507,9 @@ export default function Accelerator() {
             </div>
             
             {/* Desktop Arrow Navigation */}
-            <div className="hidden md:block">
+            <div className={`hidden md:block transition-all duration-1000 delay-700 ${
+              pageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}>
               {/* Left Arrow */}
               <button 
                 onClick={prevPage}
@@ -455,7 +538,9 @@ export default function Accelerator() {
             </div>
             
             {/* Keyboard instruction */}
-            <div className="hidden md:block absolute bottom-1 left-1/2 transform -translate-x-1/2 z-20">
+            <div className={`hidden md:block absolute bottom-1 left-1/2 transform -translate-x-1/2 z-20 transition-all duration-1000 delay-1000 ${
+              pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            }`}>
               <div className="bg-black/40 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs">
                 Use ← → arrow keys or click numbers to navigate
               </div>
@@ -463,38 +548,6 @@ export default function Accelerator() {
           </div>
         </section>
         
-        {/* Testimonials Section - Now separate */}
-        <section className="bg-gradient-to-br from-vb-navy to-vb-medium text-white">
-          {testimonials.map((testimonial) => (
-            <div key={`testimonial-${testimonial.id}`} className="min-h-[80vh] flex items-center justify-center px-8 py-16">
-              <div className="max-w-4xl mx-auto text-center">
-                <EditableSection
-                  sectionName={`Testimonial - ${testimonial.author}`}
-                  onEdit={() => {
-                    setEditingTestimonial(testimonial.id);
-                    setIsTestimonialModalOpen(true);
-                  }}
-                >
-                  <div className="mb-6">
-                    <img 
-                      src={testimonial.image} 
-                      alt={testimonial.author} 
-                      className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
-                    />
-                    <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
-                  </div>
-                  <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
-                    "{testimonial.quote}"
-                  </blockquote>
-                  <div className="text-white/90">
-                    <p className="font-semibold text-lg">{testimonial.author}</p>
-                    <p className="text-sm">{testimonial.title}</p>
-                  </div>
-                </EditableSection>
-              </div>
-            </div>
-          ))}
-        </section>
 
 
         {/* Navigation to Subpages */}

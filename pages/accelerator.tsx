@@ -21,31 +21,36 @@ export default function Accelerator() {
       id: 1,
       title: 'Team of Successful Operators',
       description: 'We are not passive investors; we\'re in the trenches with our founders. Our track record as value-add advisors means hands-on support when you need it most.',
-      backgroundImage: '/images/accelerator/whyvb1.jpg'
+      backgroundImage: '/images/accelerator/whyvb1.jpg',
+      testimonialId: null as number | null
     },
     {
       id: 2,
       title: 'Unparalleled Network',
       description: 'Access to entrepreneurs, industry experts, veteran foundations, and military transition organizations. Our network becomes your network.',
-      backgroundImage: '/images/accelerator/whyvb2.jpg'
+      backgroundImage: '/images/accelerator/whyvb2.jpg',
+      testimonialId: null as number | null
     },
     {
       id: 3,
       title: 'We Understand Veterans',
       description: 'Shared experience, trust, and mindset. We understand the veteran entrepreneur because we are veteran entrepreneurs.',
-      backgroundImage: '/images/accelerator/whyvb3.jpg'
+      backgroundImage: '/images/accelerator/whyvb3.jpg',
+      testimonialId: null as number | null
     },
     {
       id: 4,
       title: 'Built by Veterans, for Veterans',
       description: '4 years of experience, 58 combat veteran founders graduated. Our accelerator was purpose-built for the veteran entrepreneur journey.',
-      backgroundImage: '/images/accelerator/whyvb4.jpg'
+      backgroundImage: '/images/accelerator/whyvb4.jpg',
+      testimonialId: null as number | null
     },
     {
       id: 5,
       title: 'Experienced Advisory Board',
       description: 'Decades of VC and technical expertise across sectors and stages. Strategic guidance from those who\'ve built successful companies.',
-      backgroundImage: '/images/accelerator/whyvb5.jpg'
+      backgroundImage: '/images/accelerator/whyvb5.jpg',
+      testimonialId: null as number | null
     }
   ]);
 
@@ -160,7 +165,13 @@ export default function Accelerator() {
   const saveWhyVBPage = async (data: any) => {
     try {
       const updatedPages = whyVBPages.map(page => 
-        page.id === editingWhyVBPage ? { ...page, ...data } : page
+        page.id === editingWhyVBPage ? { 
+          ...page, 
+          title: data.title,
+          description: data.description,
+          backgroundImage: data.backgroundImage,
+          testimonialId: data.testimonialId ? parseInt(data.testimonialId) : null
+        } : page
       );
       const currentData = (await getDocument('acceleratorContent') as any) || {};
       await updateDocument('acceleratorContent', {
@@ -171,6 +182,7 @@ export default function Accelerator() {
       setWhyVBPages(updatedPages);
       setIsWhyVBModalOpen(false);
       setEditingWhyVBPage(null);
+      console.log('Why VB page saved successfully');
     } catch (error) {
       console.error('Error saving Why VB page:', error);
     }
@@ -436,45 +448,70 @@ export default function Accelerator() {
                         </p>
                       </EditableSection>
                       
-                      {/* Add testimonials to pages 1, 3, and 5 */}
-                      {(pageNumber === 1 || pageNumber === 3 || pageNumber === 5) && (() => {
-                        const testimonial = testimonials.find(t => {
-                          if (pageNumber === 1) return t.id === 1; // Andre Gomez
-                          if (pageNumber === 3) return t.id === 2; // Or Yustman  
-                          if (pageNumber === 5) return t.id === 3; // Jonathan Cleck
+                      {/* Page testimonial/quote section */}
+                      {(() => {
+                        // Find existing testimonial for this page
+                        const existingTestimonial = testimonials.find(t => {
+                          if (pageNumber === 1) return t.id === 1;
+                          if (pageNumber === 3) return t.id === 2;  
+                          if (pageNumber === 5) return t.id === 3;
                           return false;
                         });
+
+                        // Check if page has a quote assigned
+                        const pageHasQuote = page.testimonialId || existingTestimonial;
                         
-                        if (!testimonial) return null;
-                        
-                        return (
-                          <EditableSection
-                            sectionName={`Testimonial - ${testimonial.author}`}
-                            onEdit={() => {
-                              setEditingTestimonial(testimonial.id);
-                              setIsTestimonialModalOpen(true);
-                            }}
-                          >
-                            <div className="border-t border-white/20 pt-6">
-                              <div className="flex items-start space-x-4">
-                                <img 
-                                  src={testimonial.image} 
-                                  alt={testimonial.author} 
-                                  className="w-12 h-12 rounded-full object-cover border-2 border-vb-gold flex-shrink-0"
-                                />
-                                <div>
-                                  <blockquote className="text-white/90 text-sm italic leading-relaxed mb-3">
-                                    "{testimonial.quote.substring(0, 200)}..."
-                                  </blockquote>
-                                  <div className="text-white/80">
-                                    <p className="font-semibold text-sm">{testimonial.author}</p>
-                                    <p className="text-xs">{testimonial.title}</p>
+                        if (pageHasQuote) {
+                          const testimonial = existingTestimonial || testimonials.find(t => t.id === page.testimonialId);
+                          if (!testimonial) return null;
+                          
+                          return (
+                            <EditableSection
+                              sectionName={`Page ${pageNumber} Quote`}
+                              onEdit={() => {
+                                setEditingTestimonial(testimonial.id);
+                                setIsTestimonialModalOpen(true);
+                              }}
+                            >
+                              <div className="border-t border-white/20 pt-6">
+                                <div className="flex items-start space-x-4">
+                                  <img 
+                                    src={testimonial.image} 
+                                    alt={testimonial.author} 
+                                    className="w-12 h-12 rounded-full object-cover border-2 border-vb-gold flex-shrink-0"
+                                  />
+                                  <div>
+                                    <blockquote className="text-white/90 text-sm italic leading-relaxed mb-3">
+                                      "{testimonial.quote.substring(0, 200)}..."
+                                    </blockquote>
+                                    <div className="text-white/80">
+                                      <p className="font-semibold text-sm">{testimonial.author}</p>
+                                      <p className="text-xs">{testimonial.title}</p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </EditableSection>
-                        );
+                            </EditableSection>
+                          );
+                        } else {
+                          // Show "Add Quote" option for pages without quotes
+                          return (
+                            <EditableSection
+                              sectionName={`Add Quote to Page ${pageNumber}`}
+                              onEdit={() => {
+                                setEditingWhyVBPage(page.id);
+                                setIsWhyVBModalOpen(true);
+                              }}
+                              className="border-t border-white/20 pt-6"
+                              isAddButton={true}
+                            >
+                              <div className="text-center text-white/60 hover:text-white/80 transition-colors py-4">
+                                <i className="fas fa-plus text-lg mb-2 block"></i>
+                                <p className="text-sm font-medium">Add Testimonial Quote</p>
+                              </div>
+                            </EditableSection>
+                          );
+                        }
                       })()}
                     </div>
                   </div>
@@ -700,6 +737,29 @@ export default function Accelerator() {
                 className="admin-input w-full"
                 placeholder="/images/accelerator/whyvb1.jpg"
               />
+            </div>
+            
+            {/* Testimonial Management */}
+            <div className="border-t border-gray-600 pt-4">
+              <label className="block text-sm font-medium text-gray-300 mb-3">Page Testimonial</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Assign Testimonial</label>
+                <select
+                  name="testimonialId"
+                  defaultValue={whyVBPages.find(p => p.id === editingWhyVBPage)?.testimonialId || ''}
+                  className="admin-input w-full"
+                >
+                  <option value="">No testimonial</option>
+                  {testimonials.map(testimonial => (
+                    <option key={testimonial.id} value={testimonial.id}>
+                      {testimonial.author} - {testimonial.quote.substring(0, 50)}...
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <p className="text-xs text-gray-400 mt-2">
+                Select a testimonial to display below the page content, or leave empty for no testimonial.
+              </p>
             </div>
           </div>
         )}

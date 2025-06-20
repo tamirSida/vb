@@ -22,9 +22,9 @@ export default function Contact() {
     
     // Debug: Log form data
     console.log('Submitting form data:');
-    for (let [key, value] of formData.entries()) {
+    formData.forEach((value, key) => {
       console.log(key, value);
-    }
+    });
     
     fetch('/contact', {
       method: 'POST',

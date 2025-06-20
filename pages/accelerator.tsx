@@ -567,7 +567,7 @@ export default function Accelerator() {
             })}
             
             {/* Navigation dots - Horizontal at bottom center */}
-            <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20 transition-all duration-1000 delay-500 ${
+            <div className={`absolute bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20 transition-all duration-1000 delay-500 ${
               pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
               {whyVBPages.map((_, index) => {

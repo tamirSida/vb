@@ -15,7 +15,6 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [navigationData, setNavigationData] = useState({
     applicationUrl: '#',
-    contactEmail: 'adam@versionbravo.com',
     applyNowUrl: '#'
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
@@ -45,7 +44,6 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
     try {
       const updatedData = {
         applicationUrl: data.applicationUrl,
-        contactEmail: data.contactEmail,
         applyNowUrl: data.applyNowUrl,
         updatedAt: new Date().toISOString()
       };
@@ -145,11 +143,11 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                   </a>
                 </EditableSection>
                 <EditableSection
-                  sectionName="Contact Email"
+                  sectionName="Contact Link"
                   onEdit={handleEditNavigation}
                   className="inline-block"
                 >
-                  <a href={`mailto:${navigationData.contactEmail}`} className="bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors no-underline">
+                  <a href="/contact" className="bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors no-underline">
                     Get in Touch
                   </a>
                 </EditableSection>
@@ -273,7 +271,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                 </a>
                 {isAcceleratorPage && (
                   <a 
-                    href={`mailto:${navigationData.contactEmail}`}
+                    href="/contact"
                     className="block w-full bg-transparent border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors text-center no-underline"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -305,16 +303,9 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
                 placeholder="https://apply.versionbravoventures.com"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Contact Email</label>
-              <input
-                type="email"
-                name="contactEmail"
-                defaultValue={navigationData.contactEmail}
-                className="admin-input w-full"
-                placeholder="adam@versionbravo.com"
-              />
-            </div>
+            <p className="text-sm text-gray-400">
+              Note: "Get in Touch" now links to the contact page (/contact)
+            </p>
           </div>
         </EditModal>
       )}

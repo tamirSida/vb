@@ -56,6 +56,8 @@ export default function Accelerator() {
 
   // Swipe interface state
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAutoAdvancing, setIsAutoAdvancing] = useState(true);
+  const [expandedTestimonial, setExpandedTestimonial] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState<{[key: number]: boolean}>({});
   const [pageLoaded, setPageLoaded] = useState(false);
@@ -223,8 +225,12 @@ export default function Accelerator() {
   };
 
   // Function to navigate to specific page
-  const goToPage = (pageNumber: number) => {
+  const goToPage = (pageNumber: number, fromAutoAdvance = false) => {
     if (pageNumber < 1 || pageNumber > whyVBPages.length || isTransitioning) return;
+    
+    if (!fromAutoAdvance) {
+      handleUserInteraction();
+    }
     
     setIsTransitioning(true);
     setCurrentPage(pageNumber);
@@ -234,17 +240,17 @@ export default function Accelerator() {
     }, 700);
   };
 
-  // Navigation functions
+  // Navigation functions with looping
   const nextPage = () => {
-    if (currentPage < whyVBPages.length) {
-      goToPage(currentPage + 1);
-    }
+    handleUserInteraction();
+    const nextPageNum = currentPage === whyVBPages.length ? 1 : currentPage + 1;
+    goToPage(nextPageNum);
   };
 
   const prevPage = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
+    handleUserInteraction();
+    const prevPageNum = currentPage === 1 ? whyVBPages.length : currentPage - 1;
+    goToPage(prevPageNum);
   };
 
   // Keyboard navigation
@@ -258,6 +264,7 @@ export default function Accelerator() {
         nextPage();
       } else if (event.key >= '1' && event.key <= '5') {
         event.preventDefault();
+        handleUserInteraction();
         goToPage(parseInt(event.key));
       }
     };
@@ -265,6 +272,27 @@ export default function Accelerator() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage]);
+
+  // Auto-advance pages every 5 seconds
+  useEffect(() => {
+    if (!isAutoAdvancing || !pageLoaded) return;
+
+    const autoAdvanceTimer = setInterval(() => {
+      if (!isTransitioning) {
+        const nextPageNum = currentPage === whyVBPages.length ? 1 : currentPage + 1;
+        goToPage(nextPageNum, true);
+      }
+    }, 5000);
+
+    return () => clearInterval(autoAdvanceTimer);
+  }, [currentPage, isAutoAdvancing, pageLoaded, isTransitioning, whyVBPages.length]);
+
+  // Pause auto-advance on user interaction
+  const handleUserInteraction = () => {
+    setIsAutoAdvancing(false);
+    // Resume auto-advance after 10 seconds of inactivity
+    setTimeout(() => setIsAutoAdvancing(true), 10000);
+  };
 
   // Intersection Observer for Explore Accelerator section
   useEffect(() => {
@@ -481,9 +509,28 @@ export default function Accelerator() {
                                     className="w-12 h-12 rounded-full object-cover border-2 border-vb-gold flex-shrink-0"
                                   />
                                   <div>
-                                    <blockquote className="text-white/90 text-sm italic leading-relaxed mb-3">
-                                      "{testimonial.quote.substring(0, 200)}..."
+                                    <blockquote className="text-white/90 text-sm italic leading-relaxed mb-1">
+                                      "{expandedTestimonial === testimonial.id 
+                                        ? testimonial.quote 
+                                        : testimonial.quote.length > 200 
+                                          ? testimonial.quote.substring(0, 200) + '...' 
+                                          : testimonial.quote
+                                      }"
                                     </blockquote>
+                                    {testimonial.quote.length > 200 && (
+                                      <button 
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleUserInteraction();
+                                          setExpandedTestimonial(
+                                            expandedTestimonial === testimonial.id ? null : testimonial.id
+                                          );
+                                        }}
+                                        className="text-white hover:font-bold text-xs font-medium transition-all mb-2 bg-transparent border-none cursor-pointer"
+                                      >
+                                        {expandedTestimonial === testimonial.id ? 'Read Less' : 'Read More'}
+                                      </button>
+                                    )}
                                     <div className="text-white/80">
                                       <p className="font-semibold text-sm">{testimonial.author}</p>
                                       <p className="text-xs">{testimonial.title}</p>
@@ -550,12 +597,8 @@ export default function Accelerator() {
               {/* Left Arrow */}
               <button 
                 onClick={prevPage}
-                disabled={currentPage === 1 || isTransitioning}
-                className={`absolute left-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                  currentPage === 1 
-                    ? 'bg-white/10 text-white/40 cursor-not-allowed' 
-                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 cursor-pointer'
-                }`}
+                disabled={isTransitioning}
+                className="absolute left-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 cursor-pointer"
               >
                 <i className="fas fa-chevron-left text-lg"></i>
               </button>
@@ -563,12 +606,8 @@ export default function Accelerator() {
               {/* Right Arrow */}
               <button 
                 onClick={nextPage}
-                disabled={currentPage === whyVBPages.length || isTransitioning}
-                className={`absolute right-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                  currentPage === whyVBPages.length 
-                    ? 'bg-white/10 text-white/40 cursor-not-allowed' 
-                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 cursor-pointer'
-                }`}
+                disabled={isTransitioning}
+                className="absolute right-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 cursor-pointer"
               >
                 <i className="fas fa-chevron-right text-lg"></i>
               </button>
@@ -578,8 +617,14 @@ export default function Accelerator() {
             <div className={`hidden md:block absolute bottom-1 left-1/2 transform -translate-x-1/2 z-20 transition-all duration-1000 delay-1000 ${
               pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
             }`}>
-              <div className="bg-black/40 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs">
-                Use ← → arrow keys or click numbers to navigate
+              <div className="bg-black/40 backdrop-blur-sm text-white px-3 py-2 rounded-full text-xs flex items-center space-x-2">
+                <span>Use ← → arrow keys or click numbers to navigate</span>
+                {isAutoAdvancing && (
+                  <span className="flex items-center text-vb-gold">
+                    <span className="w-1 h-1 bg-vb-gold rounded-full animate-pulse mr-1"></span>
+                    Auto
+                  </span>
+                )}
               </div>
             </div>
           </div>

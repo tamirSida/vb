@@ -49,6 +49,10 @@ export default function Accelerator() {
     }
   ]);
 
+  // Swipe interface state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   const [testimonials, setTestimonials] = useState([
     {
       id: 1,
@@ -178,42 +182,52 @@ export default function Accelerator() {
     }
   };
 
-  // Function to handle smooth scrolling to specific page
-  const scrollToPage = (pageNumber: number) => {
-    const targetPage = document.querySelector(`[data-page="${pageNumber}"]`);
-    if (targetPage) {
-      targetPage.scrollIntoView({ behavior: 'smooth' });
+  // Function to navigate to specific page
+  const goToPage = (pageNumber: number) => {
+    if (pageNumber < 1 || pageNumber > whyVBPages.length || isTransitioning) return;
+    
+    setIsTransitioning(true);
+    setCurrentPage(pageNumber);
+    
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 500);
+  };
+
+  // Navigation functions
+  const nextPage = () => {
+    if (currentPage < whyVBPages.length) {
+      goToPage(currentPage + 1);
     }
   };
 
+  const prevPage = () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  };
+
+  // Keyboard navigation
   useEffect(() => {
-    // Intersection Observer for page transitions and navigation updates
-    const observerOptions = {
-      threshold: 0.3, // Trigger when 30% of the page is visible
-      rootMargin: '-10% 0px'
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        prevPage();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        nextPage();
+      } else if (event.key >= '1' && event.key <= '5') {
+        event.preventDefault();
+        goToPage(parseInt(event.key));
+      }
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const pageElement = entry.target as HTMLElement;
-        const pageNumber = pageElement.getAttribute('data-page');
-        
-        if (entry.isIntersecting && pageNumber) {
-          console.log(`Page ${pageNumber} is now visible`);
-          // Update active navigation state
-          updateActiveNavigation(parseInt(pageNumber));
-          
-          // Trigger page appearance animation
-          animatePageAppearance(pageElement);
-        } else if (!entry.isIntersecting && pageNumber) {
-          console.log(`Page ${pageNumber} left viewport`);
-          // Reset page when it leaves viewport
-          resetPageAppearance(pageElement);
-        }
-      });
-    }, observerOptions);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentPage]);
 
-    // Intersection Observer for Explore Accelerator section
+  // Intersection Observer for Explore Accelerator section
+  useEffect(() => {
     const exploreObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -227,105 +241,20 @@ export default function Accelerator() {
       });
     }, { threshold: 0.2 });
 
-    // Observe all page elements
-    const pages = document.querySelectorAll('[data-page]');
-    pages.forEach(page => observer.observe(page));
-
     // Observe the explore accelerator section
     const exploreSection = document.querySelector('.explore-accelerator-section');
     if (exploreSection) {
       exploreObserver.observe(exploreSection);
     }
 
-    // Initial setup for the first page
-    setTimeout(() => {
-      updateActiveNavigation(1);
-    }, 100);
-
     // Cleanup
     return () => {
-      pages.forEach(page => observer.unobserve(page));
       if (exploreSection) {
         exploreObserver.unobserve(exploreSection);
       }
     };
   }, []);
 
-  // Function to update active navigation state
-  const updateActiveNavigation = (activePageNumber: number) => {
-    // Update navigation buttons across all pages
-    document.querySelectorAll('[data-page]').forEach(page => {
-      const navButtons = page.querySelectorAll('button');
-      navButtons.forEach((button, index) => {
-        const buttonPageNumber = index + 1;
-        
-        if (buttonPageNumber === activePageNumber) {
-          // Active state - white background with navy text
-          button.className = "w-10 h-10 rounded-full bg-white text-vb-navy flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
-        } else {
-          // Inactive state
-          button.className = "w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer";
-        }
-      });
-    });
-  };
-
-  // Function to animate page appearance
-  const animatePageAppearance = (pageElement: HTMLElement) => {
-    const content = pageElement.querySelector('.max-w-lg');
-    const navContainer = pageElement.querySelector('div[class*="-left-20"]');
-    const backgroundImage = pageElement.querySelector('img');
-    
-    console.log('Animating page:', {content, navContainer, backgroundImage});
-    
-    if (content && navContainer && backgroundImage) {
-      // Animate background image first
-      setTimeout(() => {
-        backgroundImage.classList.remove('opacity-0', 'scale-105');
-        backgroundImage.classList.add('opacity-100', 'scale-100');
-        console.log('Image animated');
-      }, 0);
-      
-      // Trigger content animations with slight delay
-      setTimeout(() => {
-        content.classList.remove('opacity-0', 'translate-x-12');
-        content.classList.add('opacity-100', 'translate-x-0');
-        console.log('Content animated');
-      }, 200);
-      
-      setTimeout(() => {
-        navContainer.classList.remove('opacity-0', '-translate-x-5');
-        navContainer.classList.add('opacity-100', 'translate-x-0');
-        console.log('Navigation animated');
-      }, 400);
-    } else {
-      console.log('Missing elements for animation');
-    }
-  };
-
-  // Function to reset page appearance when leaving viewport
-  const resetPageAppearance = (pageElement: HTMLElement) => {
-    const content = pageElement.querySelector('.max-w-lg');
-    const navContainer = pageElement.querySelector('div[class*="-left-20"]');
-    const backgroundImage = pageElement.querySelector('img');
-    
-    // Skip resetting the first page
-    const pageNumber = pageElement.getAttribute('data-page');
-    if (pageNumber === '1') return;
-    
-    if (content && navContainer && backgroundImage) {
-      // Reset background image
-      backgroundImage.classList.remove('opacity-100', 'scale-100');
-      backgroundImage.classList.add('opacity-0', 'scale-105');
-      
-      // Reset to initial hidden state
-      content.classList.remove('opacity-100', 'translate-x-0');
-      content.classList.add('opacity-0', 'translate-x-12');
-      
-      navContainer.classList.remove('opacity-100', 'translate-x-0');
-      navContainer.classList.add('opacity-0', '-translate-x-5');
-    }
-  };
 
   return (
     <>
@@ -402,62 +331,50 @@ export default function Accelerator() {
 
       <Header isAcceleratorPage={true} />
       <main>
-        {/* Hero Section */}
-        <section className="section-padding bg-gradient-to-br from-vb-navy to-vb-medium text-white relative overflow-hidden">
-          <div className="container-max text-center relative z-10">
-            <EditableSection
-              sectionName="Accelerator Hero"
-              onEdit={() => setIsHeroModalOpen(true)}
-            >
-              <h1 className="text-3xl md:text-5xl font-bold mb-6">
-                {heroData.title}
-              </h1>
-            </EditableSection>
+        {/* Combined Hero + Swipe Interface Section */}
+        <section className="relative overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
+          {/* Hero Title Overlay */}
+          <div className="absolute top-0 left-0 w-full z-30 bg-gradient-to-b from-black/60 to-transparent">
+            <div className="container-max text-center pt-4 pb-6">
+              <EditableSection
+                sectionName="Accelerator Hero"
+                onEdit={() => setIsHeroModalOpen(true)}
+              >
+                <h1 className="text-xl md:text-3xl font-bold text-white">
+                  {heroData.title}
+                </h1>
+              </EditableSection>
+            </div>
           </div>
-        </section>
 
-        {/* Page-Style Navigation Section */}
-        <section className="relative">
-          {/* Create a combined array of pages and testimonials in order */}
-          {(() => {
-            const content = [];
-            
-            // Add each page and any testimonials that should follow it
-            whyVBPages.forEach((page, index) => {
+          {/* Main swipe container */}
+          <div className="relative w-full h-full">
+            {whyVBPages.map((page, index) => {
               const pageNumber = index + 1;
-              const isFirstPage = pageNumber === 1;
+              const isActive = pageNumber === currentPage;
               
-              // Add the page
-              content.push(
-                <div key={`page-${page.id}`} className="h-screen relative overflow-hidden" data-page={pageNumber}>
+              return (
+                <div 
+                  key={`page-${page.id}`} 
+                  className={`absolute inset-0 w-full h-full transition-all duration-500 ease-out ${
+                    isActive 
+                      ? 'opacity-100 translate-x-0' 
+                      : pageNumber < currentPage 
+                        ? 'opacity-0 -translate-x-full' 
+                        : 'opacity-0 translate-x-full'
+                  }`}
+                >
                   <img 
                     src={page.backgroundImage} 
                     alt={page.title} 
-                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${isFirstPage ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                   <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
                   <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>
+                  
+                  {/* Content */}
                   <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1/2 px-12">
-                    <div className={`max-w-lg ml-24 transition-all duration-700 ease-out ${isFirstPage ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform translate-x-12'}`}>
-                      <div className={`absolute -left-20 top-1/2 transform -translate-y-1/2 space-y-3 transition-all duration-500 ease-out z-10 ${isFirstPage ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}>
-                        {whyVBPages.map((_, navIndex) => {
-                          const navPageNumber = navIndex + 1;
-                          const isActive = navPageNumber === pageNumber;
-                          return (
-                            <button 
-                              key={navPageNumber}
-                              onClick={() => scrollToPage(navPageNumber)} 
-                              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer ${
-                                isActive 
-                                  ? 'bg-white text-vb-navy' 
-                                  : 'bg-white/20 backdrop-blur-sm text-white'
-                              }`}
-                            >
-                              <p className="text-sm font-bold">{navPageNumber}</p>
-                            </button>
-                          );
-                        })}
-                      </div>
+                    <div className="max-w-lg ml-24">
                       <EditableSection
                         sectionName={`Why VB Page ${pageNumber}`}
                         onEdit={() => {
@@ -474,49 +391,99 @@ export default function Accelerator() {
                   </div>
                 </div>
               );
-              
-              // Add any testimonials that should appear after this page
-              const testimonialsAfterThisPage = testimonials.filter(testimonial => {
-                const afterPageIndex = Math.floor(testimonial.position);
-                const isExactMatch = testimonial.position % 1 === 0.5; // e.g., 1.5, 2.5, 4.5
-                return afterPageIndex === pageNumber && isExactMatch;
-              });
-              
-              testimonialsAfterThisPage.forEach(testimonial => {
-                content.push(
-                  <div key={`testimonial-${testimonial.id}`} className="h-[80vh] bg-gradient-to-br from-vb-navy to-vb-medium text-white flex items-center justify-center px-8">
-                    <div className="max-w-4xl mx-auto text-center">
-                      <EditableSection
-                        sectionName={`Testimonial - ${testimonial.author}`}
-                        onEdit={() => {
-                          setEditingTestimonial(testimonial.id);
-                          setIsTestimonialModalOpen(true);
-                        }}
-                      >
-                        <div className="mb-6">
-                          <img 
-                            src={testimonial.image} 
-                            alt={testimonial.author} 
-                            className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
-                          />
-                          <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
-                        </div>
-                        <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
-                          "{testimonial.quote}"
-                        </blockquote>
-                        <div className="text-white/90">
-                          <p className="font-semibold text-lg">{testimonial.author}</p>
-                          <p className="text-sm">{testimonial.title}</p>
-                        </div>
-                      </EditableSection>
-                    </div>
-                  </div>
-                );
-              });
-            });
+            })}
             
-            return content;
-          })()}
+            {/* Navigation dots - Horizontal at bottom center */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+              {whyVBPages.map((_, index) => {
+                const pageNumber = index + 1;
+                const isActive = pageNumber === currentPage;
+                return (
+                  <button 
+                    key={pageNumber}
+                    onClick={() => goToPage(pageNumber)} 
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer ${
+                      isActive 
+                        ? 'bg-white text-vb-navy' 
+                        : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30'
+                    }`}
+                    disabled={isTransitioning}
+                  >
+                    <p className="text-xs font-bold">{pageNumber}</p>
+                  </button>
+                );
+              })}
+            </div>
+            
+            {/* Desktop Arrow Navigation */}
+            <div className="hidden md:block">
+              {/* Left Arrow */}
+              <button 
+                onClick={prevPage}
+                disabled={currentPage === 1 || isTransitioning}
+                className={`absolute left-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                  currentPage === 1 
+                    ? 'bg-white/10 text-white/40 cursor-not-allowed' 
+                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 cursor-pointer'
+                }`}
+              >
+                <i className="fas fa-chevron-left text-lg"></i>
+              </button>
+              
+              {/* Right Arrow */}
+              <button 
+                onClick={nextPage}
+                disabled={currentPage === whyVBPages.length || isTransitioning}
+                className={`absolute right-8 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                  currentPage === whyVBPages.length 
+                    ? 'bg-white/10 text-white/40 cursor-not-allowed' 
+                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 hover:scale-110 cursor-pointer'
+                }`}
+              >
+                <i className="fas fa-chevron-right text-lg"></i>
+              </button>
+            </div>
+            
+            {/* Keyboard instruction */}
+            <div className="hidden md:block absolute bottom-1 left-1/2 transform -translate-x-1/2 z-20">
+              <div className="bg-black/40 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs">
+                Use ← → arrow keys or click numbers to navigate
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Testimonials Section - Now separate */}
+        <section className="bg-gradient-to-br from-vb-navy to-vb-medium text-white">
+          {testimonials.map((testimonial) => (
+            <div key={`testimonial-${testimonial.id}`} className="min-h-[80vh] flex items-center justify-center px-8 py-16">
+              <div className="max-w-4xl mx-auto text-center">
+                <EditableSection
+                  sectionName={`Testimonial - ${testimonial.author}`}
+                  onEdit={() => {
+                    setEditingTestimonial(testimonial.id);
+                    setIsTestimonialModalOpen(true);
+                  }}
+                >
+                  <div className="mb-6">
+                    <img 
+                      src={testimonial.image} 
+                      alt={testimonial.author} 
+                      className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-vb-gold"
+                    />
+                    <i className="fas fa-quote-left text-3xl text-vb-gold mb-4 block"></i>
+                  </div>
+                  <blockquote className="text-lg md:text-xl leading-relaxed mb-6 font-light italic">
+                    "{testimonial.quote}"
+                  </blockquote>
+                  <div className="text-white/90">
+                    <p className="font-semibold text-lg">{testimonial.author}</p>
+                    <p className="text-sm">{testimonial.title}</p>
+                  </div>
+                </EditableSection>
+              </div>
+            </div>
+          ))}
         </section>
 
 

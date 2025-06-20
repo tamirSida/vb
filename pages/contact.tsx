@@ -97,23 +97,37 @@ export default function Contact() {
               {/* Email */}
               <a 
                 href="mailto:adam@versionbravo.com"
-                className="group flex flex-col items-center space-y-2 hover:scale-110 transition-transform duration-300"
+                className="group flex flex-col items-center space-y-2 hover:scale-110 transition-transform duration-300 relative"
+                title="adam@versionbravo.com"
               >
                 <div className="w-16 h-16 bg-gradient-to-br from-vb-navy to-vb-blue rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                   <i className="fas fa-envelope text-white text-2xl"></i>
                 </div>
                 <span className="text-sm font-medium text-vb-medium group-hover:text-vb-navy transition-colors">Email</span>
+                
+                {/* Hover tooltip */}
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-vb-navy text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 shadow-lg">
+                  adam@versionbravo.com
+                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-vb-navy rotate-45"></div>
+                </div>
               </a>
 
               {/* Phone */}
               <a 
                 href="tel:+1-555-VERSION"
-                className="group flex flex-col items-center space-y-2 hover:scale-110 transition-transform duration-300"
+                className="group flex flex-col items-center space-y-2 hover:scale-110 transition-transform duration-300 relative"
+                title="+1 (555) VERSION"
               >
                 <div className="w-16 h-16 bg-gradient-to-br from-vb-navy to-vb-blue rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                   <i className="fas fa-phone text-white text-2xl"></i>
                 </div>
                 <span className="text-sm font-medium text-vb-medium group-hover:text-vb-navy transition-colors">Phone</span>
+                
+                {/* Hover tooltip */}
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-vb-navy text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 shadow-lg">
+                  +1 (555) VERSION
+                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-vb-navy rotate-45"></div>
+                </div>
               </a>
             </div>
 

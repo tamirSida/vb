@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Form</title>
+</head>
+<body>
+    <!-- This static HTML form ensures Netlify detects the form during build -->
+    <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact" />
+        <p style="display: none;">
+            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+        </p>
+        
+        <input type="text" name="name" placeholder="Name" />
+        <input type="email" name="email" placeholder="Email" />
+        <input type="tel" name="phone" placeholder="Phone" />
+        <input type="text" name="company" placeholder="Company" />
+        
+        <select name="interest">
+            <option value="">Select interest</option>
+            <option value="accelerator-program">VB Accelerator Program</option>
+            <option value="alpha-bet-program">Alpha-Bet Program</option>
+            <option value="investment-opportunities">Investment Opportunities</option>
+            <option value="partnership">Partnership Opportunities</option>
+            <option value="mentorship">Mentorship</option>
+            <option value="general-inquiry">General Inquiry</option>
+            <option value="other">Other</option>
+        </select>
+        
+        <textarea name="message" placeholder="Message"></textarea>
+        
+        <select name="source">
+            <option value="">How did you hear about us?</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="referral">Referral from colleague/friend</option>
+            <option value="google">Google search</option>
+            <option value="social-media">Social media</option>
+            <option value="event">Event/Conference</option>
+            <option value="veteran-network">Veteran network</option>
+            <option value="other">Other</option>
+        </select>
+        
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>

@@ -8,26 +8,28 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     
-    try {
-      await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as any).toString(),
-      });
+    // For Netlify forms, we can submit directly to the current page
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData as any).toString(),
+    })
+    .then(() => {
       setIsSubmitted(true);
-    } catch (error) {
+      setIsSubmitting(false);
+    })
+    .catch((error) => {
       console.error('Form submission error:', error);
       alert('There was an error submitting the form. Please try again.');
-    } finally {
       setIsSubmitting(false);
-    }
+    });
   };
 
   return (
@@ -159,7 +161,6 @@ export default function Contact() {
                     onSubmit={handleSubmit}
                     className="space-y-6"
                   >
-                    {/* Hidden inputs for Netlify */}
                     <input type="hidden" name="form-name" value="contact" />
                     <p style={{ display: 'none' }}>
                       <label>

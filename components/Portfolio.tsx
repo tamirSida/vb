@@ -214,26 +214,44 @@ const Portfolio: React.FC = () => {
     };
   }, []);
 
-  // Force use static data to bypass Firestore sync issues
+  // Load Portfolio data from Firestore on component mount
   useEffect(() => {
-    console.log('Loading static portfolio data with flags:', siteData.portfolio.map(c => ({ 
-      name: c.name, 
-      flag: c.flag,
-      hasFlag: !!c.flag 
-    })));
-    
-    setPortfolioData({
-      title: 'Portfolio Highlights',
-      description: 'Proven track record of successful investments in veteran-led companies',
-      companies: siteData.portfolio,
-      stats: {
-        title: 'Companies Accelerated',
-        israeliCompanies: 40,
-        totalCompanies: 77,
-        americanCompanies: 37
+    const loadPortfolioData = async () => {
+      try {
+        const data = await getDocument('portfolio');
+        if (data && (data as any).companies) {
+          setPortfolioData({
+            title: (data as any).title || 'Portfolio Highlights',
+            description: (data as any).description || 'Proven track record of successful investments in veteran-led companies',
+            companies: (data as any).companies,
+            stats: (data as any).stats || {
+              title: 'Companies Accelerated',
+              israeliCompanies: 40,
+              totalCompanies: 77,
+              americanCompanies: 37
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading portfolio data:', error);
+        // Fallback to static data on error
+        console.log('Falling back to static portfolio data');
+        setPortfolioData({
+          title: 'Portfolio Highlights',
+          description: 'Proven track record of successful investments in veteran-led companies',
+          companies: siteData.portfolio,
+          stats: {
+            title: 'Companies Accelerated',
+            israeliCompanies: 40,
+            totalCompanies: 77,
+            americanCompanies: 37
+          }
+        });
       }
-    });
-  }, []);
+    };
+    
+    loadPortfolioData();
+  }, [getDocument]);
 
   return (
     <>

@@ -79,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
           {isAcceleratorPage ? (
             <div className="hidden md:flex items-center justify-center flex-1">
               <nav className="flex items-center space-x-8">
-                <Link href="http://localhost:3000/accelerator/" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Why VB
                 </Link>
                 <Link href="/accelerator/team" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
@@ -180,7 +180,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
               {isAcceleratorPage ? (
                 <>
                   <Link 
-                    href="http://localhost:3000/accelerator/"
+                    href="/"
                     className="block text-dark hover:text-gray-700 font-medium transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >

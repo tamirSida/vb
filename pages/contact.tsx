@@ -151,42 +151,21 @@ export default function Contact() {
                     Send Us a Message
                   </h2>
                   
-                  {/* Hidden HTML form for Netlify detection */}
-                  <form name="contact" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
-                    <input type="text" name="name" />
-                    <input type="email" name="email" />
-                    <input type="tel" name="phone" />
-                    <input type="text" name="company" />
-                    <select name="interest">
-                      <option value="accelerator-program">VB Accelerator Program</option>
-                      <option value="alpha-bet-program">Alpha-Bet Program</option>
-                      <option value="investment-opportunities">Investment Opportunities</option>
-                      <option value="partnership">Partnership Opportunities</option>
-                      <option value="mentorship">Mentorship</option>
-                      <option value="general-inquiry">General Inquiry</option>
-                      <option value="other">Other</option>
-                    </select>
-                    <textarea name="message"></textarea>
-                    <select name="source">
-                      <option value="linkedin">LinkedIn</option>
-                      <option value="referral">Referral from colleague/friend</option>
-                      <option value="google">Google search</option>
-                      <option value="social-media">Social media</option>
-                      <option value="event">Event/Conference</option>
-                      <option value="veteran-network">Veteran network</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </form>
-
                   <form 
                     name="contact" 
                     method="POST" 
+                    data-netlify="true"
+                    data-netlify-honeypot="bot-field"
                     onSubmit={handleSubmit}
                     className="space-y-6"
                   >
                     {/* Hidden inputs for Netlify */}
                     <input type="hidden" name="form-name" value="contact" />
-                    <input type="hidden" name="bot-field" />
+                    <p style={{ display: 'none' }}>
+                      <label>
+                        Don't fill this out if you're human: <input name="bot-field" />
+                      </label>
+                    </p>
                     
                     {/* Name and Email Row */}
                     <div className="grid md:grid-cols-2 gap-6">

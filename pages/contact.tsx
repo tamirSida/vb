@@ -15,19 +15,35 @@ export default function Contact() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     
-    // For Netlify forms, we can submit directly to the current page
-    fetch('/', {
+    // Encode form data for Netlify
+    const encode = (data: FormData) => {
+      return new URLSearchParams(data as any).toString();
+    };
+    
+    // Debug: Log form data
+    console.log('Submitting form data:');
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    
+    fetch('/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData as any).toString(),
+      body: encode(formData),
     })
-    .then(() => {
-      setIsSubmitted(true);
-      setIsSubmitting(false);
+    .then((response) => {
+      console.log('Form response:', response);
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        throw new Error('Form submission failed');
+      }
     })
     .catch((error) => {
       console.error('Form submission error:', error);
       alert('There was an error submitting the form. Please try again.');
+    })
+    .finally(() => {
       setIsSubmitting(false);
     });
   };

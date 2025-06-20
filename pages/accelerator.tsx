@@ -113,6 +113,14 @@ export default function Accelerator() {
     loadData();
   }, []);
 
+  // Preload images for smooth transitions
+  useEffect(() => {
+    whyVBPages.forEach(page => {
+      const img = new Image();
+      img.src = page.backgroundImage;
+    });
+  }, [whyVBPages]);
+
   // Save functions
   const saveHeroData = async (data: any) => {
     try {
@@ -191,7 +199,7 @@ export default function Accelerator() {
     
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 500);
+    }, 700);
   };
 
   // Navigation functions
@@ -356,7 +364,7 @@ export default function Accelerator() {
               return (
                 <div 
                   key={`page-${page.id}`} 
-                  className={`absolute inset-0 w-full h-full transition-all duration-500 ease-out ${
+                  className={`absolute inset-0 w-full h-full transition-all duration-700 ease-in-out ${
                     isActive 
                       ? 'opacity-100 translate-x-0' 
                       : pageNumber < currentPage 
@@ -367,7 +375,9 @@ export default function Accelerator() {
                   <img 
                     src={page.backgroundImage} 
                     alt={page.title} 
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+                    loading="eager"
+                    style={{ willChange: 'opacity, transform' }}
                   />
                   <div className="absolute left-0 top-0 w-1/2 h-full bg-black/40"></div>
                   <div className="absolute right-0 top-0 w-1/2 h-full bg-vb-navy/80 backdrop-blur-sm"></div>

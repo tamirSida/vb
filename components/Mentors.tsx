@@ -96,6 +96,48 @@ const Mentors: React.FC = () => {
     }
   };
 
+  const handleMoveUp = async (mentor: Mentor, index: number) => {
+    if (index === 0) return;
+    
+    try {
+      const updatedMentors = [...mentorsData.mentors];
+      [updatedMentors[index - 1], updatedMentors[index]] = [updatedMentors[index], updatedMentors[index - 1]];
+      
+      const updatedData = {
+        ...mentorsData,
+        mentors: updatedMentors,
+        images: mentorsData.images,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('mentors', updatedData);
+      setMentorsData(updatedData);
+      console.log('Mentor moved up successfully');
+    } catch (error) {
+      console.error('Error moving mentor up:', error);
+    }
+  };
+
+  const handleMoveDown = async (mentor: Mentor, index: number) => {
+    if (index === mentorsData.mentors.length - 1) return;
+    
+    try {
+      const updatedMentors = [...mentorsData.mentors];
+      [updatedMentors[index], updatedMentors[index + 1]] = [updatedMentors[index + 1], updatedMentors[index]];
+      
+      const updatedData = {
+        ...mentorsData,
+        mentors: updatedMentors,
+        images: mentorsData.images,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('mentors', updatedData);
+      setMentorsData(updatedData);
+      console.log('Mentor moved down successfully');
+    } catch (error) {
+      console.error('Error moving mentor down:', error);
+    }
+  };
+
   const handleSave = async (data: any) => {
     try {
       if (editingType === 'header') {
@@ -265,6 +307,10 @@ const Mentors: React.FC = () => {
             >
               <EditableSection
                 sectionName={`${mentor.name}`}
+                onMoveUp={() => handleMoveUp(mentor, index)}
+                onMoveDown={() => handleMoveDown(mentor, index)}
+                canMoveUp={index > 0}
+                canMoveDown={index < mentorsData.mentors.length - 1}
                 onEdit={() => handleEditMentor(mentor)}
                 className="text-center p-6 bg-light rounded-lg hover:shadow-xl transition-all duration-300 border border-secondary hover:border-vb-gold h-full relative overflow-hidden"
               >

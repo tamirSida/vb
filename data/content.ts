@@ -113,19 +113,19 @@ export const siteData = {
       isFounder: true
     },
     {
-      name: "Dr. Gali Einav",
-      title: "IL Academic Lead",
-      image: "/images/team/gali-einav.jpg",
-      military: "8200 IDF",
-      linkedinUrl: "https://www.linkedin.com/in/gali-einav-ph-d-6771aa1/",
-      isFounder: false
-    },
-    {
       name: "Prof. Tommy Knapp",
       title: "US Academic Lead",
       image: "/images/team/tommy-knapp.jpg",
       military: "N/A",
       linkedinUrl: "https://www.linkedin.com/in/tommyknapp1/",
+      isFounder: false
+    },
+    {
+      name: "Dr. Gali Einav",
+      title: "IL Academic Lead",
+      image: "/images/team/gali-einav.jpg",
+      military: "8200 IDF",
+      linkedinUrl: "https://www.linkedin.com/in/gali-einav-ph-d-6771aa1/",
       isFounder: false
     },
     {

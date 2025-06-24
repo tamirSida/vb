@@ -98,6 +98,42 @@ const Team: React.FC = () => {
     }
   };
 
+  const handleMoveUp = async (member: TeamMember, index: number) => {
+    if (index === 0) return;
+    
+    try {
+      const updatedTeam = [...teamData];
+      [updatedTeam[index - 1], updatedTeam[index]] = [updatedTeam[index], updatedTeam[index - 1]];
+      
+      await updateDocument('team', { 
+        members: updatedTeam,
+        updatedAt: new Date().toISOString()
+      });
+      setTeamData(updatedTeam);
+      console.log('Team member moved up successfully');
+    } catch (error) {
+      console.error('Error moving team member up:', error);
+    }
+  };
+
+  const handleMoveDown = async (member: TeamMember, index: number) => {
+    if (index === teamData.length - 1) return;
+    
+    try {
+      const updatedTeam = [...teamData];
+      [updatedTeam[index], updatedTeam[index + 1]] = [updatedTeam[index + 1], updatedTeam[index]];
+      
+      await updateDocument('team', { 
+        members: updatedTeam,
+        updatedAt: new Date().toISOString()
+      });
+      setTeamData(updatedTeam);
+      console.log('Team member moved down successfully');
+    } catch (error) {
+      console.error('Error moving team member down:', error);
+    }
+  };
+
   // Load Team data from Firestore on component mount
   useEffect(() => {
     const loadTeamData = async () => {
@@ -194,27 +230,33 @@ const Team: React.FC = () => {
             General Partners
           </motion.h3>
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {founders.map((member, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={isFoundersInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
-                transition={{ 
-                  duration: 0.6, 
-                  delay: 0.6 + (index * 0.2),
-                  ease: "easeOut"
-                }}
-                whileHover={{ 
-                  scale: 1.03,
-                  y: -5,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <EditableSection
-                  sectionName={`${member.name}`}
-                  onEdit={() => handleEditMember(member)}
-                  className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl h-full"
+            {founders.map((member, index) => {
+              const memberIndex = teamData.findIndex(m => m.name === member.name);
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={isFoundersInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: 0.6 + (index * 0.2),
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    scale: 1.03,
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
                 >
+                  <EditableSection
+                    sectionName={`${member.name}`}
+                    onEdit={() => handleEditMember(member)}
+                    onMoveUp={() => handleMoveUp(member, memberIndex)}
+                    onMoveDown={() => handleMoveDown(member, memberIndex)}
+                    canMoveUp={memberIndex > 0}
+                    canMoveDown={memberIndex < teamData.length - 1}
+                    className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl h-full"
+                  >
                   <div className="flex justify-center pt-6 mb-6">
                     <motion.div 
                       className="w-32 h-32 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl"
@@ -262,7 +304,8 @@ const Team: React.FC = () => {
                   </div>
                 </EditableSection>
               </motion.div>
-            ))}
+              );
+            })}
             
             {/* Add General Partner Button */}
             <motion.div
@@ -307,27 +350,33 @@ const Team: React.FC = () => {
             Team
           </motion.h3>
           <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
-            {team.map((member, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={isTeamInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: 0.6 + (index * 0.1),
-                  ease: "easeOut"
-                }}
-                whileHover={{ 
-                  scale: 1.05,
-                  y: -3,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <EditableSection
-                  sectionName={`${member.name}`}
-                  onEdit={() => handleEditMember(member)}
-                  className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full"
+            {team.map((member, index) => {
+              const memberIndex = teamData.findIndex(m => m.name === member.name);
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={isTeamInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: 0.6 + (index * 0.1),
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    y: -3,
+                    transition: { duration: 0.2 }
+                  }}
                 >
+                  <EditableSection
+                    sectionName={`${member.name}`}
+                    onEdit={() => handleEditMember(member)}
+                    onMoveUp={() => handleMoveUp(member, memberIndex)}
+                    onMoveDown={() => handleMoveDown(member, memberIndex)}
+                    canMoveUp={memberIndex > 0}
+                    canMoveDown={memberIndex < teamData.length - 1}
+                    className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full"
+                  >
                   <div className="flex justify-center pt-3 mb-3">
                     <motion.div 
                       className="w-24 h-24 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg"
@@ -378,7 +427,8 @@ const Team: React.FC = () => {
                   </div>
                 </EditableSection>
               </motion.div>
-            ))}
+              );
+            })}
             
             {/* Add Team Member Button */}
             <motion.div

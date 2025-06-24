@@ -10,6 +10,10 @@ interface EditableSectionProps {
   onEdit?: () => void;
   className?: string;
   isAddButton?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 }
 
 export default function EditableSection({ 
@@ -17,7 +21,11 @@ export default function EditableSection({
   sectionName, 
   onEdit, 
   className = "",
-  isAddButton = false
+  isAddButton = false,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp = false,
+  canMoveDown = false
 }: EditableSectionProps) {
   const { isAdminMode } = useAdmin();
   const [isHovered, setIsHovered] = useState(false);
@@ -44,14 +52,39 @@ export default function EditableSection({
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          className="absolute top-2 right-2 z-40"
+          className="absolute top-2 right-2 z-40 flex gap-1"
         >
-          <button
-            onClick={onEdit}
-            className="admin-btn bg-kizna-electric text-kizna-dark shadow-lg"
-          >
-<i className="fas fa-edit mr-2"></i>Edit {sectionName}
-          </button>
+          {/* Move Up Button */}
+          {canMoveUp && onMoveUp && (
+            <button
+              onClick={onMoveUp}
+              className="admin-btn bg-blue-500 text-white shadow-lg p-2"
+              title="Move Up"
+            >
+              <i className="fas fa-chevron-up"></i>
+            </button>
+          )}
+          
+          {/* Move Down Button */}
+          {canMoveDown && onMoveDown && (
+            <button
+              onClick={onMoveDown}
+              className="admin-btn bg-blue-500 text-white shadow-lg p-2"
+              title="Move Down"
+            >
+              <i className="fas fa-chevron-down"></i>
+            </button>
+          )}
+          
+          {/* Edit Button */}
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className="admin-btn bg-kizna-electric text-kizna-dark shadow-lg"
+            >
+              <i className="fas fa-edit mr-2"></i>Edit {sectionName}
+            </button>
+          )}
         </motion.div>
       )}
       

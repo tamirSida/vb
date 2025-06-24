@@ -116,6 +116,37 @@ const ApplicationProcess: React.FC = () => {
         };
         await updateDocument('applicationProcess', updatedData);
         setApplicationData(updatedData);
+      } else if (editingType === 'step') {
+        const updatedSteps = [...applicationData.steps];
+        if (editingIndex !== null) {
+          updatedSteps[editingIndex] = {
+            week: data.week,
+            activity: data.activity,
+            details: data.details || ''
+          };
+        }
+        const updatedData = {
+          ...applicationData,
+          steps: updatedSteps,
+          images: applicationData.images,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('applicationProcess', updatedData);
+        setApplicationData(updatedData);
+      } else if (editingType === 'add-step') {
+        const newStep = {
+          week: data.week,
+          activity: data.activity,
+          details: data.details || ''
+        };
+        const updatedData = {
+          ...applicationData,
+          steps: [...applicationData.steps, newStep],
+          images: applicationData.images,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('applicationProcess', updatedData);
+        setApplicationData(updatedData);
       } else if (editingType === 'commitments') {
         const updatedData = {
           ...applicationData,

@@ -40,9 +40,15 @@ const ImageInsert: React.FC<ImageInsertProps> = ({
   };
 
   const handleSave = (data: any) => {
+    // Validate that imageUrl is provided
+    if (!data.imageUrl || data.imageUrl.trim() === '') {
+      alert('Please provide a valid image URL');
+      return;
+    }
+    
     const imageInsertData: ImageInsertData = {
       id: imageData?.id || `img-${Date.now()}`,
-      imageUrl: data.imageUrl,
+      imageUrl: data.imageUrl.trim(),
       title: data.title || '',
       altText: data.altText || data.title || 'Image',
       linkUrl: data.linkUrl || '',
@@ -257,11 +263,14 @@ const ImageInsert: React.FC<ImageInsertProps> = ({
     <div className={`my-6 ${getAlignmentClasses(imageData.alignment)}`}>
       <div className={`inline-block ${imageData.showBorder ? 'border-2 border-gray-200' : ''} ${imageData.showShadow ? 'shadow-lg' : ''} rounded-lg overflow-hidden`}>
         <Image
-          src={imageData.imageUrl}
+          src={imageData.imageUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDgwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zNzUgMTUwSDQyNVYyMDBIMzc1VjE1MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPHA+PHRleHQgeD0iNDAwIiB5PSIyNDAiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZSBQbGFjZWhvbGRlcjwvdGV4dD48L3A+Cjwvc3ZnPgo='}
           alt={imageData.altText || 'Image'}
           width={800}
           height={400}
           className={getSizingClasses(imageData.sizing)}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDgwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zNzUgMTUwSDQyNVYyMDBIMzc1VjE1MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPHA+PHRleHQgeD0iNDAwIiB5PSIyNDAiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZSBQbGFjZWhvbGRlcjwvdGV4dD48L3A+Cjwvc3ZnPgo=';
+          }}
         />
       </div>
       {imageData.title && (

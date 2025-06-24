@@ -278,11 +278,14 @@ const Mentors: React.FC = () => {
                     transition={{ duration: 0.2 }}
                   >
                     <Image 
-                      src={mentor.image} 
+                      src={mentor.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSIzMCIgcj0iMTIiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTIwIDY1QzIwIDU1IDI5IDUwIDQwIDUwUzYwIDU1IDYwIDY1IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
                       alt={mentor.name}
                       width={80}
                       height={80}
                       className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-vb-blue hover:border-vb-gold transition-colors duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSIzMCIgcj0iMTIiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTIwIDY1QzIwIDU1IDI5IDUwIDQwIDUwUzYwIDU1IDYwIDY1IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                      }}
                     />
                   </motion.div>
                   <motion.h3 

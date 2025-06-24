@@ -448,11 +448,14 @@ const Portfolio: React.FC = () => {
                       transition={{ duration: 0.2 }}
                     >
                       <Image 
-                        src={company.logo} 
+                        src={company.logo || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTIwIDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2IiByeD0iNCIvPgo8cmVjdCB4PSI0MCIgeT0iMTYiIHdpZHRoPSI0MCIgaGVpZ2h0PSIxNiIgZmlsbD0iIzlDQTNBRiIgcng9IjIiLz4KPHA+PHRleHQgeD0iNjAiIHk9IjM2IiBmaWxsPSIjNkI3MzgwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DT01QQU5ZPC90ZXh0PjwvcD4KPC9zdmc+Cg=='} 
                         alt={`${company.name} logo`}
                         width={120}
                         height={48}
                         className="max-h-12 max-w-full object-contain filter group-hover:brightness-110 transition-all duration-300"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTIwIDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2IiByeD0iNCIvPgo8cmVjdCB4PSI0MCIgeT0iMTYiIHdpZHRoPSI0MCIgaGVpZ2h0PSIxNiIgZmlsbD0iIzlDQTNBRiIgcng9IjIiLz4KPHA+PHRleHQgeD0iNjAiIHk9IjM2IiBmaWxsPSIjNkI3MzgwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DT01QQU5ZPC90ZXh0PjwvcD4KPC9zdmc+Cg==';
+                        }}
                       />
                     </motion.div>
                     
@@ -759,11 +762,14 @@ const Portfolio: React.FC = () => {
             {/* Company Logo */}
             <div className="flex items-center justify-center h-20 mb-6">
               <Image 
-                src={selectedCompany.logo} 
+                src={selectedCompany.logo || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2IiByeD0iNCIvPgo8cmVjdCB4PSI3MCIgeT0iMjgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzlDQTNBRiIgcng9IjIiLz4KPHA+PHRleHQgeD0iMTAwIiB5PSI2NCIgZmlsbD0iIzZCNzM4MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNPTVBBTlkgTE9HTzwvdGV4dD48L3A+Cjwvc3ZnPgo='} 
                 alt={`${selectedCompany.name} logo`}
                 width={200}
                 height={80}
                 className="max-h-16 max-w-full object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2IiByeD0iNCIvPgo8cmVjdCB4PSI3MCIgeT0iMjgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzlDQTNBRiIgcng9IjIiLz4KPHA+PHRleHQgeD0iMTAwIiB5PSI2NCIgZmlsbD0iIzZCNzM4MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNPTVBBTlkgTE9HTzwvdGV4dD48L3A+Cjwvc3ZnPgo=';
+                }
               />
             </div>
             

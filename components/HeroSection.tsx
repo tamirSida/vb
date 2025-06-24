@@ -5,6 +5,7 @@ import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
+import { useAdmin } from '../contexts/AdminContext';
 
 interface HeroSectionProps {
   showScrollIndicator?: boolean;
@@ -18,6 +19,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
   const [countdown, setCountdown] = useState(siteData.hero.countdownDuration || 10);
   const [isCountdownActive, setIsCountdownActive] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
+  const { isAdminMode } = useAdmin();
 
   const handleSkip = () => {
     router.push('/accelerator');
@@ -67,9 +69,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
     setIsCountdownActive(true);
   }, []);
 
-  // Countdown timer effect
+  // Countdown timer effect - pause when in admin mode or edit modal is open
   useEffect(() => {
-    if (!isCountdownActive) return;
+    if (!isCountdownActive || isAdminMode || isEditModalOpen) return;
 
     if (countdown > 0) {
       const timer = setTimeout(() => {
@@ -80,7 +82,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
       // Redirect to accelerator when countdown reaches 0
       router.push('/accelerator');
     }
-  }, [countdown, isCountdownActive, router]);
+  }, [countdown, isCountdownActive, isAdminMode, isEditModalOpen, router]);
 
   useEffect(() => {
     const video = videoRef.current;

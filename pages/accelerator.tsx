@@ -172,7 +172,7 @@ export default function Accelerator() {
           title: data.title,
           description: data.description,
           backgroundImage: data.backgroundImage,
-          testimonialId: data.testimonialId ? parseInt(data.testimonialId) : null
+          testimonialId: data.testimonialId // EditModal now handles type conversion
         } : page
       );
       const currentData = (await getDocument('acceleratorContent') as any) || {};

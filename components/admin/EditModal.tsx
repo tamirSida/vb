@@ -24,7 +24,41 @@ export default function EditModal({
     const form = document.getElementById('edit-form') as HTMLFormElement;
     if (form) {
       const data = new FormData(form);
-      const formObject = Object.fromEntries(data.entries());
+      const formObject: any = {};
+      
+      // Process form data with proper type handling
+      for (const [key, value] of data.entries()) {
+        const input = form.elements.namedItem(key) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        
+        if (input) {
+          if (input.type === 'number') {
+            // Handle number inputs - convert to number or null if empty
+            const stringValue = value.toString().trim();
+            if (stringValue === '') {
+              formObject[key] = null;
+            } else {
+              const numValue = parseFloat(stringValue);
+              formObject[key] = isNaN(numValue) ? null : numValue;
+            }
+          } else if (input.tagName === 'SELECT' && key === 'testimonialId') {
+            // Handle testimonialId select - convert to number or null
+            const stringValue = value.toString().trim();
+            if (stringValue === '' || stringValue === 'null') {
+              formObject[key] = null;
+            } else {
+              const numValue = parseInt(stringValue, 10);
+              formObject[key] = isNaN(numValue) ? null : numValue;
+            }
+          } else {
+            // Handle text inputs, textareas, and other selects
+            formObject[key] = value.toString().trim();
+          }
+        } else {
+          // Fallback for inputs not found
+          formObject[key] = value.toString().trim();
+        }
+      }
+      
       onSave(formObject);
     }
   };

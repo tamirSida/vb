@@ -769,7 +769,7 @@ const Portfolio: React.FC = () => {
                 className="max-h-16 max-w-full object-contain"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2IiByeD0iNCIvPgo8cmVjdCB4PSI3MCIgeT0iMjgiIHdpZHRoPSI2MCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzlDQTNBRiIgcng9IjIiLz4KPHA+PHRleHQgeD0iMTAwIiB5PSI2NCIgZmlsbD0iIzZCNzM4MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNPTVBBTlkgTE9HTzwvdGV4dD48L3A+Cjwvc3ZnPgo=';
-                }
+                }}
               />
             </div>
             

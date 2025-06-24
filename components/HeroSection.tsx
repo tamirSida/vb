@@ -15,7 +15,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [heroData, setHeroData] = useState(siteData.hero);
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(siteData.hero.countdownDuration || 10);
   const [isCountdownActive, setIsCountdownActive] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
@@ -31,10 +31,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
     try {
       const updatedData = {
         ...data,
+        countdownDuration: parseInt(data.countdownDuration) || 10,
         updatedAt: new Date().toISOString()
       };
       await updateDocument('hero', updatedData);
-      setHeroData({ ...heroData, ...data });
+      setHeroData({ ...heroData, ...updatedData });
+      setCountdown(updatedData.countdownDuration);
       console.log('Hero data saved successfully');
       setIsEditModalOpen(false);
     } catch (error) {
@@ -48,7 +50,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
       try {
         const data = await getDocument('hero');
         if (data) {
-          setHeroData(data as any);
+          const heroData = data as any;
+          setHeroData(heroData);
+          setCountdown(heroData.countdownDuration || 10);
         }
       } catch (error) {
         console.error('Error loading hero data:', error);
@@ -264,6 +268,42 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
                 placeholder="https://www.versionbravo.com"
               />
             </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Fund Button Text</label>
+              <input
+                type="text"
+                name="fundCta"
+                defaultValue={heroData.fundCta}
+                className="admin-input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Fund URL</label>
+              <input
+                type="url"
+                name="fundUrl"
+                defaultValue={heroData.fundUrl}
+                className="admin-input w-full"
+                placeholder="/fund"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Countdown Duration (seconds)</label>
+            <input
+              type="number"
+              name="countdownDuration"
+              defaultValue={heroData.countdownDuration || 10}
+              className="admin-input w-full"
+              min="1"
+              max="60"
+              placeholder="10"
+            />
+            <p className="text-xs text-gray-400 mt-1">How long (in seconds) before auto-redirecting to accelerator page</p>
           </div>
         </div>
       </EditModal>

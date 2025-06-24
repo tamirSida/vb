@@ -53,7 +53,8 @@ export const siteData = {
     acceleratorCta: "VB Accelerator",
     acceleratorUrl: "/accelerator",
     fundCta: "Investment Fund",
-    fundUrl: "/fund"
+    fundUrl: "/fund",
+    countdownDuration: 10
   },
   
   whyVB: {

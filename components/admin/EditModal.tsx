@@ -27,7 +27,7 @@ export default function EditModal({
       const formObject: any = {};
       
       // Process form data with proper type handling
-      for (const [key, value] of data.entries()) {
+      for (const [key, value] of data) {
         const input = form.elements.namedItem(key) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
         
         if (input) {

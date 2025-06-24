@@ -19,6 +19,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
   const [isCountdownActive, setIsCountdownActive] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
+  const handleSkip = () => {
+    router.push('/accelerator');
+  };
+
   const handleEditHero = () => {
     setIsEditModalOpen(true);
   };
@@ -54,13 +58,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
     loadHeroData();
   }, []);
 
-  // Auto-start countdown after component mounts
+  // Auto-start countdown immediately after component mounts
   useEffect(() => {
-    const startCountdown = setTimeout(() => {
-      setIsCountdownActive(true);
-    }, 2000); // Wait 2 seconds before starting countdown
-
-    return () => clearTimeout(startCountdown);
+    setIsCountdownActive(true);
   }, []);
 
   // Countdown timer effect
@@ -158,42 +158,29 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
           
           {/* Countdown Section */}
           <div className="flex flex-col items-center justify-center max-w-3xl">
-            {isCountdownActive && (
-              <div className="text-center mb-8">
-                <div className="text-lg sm:text-xl md:text-2xl font-black-ops text-gray-300 mb-4">
-                  Joining the action in
-                </div>
-                
-                {/* Countdown Number */}
-                <div className="text-6xl sm:text-8xl md:text-9xl font-black-ops font-bold text-white mb-6 animate-pulse">
-                  {countdown}
-                </div>
-                
-                {/* Loading Bar */}
-                <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden mb-4">
-                  <div 
-                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1000 ease-linear"
-                    style={{ 
-                      width: `${((3 - countdown) / 3) * 100}%`,
-                      animation: countdown > 0 ? 'pulse 1s infinite' : 'none'
-                    }}
-                  ></div>
-                </div>
-                
-                {/* Spinner */}
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                </div>
+            <div className="text-center mb-8">
+              <div className="text-lg sm:text-xl md:text-2xl font-black-ops text-gray-300 mb-4">
+                Joining the action in
               </div>
-            )}
-            
-            {!isCountdownActive && (
-              <div className="text-center">
-                <div className="text-lg sm:text-xl md:text-2xl font-black-ops text-gray-300 animate-pulse">
-                  Loading...
-                </div>
+              
+              {/* Countdown Number */}
+              <div className="text-6xl sm:text-8xl md:text-9xl font-black-ops font-bold text-white mb-6 animate-pulse">
+                {countdown}
               </div>
-            )}
+              
+              {/* Spinner */}
+              <div className="flex justify-center mb-6">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+              </div>
+              
+              {/* Skip Button */}
+              <button
+                onClick={handleSkip}
+                className="bg-gray-600/50 hover:bg-gray-500/70 text-white font-black-ops font-medium py-2 px-6 rounded-lg transition-all duration-300 text-sm border border-gray-500/30 hover:border-gray-400/50 backdrop-blur-sm"
+              >
+                Skip
+              </button>
+            </div>
           </div>
 
         </div>

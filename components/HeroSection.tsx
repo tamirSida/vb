@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { siteData } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
@@ -12,8 +12,11 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [heroData, setHeroData] = useState(siteData.hero);
+  const [countdown, setCountdown] = useState(3);
+  const [isCountdownActive, setIsCountdownActive] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   const handleEditHero = () => {
@@ -50,6 +53,30 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
     
     loadHeroData();
   }, []);
+
+  // Auto-start countdown after component mounts
+  useEffect(() => {
+    const startCountdown = setTimeout(() => {
+      setIsCountdownActive(true);
+    }, 2000); // Wait 2 seconds before starting countdown
+
+    return () => clearTimeout(startCountdown);
+  }, []);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (!isCountdownActive) return;
+
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      // Redirect to accelerator when countdown reaches 0
+      router.push('/accelerator');
+    }
+  }, [countdown, isCountdownActive, router]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -129,19 +156,44 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
             {heroData.subheadline}
           </p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8 md:mb-12 max-w-3xl">
-            <Link 
-              href={heroData.nonProfitUrl}
-              className="bg-gray-700 hover:bg-gray-600 text-white font-black-ops font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
-            >
-              {heroData.nonProfitCta}
-            </Link>
-            <Link 
-              href={heroData.acceleratorUrl}
-              className="bg-gray-700 hover:bg-gray-600 text-white font-black-ops font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-sm sm:text-base text-center block"
-            >
-              {heroData.acceleratorCta}
-            </Link>
+          {/* Countdown Section */}
+          <div className="flex flex-col items-center justify-center max-w-3xl">
+            {isCountdownActive && (
+              <div className="text-center mb-8">
+                <div className="text-lg sm:text-xl md:text-2xl font-black-ops text-gray-300 mb-4">
+                  Joining the action in
+                </div>
+                
+                {/* Countdown Number */}
+                <div className="text-6xl sm:text-8xl md:text-9xl font-black-ops font-bold text-white mb-6 animate-pulse">
+                  {countdown}
+                </div>
+                
+                {/* Loading Bar */}
+                <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden mb-4">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1000 ease-linear"
+                    style={{ 
+                      width: `${((3 - countdown) / 3) * 100}%`,
+                      animation: countdown > 0 ? 'pulse 1s infinite' : 'none'
+                    }}
+                  ></div>
+                </div>
+                
+                {/* Spinner */}
+                <div className="flex justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                </div>
+              </div>
+            )}
+            
+            {!isCountdownActive && (
+              <div className="text-center">
+                <div className="text-lg sm:text-xl md:text-2xl font-black-ops text-gray-300 animate-pulse">
+                  Loading...
+                </div>
+              </div>
+            )}
           </div>
 
         </div>

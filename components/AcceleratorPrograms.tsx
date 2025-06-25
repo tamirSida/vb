@@ -5,6 +5,31 @@ import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import ImageInsert from './admin/ImageInsert';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
+import { useAdmin } from '../contexts/AdminContext';
+
+// Common icon options for timeline phases
+const TIMELINE_ICONS = [
+  { icon: 'fas fa-clipboard-list', label: 'Application' },
+  { icon: 'fas fa-graduation-cap', label: 'Education' },
+  { icon: 'fas fa-handshake', label: 'Partnership' },
+  { icon: 'fas fa-users', label: 'Team' },
+  { icon: 'fas fa-network-wired', label: 'Network' },
+  { icon: 'fas fa-calendar', label: 'Calendar' },
+  { icon: 'fas fa-rocket', label: 'Launch' },
+  { icon: 'fas fa-lightbulb', label: 'Ideas' },
+  { icon: 'fas fa-chart-line', label: 'Growth' },
+  { icon: 'fas fa-dollar-sign', label: 'Investment' },
+  { icon: 'fas fa-trophy', label: 'Achievement' },
+  { icon: 'fas fa-cogs', label: 'Development' },
+  { icon: 'fas fa-presentation', label: 'Presentation' },
+  { icon: 'fas fa-star', label: 'Success' },
+  { icon: 'fas fa-flag', label: 'Milestone' },
+  { icon: 'fas fa-globe', label: 'Global' },
+  { icon: 'fas fa-building', label: 'Business' },
+  { icon: 'fas fa-code', label: 'Technology' },
+  { icon: 'fas fa-heart', label: 'Passion' },
+  { icon: 'fas fa-shield-alt', label: 'Security' }
+];
 
 // Timeline Phase Card component with connecting lines and icons
 const TimelinePhaseCard: React.FC<{ 
@@ -16,16 +41,9 @@ const TimelinePhaseCard: React.FC<{
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: false, margin: "-50px" });
 
-  // Get icon for each phase
-  const getPhaseIcon = (timeframe: string) => {
-    switch (timeframe) {
-      case 'JAN-MAR': return 'fas fa-clipboard-list';
-      case 'APRIL': return 'fas fa-graduation-cap';
-      case 'APRIL-MAY': return 'fas fa-handshake';
-      case 'JUNE': return 'fas fa-users';
-      case 'ONGOING': return 'fas fa-network-wired';
-      default: return 'fas fa-calendar';
-    }
+  // Get icon for each phase (with fallback)
+  const getPhaseIcon = (phase: any) => {
+    return phase.icon || 'fas fa-calendar';
   };
 
   return (
@@ -64,7 +82,7 @@ const TimelinePhaseCard: React.FC<{
           {/* Phase Icon */}
           <div className="flex items-center justify-center mb-4">
             <div className="w-12 h-12 bg-vb-blue text-white rounded-full flex items-center justify-center shadow-lg">
-              <i className={`${getPhaseIcon(phase.timeframe)} text-lg`}></i>
+              <i className={`${getPhaseIcon(phase)} text-lg`}></i>
             </div>
           </div>
 
@@ -95,9 +113,10 @@ const TimelinePhaseCard: React.FC<{
 };
 
 const AcceleratorPrograms: React.FC = () => {
+  const { isAdminMode } = useAdmin();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
-  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase'>('header');
+  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase' | 'addTimelinePhase'>('header');
   const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
   const [selectedPhase, setSelectedPhase] = useState<any>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -119,7 +138,8 @@ const AcceleratorPrograms: React.FC = () => {
           'Comprehensive founder evaluation',
           'Market opportunity analysis',
           'Business viability assessment'
-        ]
+        ],
+        icon: 'fas fa-clipboard-list'
       },
       {
         timeframe: 'APRIL',
@@ -130,7 +150,8 @@ const AcceleratorPrograms: React.FC = () => {
           'Access to seasoned founders',
           'Industry expert mentorship',
           'Battle-tested curriculum for veterans'
-        ]
+        ],
+        icon: 'fas fa-graduation-cap'
       },
       {
         timeframe: 'APRIL-MAY',
@@ -141,7 +162,8 @@ const AcceleratorPrograms: React.FC = () => {
           'Paired with experienced founders',
           'Weekly check-ins and assignments',
           'Continuous venture advancement'
-        ]
+        ],
+        icon: 'fas fa-handshake'
       },
       {
         timeframe: 'JUNE',
@@ -152,7 +174,8 @@ const AcceleratorPrograms: React.FC = () => {
           'Meetings with industry experts',
           'Investor networking',
           'Final pitch day presentation'
-        ]
+        ],
+        icon: 'fas fa-users'
       },
       {
         timeframe: 'ONGOING',
@@ -164,7 +187,8 @@ const AcceleratorPrograms: React.FC = () => {
           'Continuous support and guidance',
           'Ongoing mentorship',
           'Long-term success resources'
-        ]
+        ],
+        icon: 'fas fa-network-wired'
       }
     ]
   });
@@ -237,6 +261,28 @@ const AcceleratorPrograms: React.FC = () => {
     setSelectedPhase(phase);
     setEditingType('timelinePhase');
     setIsEditModalOpen(true);
+  };
+
+  const handleAddTimelinePhase = () => {
+    setSelectedPhase(null);
+    setEditingType('addTimelinePhase');
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteTimelinePhase = async (phase: any) => {
+    try {
+      const updatedTimeline = acceleratorData.timeline.filter(p => p.timeframe !== phase.timeframe);
+      const updatedData = {
+        ...acceleratorData,
+        timeline: updatedTimeline,
+        updatedAt: new Date().toISOString()
+      };
+      await updateDocument('acceleratorPrograms', updatedData);
+      setAcceleratorData(updatedData);
+      console.log('Timeline phase deleted successfully');
+    } catch (error) {
+      console.error('Error deleting timeline phase:', error);
+    }
   };
 
   const handleViewPhase = (phase: any) => {
@@ -343,7 +389,9 @@ const AcceleratorPrograms: React.FC = () => {
             timeframe: data.timeframe,
             title: data.title,
             description: data.description,
-            highlights: data.highlights.split('\n').filter((h: string) => h.trim())
+            highlights: data.highlights.split('\n').filter((h: string) => h.trim()),
+            icon: data.icon,
+            isOngoing: selectedPhase.isOngoing
           };
           const updatedData = {
             ...acceleratorData,
@@ -353,6 +401,23 @@ const AcceleratorPrograms: React.FC = () => {
           await updateDocument('acceleratorPrograms', updatedData);
           setAcceleratorData(updatedData);
         }
+      } else if (editingType === 'addTimelinePhase') {
+        // Add new timeline phase
+        const newPhase = {
+          timeframe: data.timeframe,
+          title: data.title,
+          description: data.description,
+          highlights: data.highlights.split('\n').filter((h: string) => h.trim()),
+          icon: data.icon,
+          isOngoing: data.isOngoing || false
+        };
+        const updatedData = {
+          ...acceleratorData,
+          timeline: [...acceleratorData.timeline, newPhase],
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorPrograms', updatedData);
+        setAcceleratorData(updatedData);
       }
       console.log('Accelerator programs data saved successfully');
       setIsEditModalOpen(false);
@@ -602,24 +667,59 @@ const AcceleratorPrograms: React.FC = () => {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 relative">
                 {acceleratorData.timeline && acceleratorData.timeline.length > 0 ? (
                   acceleratorData.timeline.map((phase, index) => (
-                    <EditableSection
-                      key={`${phase.timeframe}-${isTimelineInView ? 'visible' : 'hidden'}`}
-                      sectionName={`${phase.title} Phase`}
-                      onEdit={() => handleEditTimelinePhase(phase)}
-                    >
-                      <TimelinePhaseCard
-                        phase={phase}
-                        index={index}
-                        onClick={() => handleViewPhase(phase)}
-                        isLast={index === acceleratorData.timeline.length - 1}
-                      />
-                    </EditableSection>
+                    <div key={`${phase.timeframe}-${isTimelineInView ? 'visible' : 'hidden'}`} className="relative group">
+                      <EditableSection
+                        sectionName={`${phase.title} Phase`}
+                        onEdit={() => handleEditTimelinePhase(phase)}
+                      >
+                        <TimelinePhaseCard
+                          phase={phase}
+                          index={index}
+                          onClick={() => handleViewPhase(phase)}
+                          isLast={index === acceleratorData.timeline.length - 1}
+                        />
+                      </EditableSection>
+                      
+                      {/* Delete button for timeline phases */}
+                      {isAdminMode && (
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                          <button
+                            onClick={() => {
+                              if (confirm(`Delete ${phase.title} phase?`)) {
+                                handleDeleteTimelinePhase(phase);
+                              }
+                            }}
+                            className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-lg"
+                            title="Delete Phase"
+                          >
+                            <i className="fas fa-times"></i>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   ))
                 ) : (
                   <div className="text-center py-8 col-span-full">
                     <p className="text-vb-medium">Loading timeline...</p>
                   </div>
                 )}
+                
+                {/* Add New Phase Button */}
+                <EditableSection 
+                  sectionName="Add New Timeline Phase"
+                  onEdit={handleAddTimelinePhase}
+                  className="bg-light/50 border-2 border-dashed border-vb-light p-6 rounded-xl flex items-center justify-center min-h-[200px]"
+                >
+                  <div className="text-center text-vb-medium">
+                    <i className="fas fa-plus text-2xl mb-3"></i>
+                    <p className="font-medium">Add New Phase</p>
+                  </div>
+                </EditableSection>
+              </div>
+
+              {/* Timeline Phase Management Help Text */}
+              <div className="mt-6 text-center text-sm text-vb-medium">
+                <p>Click on any phase to edit it, or use the + button to add a new phase</p>
               </div>
             </div>
           </div>
@@ -676,7 +776,9 @@ const AcceleratorPrograms: React.FC = () => {
                 ? "Edit Timeline Header"
                 : editingType === 'timelinePhase'
                   ? `Edit ${selectedPhase?.title || 'Timeline Phase'}`
-                  : `Edit ${editingProgram?.name || 'Program'}`
+                  : editingType === 'addTimelinePhase'
+                    ? "Add New Timeline Phase"
+                    : `Edit ${editingProgram?.name || 'Program'}`
       }
     >
       {editingType === 'header' ? (
@@ -733,7 +835,7 @@ const AcceleratorPrograms: React.FC = () => {
             />
           </div>
         </div>
-      ) : editingType === 'timelinePhase' ? (
+      ) : editingType === 'timelinePhase' || editingType === 'addTimelinePhase' ? (
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Phase Timeframe</label>
@@ -756,6 +858,23 @@ const AcceleratorPrograms: React.FC = () => {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phase Icon</label>
+            <select
+              name="icon"
+              defaultValue={selectedPhase?.icon || 'fas fa-calendar'}
+              className="admin-input w-full"
+            >
+              {TIMELINE_ICONS.map((iconOption) => (
+                <option key={iconOption.icon} value={iconOption.icon}>
+                  {iconOption.label}
+                </option>
+              ))}
+            </select>
+            <div className="mt-2 text-sm text-gray-400">
+              Preview: <i className={selectedPhase?.icon || 'fas fa-calendar'}></i>
+            </div>
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Phase Description</label>
             <textarea
               name="description"
@@ -773,6 +892,18 @@ const AcceleratorPrograms: React.FC = () => {
               placeholder="Enter highlights, one per line"
             />
           </div>
+          {editingType === 'addTimelinePhase' && (
+            <div>
+              <label className="flex items-center text-sm text-gray-300">
+                <input
+                  type="checkbox"
+                  name="isOngoing"
+                  className="mr-2"
+                />
+                Mark as ongoing phase
+              </label>
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-4">

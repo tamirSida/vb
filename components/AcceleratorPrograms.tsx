@@ -97,7 +97,7 @@ const TimelinePhaseCard: React.FC<{
 const AcceleratorPrograms: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
-  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about'>('header');
+  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase'>('header');
   const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
   const [selectedPhase, setSelectedPhase] = useState<any>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -106,6 +106,8 @@ const AcceleratorPrograms: React.FC = () => {
     title: 'Our Accelerator Program',
     description: 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
     about: 'adam fill here',
+    timelineTitle: 'Program Timeline',
+    timelineDescription: 'Click on each phase to learn more about the process',
     programs: siteData.programs.filter(program => program.name === 'VB Accelerator'),
     images: [] as any[],
     timeline: [
@@ -226,6 +228,17 @@ const AcceleratorPrograms: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleEditTimelineHeader = () => {
+    setEditingType('timelineHeader');
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditTimelinePhase = (phase: any) => {
+    setSelectedPhase(phase);
+    setEditingType('timelinePhase');
+    setIsEditModalOpen(true);
+  };
+
   const handleViewPhase = (phase: any) => {
     setSelectedPhase(phase);
     setIsPhaseModalOpen(true);
@@ -237,8 +250,6 @@ const AcceleratorPrograms: React.FC = () => {
       const updatedData = {
         ...acceleratorData,
         programs: updatedPrograms,
-        images: acceleratorData.images,
-        timeline: acceleratorData.timeline,
         updatedAt: new Date().toISOString()
       };
       await updateDocument('acceleratorPrograms', updatedData);
@@ -259,6 +270,8 @@ const AcceleratorPrograms: React.FC = () => {
           title: data.title,
           description: data.description,
           about: acceleratorData.about,
+          timelineTitle: acceleratorData.timelineTitle,
+          timelineDescription: acceleratorData.timelineDescription,
           programs: acceleratorData.programs,
           images: acceleratorData.images,
           timeline: acceleratorData.timeline,
@@ -270,8 +283,6 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           ...acceleratorData,
           about: data.about,
-          images: acceleratorData.images,
-          timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorPrograms', updatedData);
@@ -292,8 +303,6 @@ const AcceleratorPrograms: React.FC = () => {
           const updatedData = {
             ...acceleratorData,
             programs: updatedPrograms,
-            images: acceleratorData.images,
-            timeline: acceleratorData.timeline,
             updatedAt: new Date().toISOString()
           };
           await updateDocument('acceleratorPrograms', updatedData);
@@ -312,16 +321,43 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           ...acceleratorData,
           programs: [...acceleratorData.programs, newProgram],
-          images: acceleratorData.images,
-          timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorPrograms', updatedData);
         setAcceleratorData(updatedData);
+      } else if (editingType === 'timelineHeader') {
+        const updatedData = {
+          ...acceleratorData,
+          timelineTitle: data.timelineTitle,
+          timelineDescription: data.timelineDescription,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('acceleratorPrograms', updatedData);
+        setAcceleratorData(updatedData);
+      } else if (editingType === 'timelinePhase') {
+        // Update timeline phase
+        const phaseIndex = acceleratorData.timeline.findIndex(p => p.timeframe === selectedPhase.timeframe);
+        if (phaseIndex !== -1) {
+          const updatedTimeline = [...acceleratorData.timeline];
+          updatedTimeline[phaseIndex] = {
+            timeframe: data.timeframe,
+            title: data.title,
+            description: data.description,
+            highlights: data.highlights.split('\n').filter((h: string) => h.trim())
+          };
+          const updatedData = {
+            ...acceleratorData,
+            timeline: updatedTimeline,
+            updatedAt: new Date().toISOString()
+          };
+          await updateDocument('acceleratorPrograms', updatedData);
+          setAcceleratorData(updatedData);
+        }
       }
       console.log('Accelerator programs data saved successfully');
       setIsEditModalOpen(false);
       setEditingProgram(null);
+      setSelectedPhase(null);
     } catch (error) {
       console.error('Error saving accelerator programs data:', error);
     }
@@ -545,29 +581,39 @@ const AcceleratorPrograms: React.FC = () => {
           {/* Program Timeline Section */}
           <div ref={timelineRef} className="bg-light text-dark rounded-xl shadow-lg border border-secondary overflow-hidden">
             <div className="p-8">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                transition={{ duration: 0.6 }}
-                className="text-center mb-12"
+              <EditableSection
+                sectionName="Timeline Header"
+                onEdit={handleEditTimelineHeader}
               >
-                <h3 className="text-3xl font-bold text-vb-navy mb-4">Program Timeline</h3>
-                <p className="text-xl text-vb-medium max-w-2xl mx-auto">
-                  Click on each phase to learn more about the process
-                </p>
-              </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
+                >
+                  <h3 className="text-3xl font-bold text-vb-navy mb-4">{acceleratorData.timelineTitle || 'Program Timeline'}</h3>
+                  <p className="text-xl text-vb-medium max-w-2xl mx-auto">
+                    {acceleratorData.timelineDescription || 'Click on each phase to learn more about the process'}
+                  </p>
+                </motion.div>
+              </EditableSection>
               
               {/* Timeline Cards Grid */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 relative">
                 {acceleratorData.timeline && acceleratorData.timeline.length > 0 ? (
                   acceleratorData.timeline.map((phase, index) => (
-                    <TimelinePhaseCard
+                    <EditableSection
                       key={`${phase.timeframe}-${isTimelineInView ? 'visible' : 'hidden'}`}
-                      phase={phase}
-                      index={index}
-                      onClick={() => handleViewPhase(phase)}
-                      isLast={index === acceleratorData.timeline.length - 1}
-                    />
+                      sectionName={`${phase.title} Phase`}
+                      onEdit={() => handleEditTimelinePhase(phase)}
+                    >
+                      <TimelinePhaseCard
+                        phase={phase}
+                        index={index}
+                        onClick={() => handleViewPhase(phase)}
+                        isLast={index === acceleratorData.timeline.length - 1}
+                      />
+                    </EditableSection>
                   ))
                 ) : (
                   <div className="text-center py-8 col-span-full">
@@ -626,7 +672,11 @@ const AcceleratorPrograms: React.FC = () => {
             ? "Add New Program"
             : editingType === 'about'
               ? "Edit About the Program"
-              : `Edit ${editingProgram?.name || 'Program'}`
+              : editingType === 'timelineHeader'
+                ? "Edit Timeline Header"
+                : editingType === 'timelinePhase'
+                  ? `Edit ${selectedPhase?.title || 'Timeline Phase'}`
+                  : `Edit ${editingProgram?.name || 'Program'}`
       }
     >
       {editingType === 'header' ? (
@@ -658,6 +708,69 @@ const AcceleratorPrograms: React.FC = () => {
               defaultValue={acceleratorData.about}
               className="admin-input w-full h-32 resize-none"
               placeholder="Describe the program in detail..."
+            />
+          </div>
+        </div>
+      ) : editingType === 'timelineHeader' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Timeline Title</label>
+            <input
+              type="text"
+              name="timelineTitle"
+              defaultValue={acceleratorData.timelineTitle || 'Program Timeline'}
+              className="admin-input w-full"
+              placeholder="e.g., Program Timeline"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Timeline Description</label>
+            <textarea
+              name="timelineDescription"
+              defaultValue={acceleratorData.timelineDescription || 'Click on each phase to learn more about the process'}
+              className="admin-input w-full h-20 resize-none"
+              placeholder="Describe the timeline section..."
+            />
+          </div>
+        </div>
+      ) : editingType === 'timelinePhase' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phase Timeframe</label>
+            <input
+              type="text"
+              name="timeframe"
+              defaultValue={selectedPhase?.timeframe || ''}
+              className="admin-input w-full"
+              placeholder="e.g., JAN-MAR"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phase Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={selectedPhase?.title || ''}
+              className="admin-input w-full"
+              placeholder="e.g., Application and Selection Process"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phase Description</label>
+            <textarea
+              name="description"
+              defaultValue={selectedPhase?.description || ''}
+              className="admin-input w-full h-24 resize-none"
+              placeholder="Describe this phase of the program..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phase Highlights (one per line)</label>
+            <textarea
+              name="highlights"
+              defaultValue={selectedPhase?.highlights?.join('\n') || ''}
+              className="admin-input w-full h-32 resize-none"
+              placeholder="Enter highlights, one per line"
             />
           </div>
         </div>

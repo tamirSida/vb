@@ -71,6 +71,9 @@ export default function EditModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 bg-kizna-navy/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
       <motion.div
         initial={{ y: 50, scale: 0.9 }}
@@ -79,10 +82,11 @@ export default function EditModal({
         className="glass-effect bg-kizna-dark/90 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gradient">{title}</h2>
+          <h2 id="modal-title" className="text-xl font-bold text-gradient">{title}</h2>
           <button
             onClick={onClose}
-            className="admin-btn text-gray-400 hover:text-white"
+            className="admin-btn text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kizna-electric"
+            aria-label="Close modal"
           >
             ✕
           </button>
@@ -95,13 +99,15 @@ export default function EditModal({
         <div className="flex space-x-3 justify-end">
           <button
             onClick={onClose}
-            className="admin-btn text-gray-400"
+            className="admin-btn text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            type="button"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="admin-btn bg-kizna-electric text-kizna-dark"
+            className="admin-btn bg-kizna-electric text-kizna-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kizna-electric"
+            type="button"
           >
             Save Changes
           </button>

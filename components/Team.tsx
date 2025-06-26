@@ -268,7 +268,7 @@ const Team: React.FC = () => {
                     >
                       <Image 
                         src={member.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE4IiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0zMiAxMDBDMzIgODYgNDYgNzggNjQgNzhTOTYgODYgOTYgMTAwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
-                        alt={member.name}
+                        alt={`${member.name}${member.title ? `, ${member.title}` : ''}${member.military ? `, ${member.military}` : ''}`}
                         width={128}
                         height={128}
                         className="w-full h-full object-cover object-center"
@@ -388,7 +388,7 @@ const Team: React.FC = () => {
                     >
                       <Image 
                         src={member.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iNDgiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDgiIGN5PSIzNiIgcj0iMTQiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTI0IDc2QzI0IDY2IDM0IDYwIDQ4IDYwUzcyIDY2IDcyIDc2IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
-                        alt={member.name}
+                        alt={`${member.name}${member.title ? `, ${member.title}` : ''}${member.military ? `, ${member.military}` : ''}`}
                         width={96}
                         height={96}
                         className="w-full h-full object-cover object-top scale-110"

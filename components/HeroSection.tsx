@@ -116,9 +116,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
           loop
           playsInline
           className="w-full h-full object-cover"
+          aria-hidden="true"
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />
           <source src="/videos/hero-background.webm" type="video/webm" />
+          <track kind="captions" src="/captions/hero-video.vtt" srcLang="en" label="English" />
         </video>
       </div>
       
@@ -170,8 +172,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               </div>
               
               {/* Countdown Number */}
-              <div className="text-6xl sm:text-8xl md:text-9xl font-black-ops font-bold text-white mb-6 animate-pulse">
+              <div className="text-6xl sm:text-8xl md:text-9xl font-black-ops font-bold text-white mb-6 animate-pulse" aria-live="polite" aria-atomic="true">
+                <span className="sr-only">Countdown: </span>
                 {countdown}
+                <span className="sr-only"> seconds remaining</span>
               </div>
               
               {/* Spinner */}
@@ -182,7 +186,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               {/* Skip Button */}
               <button
                 onClick={handleSkip}
-                className="bg-gray-600/50 hover:bg-gray-500/70 text-white font-black-ops font-medium py-2 px-6 rounded-lg transition-all duration-300 text-sm border border-gray-500/30 hover:border-gray-400/50 backdrop-blur-sm"
+                className="bg-gray-600/50 hover:bg-gray-500/70 text-white font-black-ops font-medium py-2 px-6 rounded-lg transition-all duration-300 text-sm border border-gray-500/30 hover:border-gray-400/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white focus:ring-offset-black"
+                aria-label="Skip countdown and go to accelerator page"
               >
                 Skip
               </button>

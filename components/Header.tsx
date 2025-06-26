@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
   return (
     <header className="bg-light shadow-sm border-b border-secondary sticky top-0 z-30">
       <div className="container-max px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16" id="navigation">
           <div className="flex items-center">
             <Link href="/">
               <Image 
@@ -76,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
           {/* Center section - different for accelerator page */}
           {isAcceleratorPage ? (
             <div className="hidden md:flex items-center justify-center flex-1">
-              <nav className="flex items-center space-x-8">
+              <nav className="flex items-center space-x-8" role="navigation" aria-label="Main navigation">
                 <Link href="/accelerator/" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
                   Why VB
                 </Link>
@@ -157,9 +157,17 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
             {/* Mobile Menu Button */}
             {(showNavigation || isAcceleratorPage) && (
               <button 
-                className="md:hidden p-2"
+                className="md:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Toggle menu"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsMenuOpen(!isMenuOpen);
+                  }
+                }}
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-menu"
               >
                 <div className="w-6 h-6 flex flex-col justify-center space-y-1">
                   <span className={`bg-gray-700 h-0.5 w-6 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
@@ -173,8 +181,8 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
         
         {/* Mobile Menu */}
         {(showNavigation || isAcceleratorPage) && isMenuOpen && (
-          <div className="md:hidden bg-light border-t border-secondary">
-            <nav className="px-4 py-4 space-y-3">
+          <div className="md:hidden bg-light border-t border-secondary" id="mobile-menu">
+            <nav className="px-4 py-4 space-y-3" role="navigation" aria-label="Mobile navigation">
               {isAcceleratorPage ? (
                 <>
                   <Link 

@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import SkipLinks from '../components/SkipLinks';
 import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/DiscreteAdminAccess';
 import EditableSection from '../components/admin/EditableSection';
 import EditModal from '../components/admin/EditModal';
@@ -397,8 +398,9 @@ export default function Accelerator() {
         />
       </Head>
 
+      <SkipLinks />
       <Header isAcceleratorPage={true} />
-      <main>
+      <main id="main-content">
         {/* Combined Hero + Swipe Interface Section */}
         <section className="relative overflow-hidden" style={{ height: 'calc(100vh - 64px)' }}>
           {/* Loading overlay */}

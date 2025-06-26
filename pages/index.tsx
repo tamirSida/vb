@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
+import SkipLinks from '../components/SkipLinks';
 import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/DiscreteAdminAccess';
 
 export default function Home() {
@@ -54,8 +55,9 @@ export default function Home() {
         />
       </Head>
 
+      <SkipLinks />
       <Header showNavigation={false} />
-      <main>
+      <main id="main-content">
         <HeroSection showScrollIndicator={false} />
       </main>
       

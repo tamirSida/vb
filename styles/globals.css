@@ -50,4 +50,34 @@ body {
   .admin-input {
     @apply glass-effect bg-kizna-dark/50 text-white placeholder-gray-400 border-kizna-blue/30 focus:border-kizna-electric focus:ring-kizna-electric/20 rounded-md px-3 py-2;
   }
+
+  /* Accessibility utilities */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  /* Focus styles for better keyboard navigation */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+  }
+
+  /* Ensure buttons and links have proper focus indicators */
+  button:focus,
+  a:focus,
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply outline-none ring-2 ring-offset-2 ring-blue-500;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .text-gray-400 {
+      @apply text-gray-600;
+    }
+    .text-gray-300 {
+      @apply text-gray-700;
+    }
+  }
 }

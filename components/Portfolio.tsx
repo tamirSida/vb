@@ -38,8 +38,9 @@ const CountingNumber: React.FC<{ end: number; duration: number; label: string; i
   }, [isVisible, end, duration]);
 
   return (
-    <div className="text-center">
-      <div className="text-4xl md:text-5xl font-bold text-vb-navy mb-2">
+    <div className="text-center" role="group" aria-label={`${label}: ${count}`}>
+      <div className="text-4xl md:text-5xl font-bold text-vb-navy mb-2" aria-live="polite" aria-atomic="true">
+        <span className="sr-only">{label}: </span>
         {count}
       </div>
       <div className="text-sm md:text-base text-vb-medium font-medium uppercase tracking-wide">
@@ -297,7 +298,7 @@ const Portfolio: React.FC = () => {
 
   return (
     <>
-      <section id="portfolio" className="section-padding bg-white">
+      <section id="portfolio" className="section-padding bg-white" aria-labelledby="portfolio-title">
         <div className="container-max">
           {/* Companies Accelerated Hero Stats */}
           <EditableSection 
@@ -363,6 +364,7 @@ const Portfolio: React.FC = () => {
             >
               <div className="text-center mb-12">
                 <motion.h2 
+                  id="portfolio-title"
                   className="text-3xl md:text-4xl font-bold text-vb-navy mb-4"
                   initial={{ opacity: 0, y: 30 }}
                   animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -431,11 +433,18 @@ const Portfolio: React.FC = () => {
                 onEdit={() => handleEditCompany(company)}
                 className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden h-full group border border-gray-100 hover:border-vb-gold"
               >
-                <motion.div 
-                  className="cursor-pointer h-full relative"
+                <motion.button
+                  className="cursor-pointer h-full relative w-full text-left p-0 border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   onClick={() => handleViewCompany(company)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleViewCompany(company);
+                    }
+                  }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  aria-label={`View details for ${company.name}`}
                 >
                   {/* Animated background gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-vb-gold/5 to-vb-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -537,7 +546,7 @@ const Portfolio: React.FC = () => {
                       </motion.div>
                     );
                   })()}
-                </motion.div>
+                </motion.button>
               </EditableSection>
             </motion.div>
           ))}

@@ -536,7 +536,7 @@ const Portfolio: React.FC = () => {
                             company.flag === 'exited' 
                               ? 'border-b-blue-600' 
                               : company.flag === 'fundraising'
-                              ? 'border-b-blue-300'
+                              ? 'border-b-green-500'
                               : 'border-b-gray-400'
                           }`}
                           whileHover={{ 

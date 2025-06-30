@@ -72,9 +72,11 @@ export const siteData = {
     {
       name: "VB Accelerator",
       description: "Our flagship 10-week program for veteran entrepreneurs",
-      duration: "10 weeks",
-      investment: "$100,000",
-      equity: "3.33%",
+      squares: [
+        { id: "duration", label: "Duration", value: "10 weeks" },
+        { id: "investment", label: "Investment", value: "$100,000" },
+        { id: "equity", label: "What You Receive", value: "3.33%" }
+      ],
       highlights: [
         "10-day bootcamp in Israel and USA",
         "16–20 startups per cohort", 
@@ -85,9 +87,11 @@ export const siteData = {
     {
       name: "Alpha-Bet Program",
       description: "Online program providing access to curriculum and mentors",
-      duration: "10 weeks",
-      investment: "Philanthropic funding",
-      equity: "No equity",
+      squares: [
+        { id: "duration", label: "Duration", value: "10 weeks" },
+        { id: "investment", label: "Investment", value: "Philanthropic funding" },
+        { id: "equity", label: "What You Receive", value: "No equity" }
+      ],
       highlights: [
         "500–1,000 applicants → 100–150 participants/year",
         "Access to proprietary content, mentors, curriculum",

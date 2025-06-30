@@ -116,7 +116,7 @@ const AcceleratorPrograms: React.FC = () => {
   const { isAdminMode } = useAdmin();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
-  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase' | 'addTimelinePhase'>('header');
+  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase' | 'addTimelinePhase' | 'addSquare' | 'editSquare'>('header');
   const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
   const [selectedPhase, setSelectedPhase] = useState<any>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -194,6 +194,41 @@ const AcceleratorPrograms: React.FC = () => {
   });
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
+  // Load data from Firestore on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('acceleratorContent') as any;
+        if (data) {
+          // Ensure programs have squares array, migrating old structure if needed
+          const migratedPrograms = (data.programs || acceleratorData.programs).map((program: any) => {
+            if (!program.squares && (program.duration || program.investment || program.equity)) {
+              // Migrate old structure to new squares format
+              return {
+                ...program,
+                squares: [
+                  ...(program.duration ? [{ id: 'duration', label: 'Duration', value: program.duration }] : []),
+                  ...(program.investment ? [{ id: 'investment', label: 'Investment', value: program.investment }] : []),
+                  ...(program.equity ? [{ id: 'equity', label: 'What You Receive', value: program.equity }] : [])
+                ]
+              };
+            }
+            return program;
+          });
+          
+          setAcceleratorData({
+            ...acceleratorData,
+            ...data,
+            programs: migratedPrograms
+          });
+        }
+      } catch (error) {
+        console.error('Error loading accelerator data:', error);
+      }
+    };
+    loadData();
+  }, []);
+
   // Handle image operations
   const handleImageSave = async (imageData: any) => {
     try {
@@ -203,7 +238,7 @@ const AcceleratorPrograms: React.FC = () => {
         images: updatedImages,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorPrograms', updatedData);
+      await updateDocument('acceleratorContent', updatedData);
       setAcceleratorData(updatedData);
       console.log('Image added successfully');
     } catch (error) {
@@ -219,7 +254,7 @@ const AcceleratorPrograms: React.FC = () => {
         images: updatedImages,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorPrograms', updatedData);
+      await updateDocument('acceleratorContent', updatedData);
       setAcceleratorData(updatedData);
       console.log('Image deleted successfully');
     } catch (error) {
@@ -277,7 +312,7 @@ const AcceleratorPrograms: React.FC = () => {
         timeline: updatedTimeline,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorPrograms', updatedData);
+      await updateDocument('acceleratorContent', updatedData);
       setAcceleratorData(updatedData);
       console.log('Timeline phase deleted successfully');
     } catch (error) {
@@ -298,7 +333,7 @@ const AcceleratorPrograms: React.FC = () => {
         programs: updatedPrograms,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorPrograms', updatedData);
+      await updateDocument('acceleratorContent', updatedData);
       setAcceleratorData(updatedData);
       
       console.log('Accelerator program deleted successfully');
@@ -306,6 +341,39 @@ const AcceleratorPrograms: React.FC = () => {
       setEditingProgram(null);
     } catch (error) {
       console.error('Error deleting accelerator program:', error);
+    }
+  };
+
+  // Square management functions
+  const handleAddSquare = (program: any) => {
+    setEditingProgram(program);
+    setEditingType('addSquare');
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSquare = (program: any, square: any) => {
+    setEditingProgram({ ...program, editingSquare: square });
+    setEditingType('editSquare');
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteSquare = async (program: any, squareId: string) => {
+    try {
+      const updatedSquares = (program.squares || []).filter((square: any) => square.id !== squareId);
+      const updatedPrograms = acceleratorData.programs.map((p: any) => 
+        p.name === program.name ? { ...p, squares: updatedSquares } : p
+      );
+      
+      const updatedData = {
+        ...acceleratorData,
+        programs: updatedPrograms,
+        updatedAt: new Date().toISOString()
+      };
+      
+      await updateDocument('acceleratorContent', updatedData);
+      setAcceleratorData(updatedData);
+    } catch (error) {
+      console.error('Error deleting square:', error);
     }
   };
 
@@ -323,7 +391,7 @@ const AcceleratorPrograms: React.FC = () => {
           timeline: acceleratorData.timeline,
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorPrograms', updatedData);
+        await updateDocument('acceleratorContent', updatedData);
         setAcceleratorData(updatedData);
       } else if (editingType === 'about') {
         const updatedData = {
@@ -331,7 +399,7 @@ const AcceleratorPrograms: React.FC = () => {
           about: data.about,
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorPrograms', updatedData);
+        await updateDocument('acceleratorContent', updatedData);
         setAcceleratorData(updatedData);
       } else if (editingType === 'program') {
         // Update existing program
@@ -339,11 +407,9 @@ const AcceleratorPrograms: React.FC = () => {
         if (programIndex !== -1) {
           const updatedPrograms = [...acceleratorData.programs];
           updatedPrograms[programIndex] = {
+            ...updatedPrograms[programIndex],
             name: data.name,
             description: data.description,
-            duration: data.duration,
-            investment: data.investment,
-            equity: data.equity,
             highlights: data.highlights.split('\n').filter((h: string) => h.trim())
           };
           const updatedData = {
@@ -351,7 +417,7 @@ const AcceleratorPrograms: React.FC = () => {
             programs: updatedPrograms,
             updatedAt: new Date().toISOString()
           };
-          await updateDocument('acceleratorPrograms', updatedData);
+          await updateDocument('acceleratorContent', updatedData);
           setAcceleratorData(updatedData);
         }
       } else if (editingType === 'add') {
@@ -359,9 +425,7 @@ const AcceleratorPrograms: React.FC = () => {
         const newProgram = {
           name: data.name,
           description: data.description,
-          duration: data.duration,
-          investment: data.investment,
-          equity: data.equity,
+          squares: [],
           highlights: data.highlights.split('\n').filter((h: string) => h.trim())
         };
         const updatedData = {
@@ -369,8 +433,56 @@ const AcceleratorPrograms: React.FC = () => {
           programs: [...acceleratorData.programs, newProgram],
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorPrograms', updatedData);
+        await updateDocument('acceleratorContent', updatedData);
         setAcceleratorData(updatedData);
+      } else if (editingType === 'addSquare') {
+        // Add new square to program
+        const newSquare = {
+          id: `square-${Date.now()}`,
+          label: data.label,
+          value: data.value
+        };
+        const programIndex = acceleratorData.programs.findIndex(p => p.name === editingProgram.name);
+        if (programIndex !== -1) {
+          const updatedPrograms = [...acceleratorData.programs];
+          updatedPrograms[programIndex] = {
+            ...updatedPrograms[programIndex],
+            squares: [...(updatedPrograms[programIndex].squares || []), newSquare]
+          };
+          const updatedData = {
+            ...acceleratorData,
+            programs: updatedPrograms,
+            updatedAt: new Date().toISOString()
+          };
+          await updateDocument('acceleratorContent', updatedData);
+          setAcceleratorData(updatedData);
+        }
+      } else if (editingType === 'editSquare') {
+        // Edit existing square
+        const programIndex = acceleratorData.programs.findIndex(p => p.name === editingProgram.name);
+        if (programIndex !== -1) {
+          const updatedPrograms = [...acceleratorData.programs];
+          const squares = updatedPrograms[programIndex].squares || [];
+          const squareIndex = squares.findIndex(s => s.id === editingProgram.editingSquare.id);
+          if (squareIndex !== -1) {
+            squares[squareIndex] = {
+              ...squares[squareIndex],
+              label: data.label,
+              value: data.value
+            };
+            updatedPrograms[programIndex] = {
+              ...updatedPrograms[programIndex],
+              squares: squares
+            };
+            const updatedData = {
+              ...acceleratorData,
+              programs: updatedPrograms,
+              updatedAt: new Date().toISOString()
+            };
+            await updateDocument('acceleratorContent', updatedData);
+            setAcceleratorData(updatedData);
+          }
+        }
       } else if (editingType === 'timelineHeader') {
         const updatedData = {
           ...acceleratorData,
@@ -378,7 +490,7 @@ const AcceleratorPrograms: React.FC = () => {
           timelineDescription: data.timelineDescription,
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorPrograms', updatedData);
+        await updateDocument('acceleratorContent', updatedData);
         setAcceleratorData(updatedData);
       } else if (editingType === 'timelinePhase') {
         // Update timeline phase
@@ -398,7 +510,7 @@ const AcceleratorPrograms: React.FC = () => {
             timeline: updatedTimeline,
             updatedAt: new Date().toISOString()
           };
-          await updateDocument('acceleratorPrograms', updatedData);
+          await updateDocument('acceleratorContent', updatedData);
           setAcceleratorData(updatedData);
         }
       } else if (editingType === 'addTimelinePhase') {
@@ -416,7 +528,7 @@ const AcceleratorPrograms: React.FC = () => {
           timeline: [...acceleratorData.timeline, newPhase],
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorPrograms', updatedData);
+        await updateDocument('acceleratorContent', updatedData);
         setAcceleratorData(updatedData);
       }
       console.log('Accelerator programs data saved successfully');
@@ -536,54 +648,60 @@ const AcceleratorPrograms: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.2 + 0.7 }}
                     >
-                      <motion.div
-                        className="bg-white/50 p-4 rounded-lg border border-vb-light/30"
-                        whileHover={{ 
-                          scale: 1.05,
-                          backgroundColor: "rgba(59, 130, 246, 0.1)",
-                          transition: { duration: 0.2 }
-                        }}
-                      >
-                        <span className="text-vb-blue font-semibold block mb-1">Duration:</span>
-                        <motion.p 
-                          className="text-vb-navy font-bold text-lg"
-                          whileHover={{ scale: 1.1 }}
+                      {(program.squares || [
+                        // Fallback to old structure if squares don't exist
+                        ...(program.duration ? [{ id: 'duration', label: 'Duration', value: program.duration }] : []),
+                        ...(program.investment ? [{ id: 'investment', label: 'Investment', value: program.investment }] : []),
+                        ...(program.equity ? [{ id: 'equity', label: 'What You Receive', value: program.equity }] : [])
+                      ]).map((square: any, squareIndex: number) => (
+                        <motion.div
+                          key={square.id}
+                          className="bg-white/50 p-4 rounded-lg border border-vb-light/30 relative group"
+                          whileHover={{ 
+                            scale: 1.05,
+                            backgroundColor: "rgba(59, 130, 246, 0.1)",
+                            transition: { duration: 0.2 }
+                          }}
                         >
-                          {program.duration}
-                        </motion.p>
-                      </motion.div>
-                      <motion.div
-                        className="bg-white/50 p-4 rounded-lg border border-vb-light/30"
-                        whileHover={{ 
-                          scale: 1.05,
-                          backgroundColor: "rgba(59, 130, 246, 0.1)",
-                          transition: { duration: 0.2 }
-                        }}
-                      >
-                        <span className="text-vb-blue font-semibold block mb-1">Investment:</span>
-                        <motion.p 
-                          className="text-vb-navy font-bold text-lg"
-                          whileHover={{ scale: 1.1 }}
+                          {isAdminMode && (
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => handleEditSquare(program, square)}
+                                className="text-vb-blue hover:text-vb-navy mr-2"
+                                title="Edit Square"
+                              >
+                                <i className="fas fa-edit text-sm"></i>
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSquare(program, square.id)}
+                                className="text-red-500 hover:text-red-700"
+                                title="Delete Square"
+                              >
+                                <i className="fas fa-trash text-sm"></i>
+                              </button>
+                            </div>
+                          )}
+                          <span className="text-vb-blue font-semibold block mb-1">{square.label}:</span>
+                          <motion.p 
+                            className="text-vb-navy font-bold text-lg"
+                            whileHover={{ scale: 1.1 }}
+                          >
+                            {square.value}
+                          </motion.p>
+                        </motion.div>
+                      ))}
+                      {isAdminMode && (
+                        <motion.div
+                          className="bg-gray-100/50 p-4 rounded-lg border border-gray-300 border-dashed flex items-center justify-center cursor-pointer hover:bg-gray-200/50 transition-colors"
+                          whileHover={{ scale: 1.05 }}
+                          onClick={() => handleAddSquare(program)}
                         >
-                          {program.investment}
-                        </motion.p>
-                      </motion.div>
-                      <motion.div
-                        className="bg-white/50 p-4 rounded-lg border border-vb-light/30"
-                        whileHover={{ 
-                          scale: 1.05,
-                          backgroundColor: "rgba(59, 130, 246, 0.1)",
-                          transition: { duration: 0.2 }
-                        }}
-                      >
-                        <span className="text-vb-blue font-semibold block mb-1">What You Receive:</span>
-                        <motion.p 
-                          className="text-vb-navy font-bold text-lg"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          {program.equity}
-                        </motion.p>
-                      </motion.div>
+                          <div className="text-center text-gray-500">
+                            <i className="fas fa-plus text-2xl mb-2"></i>
+                            <p className="text-sm font-medium">Add Square</p>
+                          </div>
+                        </motion.div>
+                      )}
                     </motion.div>
                   </motion.div>
 
@@ -778,7 +896,11 @@ const AcceleratorPrograms: React.FC = () => {
                   ? `Edit ${selectedPhase?.title || 'Timeline Phase'}`
                   : editingType === 'addTimelinePhase'
                     ? "Add New Timeline Phase"
-                    : `Edit ${editingProgram?.name || 'Program'}`
+                    : editingType === 'addSquare'
+                      ? "Add New Square"
+                      : editingType === 'editSquare'
+                        ? "Edit Square"
+                        : `Edit ${editingProgram?.name || 'Program'}`
       }
     >
       {editingType === 'header' ? (
@@ -905,6 +1027,29 @@ const AcceleratorPrograms: React.FC = () => {
             </div>
           )}
         </div>
+      ) : (editingType === 'addSquare' || editingType === 'editSquare') ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Square Label</label>
+            <input
+              type="text"
+              name="label"
+              defaultValue={editingProgram?.editingSquare?.label || ''}
+              className="admin-input w-full"
+              placeholder="e.g., Duration, Investment, etc."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Square Value</label>
+            <input
+              type="text"
+              name="value"
+              defaultValue={editingProgram?.editingSquare?.value || ''}
+              className="admin-input w-full"
+              placeholder="e.g., 10 weeks, $100,000, etc."
+            />
+          </div>
+        </div>
       ) : (
         <div className="space-y-4">
           <div>
@@ -924,38 +1069,6 @@ const AcceleratorPrograms: React.FC = () => {
               defaultValue={editingProgram?.description || ''}
               className="admin-input w-full h-20 resize-none"
               placeholder="Brief description of the program"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Duration</label>
-              <input
-                type="text"
-                name="duration"
-                defaultValue={editingProgram?.duration || ''}
-                className="admin-input w-full"
-                placeholder="e.g., 10 weeks"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Investment</label>
-              <input
-                type="text"
-                name="investment"
-                defaultValue={editingProgram?.investment || ''}
-                className="admin-input w-full"
-                placeholder="e.g., $100,000"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">What You Receive</label>
-            <input
-              type="text"
-              name="equity"
-              defaultValue={editingProgram?.equity || ''}
-              className="admin-input w-full"
-              placeholder="e.g., 3.33%"
             />
           </div>
           <div>

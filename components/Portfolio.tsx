@@ -81,7 +81,18 @@ const Portfolio: React.FC = () => {
   // Handle image operations
   const handleImageSave = async (imageData: any) => {
     try {
-      const updatedImages = [...portfolioData.images, imageData];
+      const existingIndex = portfolioData.images.findIndex((img: any) => img.id === imageData.id);
+      let updatedImages;
+      
+      if (existingIndex >= 0) {
+        // Update existing image
+        updatedImages = [...portfolioData.images];
+        updatedImages[existingIndex] = imageData;
+      } else {
+        // Add new image
+        updatedImages = [...portfolioData.images, imageData];
+      }
+      
       const updatedData = {
         ...portfolioData,
         images: updatedImages,
@@ -89,7 +100,7 @@ const Portfolio: React.FC = () => {
       };
       await updateDocument('portfolio', updatedData);
       setPortfolioData(updatedData);
-      console.log('Image added successfully');
+      console.log('Image saved successfully');
     } catch (error) {
       console.error('Error saving image:', error);
     }

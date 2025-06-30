@@ -19,7 +19,18 @@ const ApplicationProcess: React.FC = () => {
   // Handle image operations
   const handleImageSave = async (imageData: any) => {
     try {
-      const updatedImages = [...applicationData.images, imageData];
+      const existingIndex = applicationData.images.findIndex((img: any) => img.id === imageData.id);
+      let updatedImages;
+      
+      if (existingIndex >= 0) {
+        // Update existing image
+        updatedImages = [...applicationData.images];
+        updatedImages[existingIndex] = imageData;
+      } else {
+        // Add new image
+        updatedImages = [...applicationData.images, imageData];
+      }
+      
       const updatedData = {
         ...applicationData,
         images: updatedImages,
@@ -27,7 +38,7 @@ const ApplicationProcess: React.FC = () => {
       };
       await updateDocument('applicationProcess', updatedData);
       setApplicationData(updatedData);
-      console.log('Image added successfully');
+      console.log('Image saved successfully');
     } catch (error) {
       console.error('Error saving image:', error);
     }

@@ -22,7 +22,18 @@ const Mentors: React.FC = () => {
   // Handle image operations
   const handleImageSave = async (imageData: any) => {
     try {
-      const updatedImages = [...mentorsData.images, imageData];
+      const existingIndex = mentorsData.images.findIndex((img: any) => img.id === imageData.id);
+      let updatedImages;
+      
+      if (existingIndex >= 0) {
+        // Update existing image
+        updatedImages = [...mentorsData.images];
+        updatedImages[existingIndex] = imageData;
+      } else {
+        // Add new image
+        updatedImages = [...mentorsData.images, imageData];
+      }
+      
       const updatedData = {
         ...mentorsData,
         images: updatedImages,
@@ -30,7 +41,7 @@ const Mentors: React.FC = () => {
       };
       await updateDocument('mentors', updatedData);
       setMentorsData(updatedData);
-      console.log('Image added successfully');
+      console.log('Image saved successfully');
     } catch (error) {
       console.error('Error saving image:', error);
     }

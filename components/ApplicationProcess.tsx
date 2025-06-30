@@ -14,6 +14,7 @@ const ApplicationProcess: React.FC = () => {
     ...siteData.applicationProcess,
     images: [] as any[]
   });
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   // Handle image operations
@@ -189,6 +190,8 @@ const ApplicationProcess: React.FC = () => {
         }
       } catch (error) {
         console.error('Error loading application process data:', error);
+      } finally {
+        setIsDataLoaded(true);
       }
     };
     
@@ -197,7 +200,7 @@ const ApplicationProcess: React.FC = () => {
   
   return (
     <>
-      <section id="applicationProcess" className="section-padding bg-secondary">
+      <section id="applicationProcess" className={`section-padding bg-secondary transition-opacity duration-300 ${isDataLoaded ? 'opacity-100' : 'opacity-0'}`}>
         
         <div className="container-max">
           <motion.div

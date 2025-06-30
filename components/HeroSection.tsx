@@ -16,8 +16,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [heroData, setHeroData] = useState(siteData.hero);
-  const [countdown, setCountdown] = useState(siteData.hero.countdownDuration || 10);
+  const [countdown, setCountdown] = useState<number | null>(null);
   const [isCountdownActive, setIsCountdownActive] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
   const { isAdminMode } = useAdmin();
 
@@ -51,27 +52,36 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
     const loadHeroData = async () => {
       try {
         const data = await getDocument('hero');
-        if (data) {
+        if (data && data.countdownDuration) {
           const heroData = data as any;
           setHeroData(heroData);
-          setCountdown(heroData.countdownDuration || 10);
+          setCountdown(heroData.countdownDuration);
+        } else {
+          // Fallback to static data if no Firestore data
+          setCountdown(siteData.hero.countdownDuration || 10);
         }
       } catch (error) {
         console.error('Error loading hero data:', error);
+        // Fallback to static data on error
+        setCountdown(siteData.hero.countdownDuration || 10);
+      } finally {
+        setIsDataLoaded(true);
       }
     };
     
     loadHeroData();
   }, []);
 
-  // Auto-start countdown immediately after component mounts
+  // Auto-start countdown after data is loaded
   useEffect(() => {
-    setIsCountdownActive(true);
-  }, []);
+    if (isDataLoaded && countdown !== null) {
+      setIsCountdownActive(true);
+    }
+  }, [isDataLoaded, countdown]);
 
   // Countdown timer effect - pause when in admin mode or edit modal is open
   useEffect(() => {
-    if (!isCountdownActive || isAdminMode || isEditModalOpen) return;
+    if (!isCountdownActive || isAdminMode || isEditModalOpen || countdown === null) return;
 
     if (countdown > 0) {
       const timer = setTimeout(() => {
@@ -174,7 +184,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
               {/* Countdown Number */}
               <div className="text-6xl sm:text-8xl md:text-9xl font-black-ops font-bold text-white mb-6 animate-pulse" aria-live="polite" aria-atomic="true">
                 <span className="sr-only">Countdown: </span>
-                {countdown}
+                {countdown !== null ? countdown : '...'}
                 <span className="sr-only"> seconds remaining</span>
               </div>
               

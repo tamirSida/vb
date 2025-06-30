@@ -8,6 +8,17 @@ import EditableSection from '../components/admin/EditableSection';
 import EditModal from '../components/admin/EditModal';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
+// Helper function to get responsive font size classes
+const getResponsiveFontSizeClasses = (size: string) => {
+  const fontSizeMap = {
+    'small': 'text-xs sm:text-sm md:text-base',
+    'medium': 'text-sm sm:text-base md:text-lg', 
+    'large': 'text-base sm:text-lg md:text-xl',
+    'xlarge': 'text-lg sm:text-xl md:text-2xl'
+  };
+  return fontSizeMap[size as keyof typeof fontSizeMap] || fontSizeMap.medium;
+};
+
 export default function Accelerator() {
   // Enable discrete admin access methods
   useUrlAdminAccess();
@@ -70,7 +81,8 @@ export default function Accelerator() {
       author: 'Andre Gomez',
       title: 'Former US Navy SEAL (BUD/s Class 229)',
       image: '/images/testimonials/andre-gomez.jpg',
-      position: 1.5
+      position: 1.5,
+      fontSize: 'medium'
     },
     {
       id: 2,
@@ -78,7 +90,8 @@ export default function Accelerator() {
       author: 'Or Yustman',
       title: 'Lieutenant-Commander (Res.) in Shayetet-13/Israel Navy SEALs',
       image: '/images/testimonials/or-yustman.jpg',
-      position: 2.5
+      position: 2.5,
+      fontSize: 'medium'
     },
     {
       id: 3,
@@ -86,7 +99,8 @@ export default function Accelerator() {
       author: 'Jonathan Cleck',
       title: 'Former US Navy SEAL (BUD/s Class 213), CXO of Concihairge',
       image: '/images/testimonials/jonathan-cleck.jpg',
-      position: 4.5
+      position: 4.5,
+      fontSize: 'medium'
     }
   ]);
 
@@ -511,7 +525,7 @@ export default function Accelerator() {
                                     className="w-12 h-12 rounded-full object-cover border-2 border-vb-gold flex-shrink-0"
                                   />
                                   <div>
-                                    <blockquote className="text-white/90 text-sm italic leading-relaxed mb-1">
+                                    <blockquote className={`text-white/90 ${getResponsiveFontSizeClasses(testimonial.fontSize || 'medium')} italic leading-relaxed mb-1`}>
                                       "{expandedTestimonial === testimonial.id 
                                         ? testimonial.quote 
                                         : testimonial.quote.length > 200 
@@ -872,6 +886,19 @@ export default function Accelerator() {
                 className="admin-input w-full"
                 placeholder="1.5 (between page 1 and 2)"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Font Size</label>
+              <select
+                name="fontSize"
+                defaultValue={testimonials.find(t => t.id === editingTestimonial)?.fontSize || 'medium'}
+                className="admin-input w-full"
+              >
+                <option value="small">Small (responsive: xs → sm → base)</option>
+                <option value="medium">Medium (responsive: sm → base → lg)</option>
+                <option value="large">Large (responsive: base → lg → xl)</option>
+                <option value="xlarge">Extra Large (responsive: lg → xl → 2xl)</option>
+              </select>
             </div>
           </div>
         )}

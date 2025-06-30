@@ -655,18 +655,18 @@ export default function Accelerator() {
               sectionName="Explore Section"
               onEdit={() => setIsExploreModalOpen(true)}
             >
-              <h2 className="text-4xl font-bold text-vb-navy mb-16 text-center">
+              <h2 className="text-4xl font-bold text-vb-navy mb-8 text-center">
                 {exploreData.title}
               </h2>
             </EditableSection>
             <div className="max-w-6xl mx-auto">
               {/* First row - 3 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <Link href="/accelerator/program" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <Link href="/accelerator/program" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-graduation-cap text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Our Program
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -675,11 +675,11 @@ export default function Accelerator() {
                   </div>
                 </Link>
                 
-                <Link href="/accelerator/application" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                <Link href="/accelerator/application" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-file-alt text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Application Process
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -688,11 +688,11 @@ export default function Accelerator() {
                   </div>
                 </Link>
                 
-                <Link href="/accelerator/team" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                <Link href="/accelerator/team" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-users text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Our Team
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -703,12 +703,12 @@ export default function Accelerator() {
               </div>
               
               {/* Second row - 2 cards centered */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <Link href="/accelerator/portfolio" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+              <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+                <Link href="/accelerator/portfolio" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold w-80">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-briefcase text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Portfolio
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -717,11 +717,11 @@ export default function Accelerator() {
                   </div>
                 </Link>
                 
-                <Link href="/accelerator/mentors" className="accelerator-card group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                <Link href="/accelerator/mentors" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold w-80">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-handshake text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-6 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Mentors
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">

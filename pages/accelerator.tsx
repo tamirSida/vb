@@ -428,7 +428,7 @@ export default function Accelerator() {
           )}
 
           {/* Hero Title Overlay */}
-          <div className={`absolute top-0 left-0 w-full z-30 bg-gradient-to-b from-black/60 to-transparent transition-all duration-1000 ${
+          <div className={`absolute top-0 left-0 w-full z-10 bg-gradient-to-b from-black/60 to-transparent transition-all duration-1000 ${
             pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
           }`}>
             <div className="container-max text-center pt-4 pb-6">

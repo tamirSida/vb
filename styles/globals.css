@@ -59,16 +59,20 @@ body {
 
   /* Focus styles for better keyboard navigation */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+    @apply focus:outline-none focus:ring-1 focus:ring-vb-navy/30 focus:ring-offset-1;
   }
 
-  /* Ensure buttons and links have proper focus indicators */
+  /* Modern focus indicators */
   button:focus,
-  a:focus,
+  a:focus {
+    @apply outline-none ring-1 ring-vb-navy/30 ring-offset-1;
+  }
+
+  /* Form elements get more prominent focus */
   input:focus,
   textarea:focus,
   select:focus {
-    @apply outline-none ring-2 ring-offset-2 ring-blue-500;
+    @apply outline-none ring-2 ring-vb-navy ring-offset-2;
   }
 
   /* High contrast mode support */

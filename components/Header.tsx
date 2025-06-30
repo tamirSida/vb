@@ -157,7 +157,7 @@ const Header: React.FC<HeaderProps> = ({ showNavigation = true, isAcceleratorPag
             {/* Mobile Menu Button */}
             {(showNavigation || isAcceleratorPage) && (
               <button 
-                className="md:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="md:hidden p-2 focus:outline-none focus:ring-1 focus:ring-vb-navy/30 focus:ring-offset-1"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {

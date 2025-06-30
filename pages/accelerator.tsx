@@ -421,7 +421,7 @@ export default function Accelerator() {
           {!pageLoaded && (
             <div className="absolute inset-0 bg-vb-navy z-50 flex items-center justify-center">
               <div className="text-center">
-                <div className="w-12 h-12 border-4 border-vb-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <div className="w-12 h-12 border-4 border-vb-gold border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                 <p className="text-white text-lg font-medium">Loading Experience...</p>
               </div>
             </div>
@@ -659,14 +659,14 @@ export default function Accelerator() {
                 {exploreData.title}
               </h2>
             </EditableSection>
-            <div className="max-w-6xl mx-auto">
-              {/* First row - 3 cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Link href="/accelerator/program" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+            <div className="max-w-7xl mx-auto">
+              {/* Single row - 5 cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <Link href="/accelerator/program" className="accelerator-card group bg-white rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-graduation-cap text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-2 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Our Program
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -675,11 +675,11 @@ export default function Accelerator() {
                   </div>
                 </Link>
                 
-                <Link href="/accelerator/application" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                <Link href="/accelerator/application" className="accelerator-card group bg-white rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-file-alt text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-2 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Application Process
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -688,11 +688,11 @@ export default function Accelerator() {
                   </div>
                 </Link>
                 
-                <Link href="/accelerator/team" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                <Link href="/accelerator/team" className="accelerator-card group bg-white rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-users text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-2 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Our Team
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -700,15 +700,12 @@ export default function Accelerator() {
                     <i className="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform duration-300"></i>
                   </div>
                 </Link>
-              </div>
-              
-              {/* Second row - 2 cards centered */}
-              <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
-                <Link href="/accelerator/portfolio" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold w-80">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                
+                <Link href="/accelerator/portfolio" className="accelerator-card group bg-white rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-briefcase text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-2 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Portfolio
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -717,11 +714,11 @@ export default function Accelerator() {
                   </div>
                 </Link>
                 
-                <Link href="/accelerator/mentors" className="accelerator-card group bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold w-80">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
+                <Link href="/accelerator/mentors" className="accelerator-card group bg-white rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-500 text-center transform hover:-translate-y-4 hover:scale-105 border border-gray-100 hover:border-vb-gold">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-vb-gold to-yellow-400 rounded-full flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-vb-navy group-hover:to-vb-medium transition-all duration-500 shadow-lg group-hover:shadow-xl transform group-hover:rotate-12">
                     <i className="fas fa-handshake text-2xl text-vb-navy group-hover:text-white transition-all duration-500"></i>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-2 text-vb-navy group-hover:text-vb-gold transition-all duration-300">
                     Mentors
                   </h3>
                   <div className="text-vb-gold font-semibold group-hover:text-vb-navy transition-all duration-300 flex items-center justify-center">
@@ -802,7 +799,7 @@ export default function Accelerator() {
             
             {/* Testimonial Management */}
             <div className="border-t border-gray-600 pt-4">
-              <label className="block text-sm font-medium text-gray-300 mb-3">Page Testimonial</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Page Testimonial</label>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Assign Testimonial</label>
                 <select

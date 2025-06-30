@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { siteData } from '../data/content';
+import { siteData, Program } from '../data/content';
 import EditableSection from './admin/EditableSection';
 import EditModal from './admin/EditModal';
 import ImageInsert from './admin/ImageInsert';
@@ -422,9 +422,12 @@ const AcceleratorPrograms: React.FC = () => {
         }
       } else if (editingType === 'add') {
         // Add new program
-        const newProgram = {
+        const newProgram: Program = {
           name: data.name,
           description: data.description,
+          duration: data.duration || '',
+          investment: data.investment || '',
+          equity: data.equity || '',
           squares: [],
           highlights: data.highlights.split('\n').filter((h: string) => h.trim())
         };

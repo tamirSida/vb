@@ -30,9 +30,14 @@ export interface PortfolioCompany {
 export interface Program {
   name: string;
   description: string;
-  duration: string;
-  investment: string;
-  equity: string;
+  duration?: string;
+  investment?: string;
+  equity?: string;
+  squares?: Array<{
+    id: string;
+    label: string;
+    value: string;
+  }>;
   highlights: string[];
 }
 

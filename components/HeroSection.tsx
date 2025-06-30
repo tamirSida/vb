@@ -52,7 +52,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ showScrollIndicator = true })
     const loadHeroData = async () => {
       try {
         const data = await getDocument('hero');
-        if (data && data.countdownDuration) {
+        if (data && (data as any).countdownDuration) {
           const heroData = data as any;
           setHeroData(heroData);
           setCountdown(heroData.countdownDuration);

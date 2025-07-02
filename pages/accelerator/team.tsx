@@ -1,11 +1,22 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Team from '../../components/Team';
 import DiscreteAdminAccess, { useUrlAdminAccess } from '../../components/admin/DiscreteAdminAccess';
 
 export default function TeamPage() {
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  
   useUrlAdminAccess();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -26,8 +37,16 @@ export default function TeamPage() {
       <Header isAcceleratorPage={true} />
       
       <main>
-        <Team />
-        
+        {isPageLoading ? (
+          <div className="min-h-screen flex items-center justify-center bg-vb-navy">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-vb-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-white text-lg font-medium">Loading...</p>
+            </div>
+          </div>
+        ) : (
+          <Team />
+        )}
       </main>
       
       <DiscreteAdminAccess />

@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import WhyVB from '../components/WhyVB';
 import Programs from '../components/Programs';
@@ -17,8 +17,19 @@ export default function Fund() {
     'whyVB', 'programs', 'team', 'mentors', 'portfolio', 'fundDetails', 'applicationProcess', 'cta'
   ]);
 
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
   // Enable discrete admin access methods
   useUrlAdminAccess();
+
+  // Add loading delay to allow components to fetch CMS data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 1500); // Wait 1.5 seconds for components to load their CMS data
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAddSection = (sectionType: string, position: number) => {
     const newSections = [...sections];
@@ -105,15 +116,24 @@ export default function Fund() {
 
       <Header />
       <main>
-        {sections.map((sectionType, index) => (
-          <div key={`section-${index}`}>
-            {renderSection(sectionType, index)}
-            <SectionManager 
-              onAddSection={handleAddSection}
-              position={index + 1}
-            />
+        {isPageLoading ? (
+          <div className="min-h-screen flex items-center justify-center bg-vb-navy">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-vb-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-white text-lg font-medium">Loading...</p>
+            </div>
           </div>
-        ))}
+        ) : (
+          sections.map((sectionType, index) => (
+            <div key={`section-${index}`}>
+              {renderSection(sectionType, index)}
+              <SectionManager 
+                onAddSection={handleAddSection}
+                position={index + 1}
+              />
+            </div>
+          ))
+        )}
       </main>
       
       {/* Discrete admin access methods */}

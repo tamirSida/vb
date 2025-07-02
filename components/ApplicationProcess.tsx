@@ -8,10 +8,11 @@ import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 
 const ApplicationProcess: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingType, setEditingType] = useState<'header' | 'step' | 'commitments' | 'add-step' | 'add-commitment'>('header');
+  const [editingType, setEditingType] = useState<'header' | 'timeline' | 'step' | 'commitments' | 'add-step' | 'add-commitment'>('header');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [applicationData, setApplicationData] = useState({
     ...siteData.applicationProcess,
+    timelineTitle: 'Application Timeline',
     images: [] as any[]
   });
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -75,6 +76,11 @@ const ApplicationProcess: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleEditTimeline = () => {
+    setEditingType('timeline');
+    setIsEditModalOpen(true);
+  };
+
   const handleEditStep = (index: number) => {
     setEditingIndex(index);
     setEditingType('step');
@@ -123,6 +129,15 @@ const ApplicationProcess: React.FC = () => {
           ...applicationData,
           title: data.title,
           timeline: data.timeline,
+          images: applicationData.images,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDocument('applicationProcess', updatedData);
+        setApplicationData(updatedData);
+      } else if (editingType === 'timeline') {
+        const updatedData = {
+          ...applicationData,
+          timelineTitle: data.timelineTitle,
           images: applicationData.images,
           updatedAt: new Date().toISOString()
         };
@@ -185,6 +200,7 @@ const ApplicationProcess: React.FC = () => {
         if (data) {
           setApplicationData({
             ...(data as any),
+            timelineTitle: (data as any).timelineTitle || 'Application Timeline',
             images: (data as any).images || []
           });
         }
@@ -262,16 +278,21 @@ const ApplicationProcess: React.FC = () => {
             animate={isTimelineInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <motion.h3 
-              className="text-2xl font-bold text-vb-navy mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+            <EditableSection 
+              sectionName="Timeline Title"
+              onEdit={handleEditTimeline}
             >
-              Application Timeline
-            </motion.h3>
+              <motion.h3 
+                className="text-2xl font-bold text-vb-navy mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                {applicationData.timelineTitle}
+              </motion.h3>
+            </EditableSection>
             <div className="space-y-6">
-              {applicationData.steps.map((step, index) => (
+              {isDataLoaded && applicationData.steps.map((step, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -469,6 +490,7 @@ const ApplicationProcess: React.FC = () => {
       onSave={handleSave}
       title={
         editingType === 'header' ? "Edit Application Process Header" :
+        editingType === 'timeline' ? "Edit Timeline Title" :
         editingType === 'step' ? `Edit ${applicationData.steps[editingIndex || 0]?.week || 'Step'}` :
         editingType === 'add-step' ? "Add New Application Step" :
         editingType === 'commitments' ? "Edit Commitments" :
@@ -493,6 +515,19 @@ const ApplicationProcess: React.FC = () => {
               name="timeline"
               defaultValue={applicationData.timeline}
               className="admin-input w-full"
+            />
+          </div>
+        </div>
+      ) : editingType === 'timeline' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Timeline Title</label>
+            <input
+              type="text"
+              name="timelineTitle"
+              defaultValue={applicationData.timelineTitle}
+              className="admin-input w-full"
+              placeholder="Application Timeline"
             />
           </div>
         </div>

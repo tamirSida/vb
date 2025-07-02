@@ -14,6 +14,7 @@ interface EditableSectionProps {
   onMoveDown?: () => void;
   canMoveUp?: boolean;
   canMoveDown?: boolean;
+  onClick?: () => void;
 }
 
 export default function EditableSection({ 
@@ -25,7 +26,8 @@ export default function EditableSection({
   onMoveUp,
   onMoveDown,
   canMoveUp = false,
-  canMoveDown = false
+  canMoveDown = false,
+  onClick
 }: EditableSectionProps) {
   const { isAdminMode } = useAdmin();
   const [isHovered, setIsHovered] = useState(false);
@@ -36,7 +38,14 @@ export default function EditableSection({
   }
 
   if (!isAdminMode) {
-    return <div className={className}>{children}</div>;
+    return (
+      <div 
+        className={className} 
+        onClick={onClick}
+      >
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -44,6 +53,7 @@ export default function EditableSection({
       className={`relative ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
       {children}
       

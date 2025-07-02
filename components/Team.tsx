@@ -11,6 +11,9 @@ const Team: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [teamData, setTeamData] = useState<TeamMember[]>(siteData.team);
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [isMemberPopupOpen, setIsMemberPopupOpen] = useState(false);
+  const [isBioEditMode, setIsBioEditMode] = useState(false);
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
   
   // Animation refs
@@ -38,10 +41,43 @@ const Team: React.FC = () => {
       image: '', 
       military: '', 
       linkedinUrl: '', 
-      isFounder 
+      isFounder,
+      bio: ''
     });
     setIsAddMode(true);
     setIsEditModalOpen(true);
+  };
+
+  const handleMemberClick = (member: TeamMember) => {
+    setSelectedMember(member);
+    setIsMemberPopupOpen(true);
+    setIsBioEditMode(false);
+  };
+
+  const handleBioEdit = () => {
+    setIsBioEditMode(true);
+  };
+
+  const handleBioSave = async (bio: string) => {
+    if (!selectedMember) return;
+    
+    try {
+      const updatedTeam = teamData.map(member => 
+        member.name === selectedMember.name ? { ...member, bio } : member
+      );
+
+      await updateDocument('team', { 
+        members: updatedTeam,
+        updatedAt: new Date().toISOString()
+      });
+      
+      setTeamData(updatedTeam);
+      setSelectedMember({ ...selectedMember, bio });
+      setIsBioEditMode(false);
+      console.log('Bio saved successfully');
+    } catch (error) {
+      console.error('Error saving bio:', error);
+    }
   };
 
   const handleSaveMember = async (data: any) => {
@@ -52,7 +88,8 @@ const Team: React.FC = () => {
         image: data.image,
         military: data.military,
         linkedinUrl: data.linkedinUrl,
-        isFounder: data.isFounder === 'true' || data.isFounder === true
+        isFounder: data.isFounder === 'true' || data.isFounder === true,
+        bio: data.bio || ''
       };
 
       let updatedTeam;
@@ -255,7 +292,8 @@ const Team: React.FC = () => {
                     onMoveDown={() => handleMoveDown(member, memberIndex)}
                     canMoveUp={memberIndex > 0}
                     canMoveDown={memberIndex < teamData.length - 1}
-                    className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl h-full"
+                    className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl h-full cursor-pointer"
+                    onClick={() => handleMemberClick(member)}
                   >
                   <div className="flex justify-center pt-6 mb-6">
                     <motion.div 
@@ -375,7 +413,8 @@ const Team: React.FC = () => {
                     onMoveDown={() => handleMoveDown(member, memberIndex)}
                     canMoveUp={memberIndex > 0}
                     canMoveDown={memberIndex < teamData.length - 1}
-                    className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full"
+                    className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full cursor-pointer"
+                    onClick={() => handleMemberClick(member)}
                   >
                   <div className="flex justify-center pt-3 mb-3">
                     <motion.div 
@@ -507,6 +546,15 @@ const Team: React.FC = () => {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Bio (optional)</label>
+            <textarea
+              name="bio"
+              defaultValue={editingMember.bio || ''}
+              className="admin-input w-full h-24"
+              placeholder="Brief biography (will be shown in member popup)"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
             <input
               type="text"
@@ -541,7 +589,148 @@ const Team: React.FC = () => {
         </div>
       )}
     </EditModal>
+
+    {/* Member Popup Modal */}
+    {isMemberPopupOpen && selectedMember && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          className="bg-white rounded-2xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto"
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setIsMemberPopupOpen(false)}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"
+          >
+            <i className="fas fa-times"></i>
+          </button>
+
+          {/* Member Info */}
+          <div className="text-center mb-6">
+            <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-vb-blue shadow-lg">
+              <Image 
+                src={selectedMember.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE4IiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0zMiAxMDBDMzIgODYgNDYgNzggNjQgNzhTOTYgODYgOTYgMTAwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
+                alt={selectedMember.name}
+                width={128}
+                height={128}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-vb-navy mb-2">{selectedMember.name}</h3>
+            {selectedMember.title && (
+              <p className="text-vb-blue font-semibold mb-2">{selectedMember.title}</p>
+            )}
+            <p className="text-vb-medium italic mb-4">{selectedMember.military}</p>
+            
+            {selectedMember.linkedinUrl && (
+              <a 
+                href={selectedMember.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-4"
+              >
+                <i className="fab fa-linkedin text-xl mr-2"></i>
+                LinkedIn Profile
+              </a>
+            )}
+          </div>
+
+          {/* Bio Section */}
+          <div className="border-t border-gray-200 pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-lg font-semibold text-vb-navy">Biography</h4>
+              {!isBioEditMode && (
+                <button
+                  onClick={handleBioEdit}
+                  className="text-vb-blue hover:text-vb-navy text-sm font-medium"
+                >
+                  <i className="fas fa-edit mr-1"></i>
+                  {selectedMember.bio ? 'Edit' : 'Add Bio'}
+                </button>
+              )}
+            </div>
+            
+            {isBioEditMode ? (
+              <BioEditor
+                initialBio={selectedMember.bio || ''}
+                onSave={handleBioSave}
+                onCancel={() => setIsBioEditMode(false)}
+                memberName={selectedMember.name}
+                memberTitle={selectedMember.title || ''}
+              />
+            ) : (
+              <div className="text-gray-700 text-sm leading-relaxed">
+                {selectedMember.bio ? (
+                  <p>{selectedMember.bio}</p>
+                ) : (
+                  <p className="text-gray-400 italic">No biography available. Click "Add Bio" to add one.</p>
+                )}
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    )}
   </>
+  );
+};
+
+// Bio Editor Component
+const BioEditor: React.FC<{
+  initialBio: string;
+  onSave: (bio: string) => void;
+  onCancel: () => void;
+  memberName: string;
+  memberTitle: string;
+}> = ({ initialBio, onSave, onCancel, memberName, memberTitle }) => {
+  const [bio, setBio] = useState(initialBio);
+
+  const handleSave = () => {
+    onSave(bio);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <div className="bg-gray-50 p-3 rounded-lg mb-3 text-sm">
+          <p className="text-gray-600 mb-2">
+            <strong>Auto-populated:</strong>
+          </p>
+          <p><strong>Name:</strong> {memberName}</p>
+          {memberTitle && <p><strong>Title:</strong> {memberTitle}</p>}
+        </div>
+        
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Biography
+        </label>
+        <textarea
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-vb-blue focus:border-transparent resize-none"
+          placeholder={`Write a brief biography for ${memberName}...`}
+        />
+      </div>
+      
+      <div className="flex space-x-3">
+        <button
+          onClick={handleSave}
+          className="flex-1 bg-vb-blue text-white py-2 px-4 rounded-lg hover:bg-vb-navy transition-colors font-medium"
+        >
+          <i className="fas fa-save mr-2"></i>
+          Save Bio
+        </button>
+        <button
+          onClick={onCancel}
+          className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+        >
+          <i className="fas fa-times mr-2"></i>
+          Cancel
+        </button>
+      </div>
+    </div>
   );
 };
 

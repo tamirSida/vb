@@ -8,6 +8,7 @@ export interface TeamMember {
   military: string;
   linkedinUrl?: string;
   isFounder: boolean;
+  bio?: string;
 }
 
 export interface PortfolioCompany {

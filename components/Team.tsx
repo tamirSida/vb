@@ -412,7 +412,7 @@ const Team: React.FC = () => {
                     onMoveDown={() => handleMoveDown(member, memberIndex)}
                     canMoveUp={memberIndex > 0}
                     canMoveDown={memberIndex < teamData.length - 1}
-                    className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full cursor-pointer"
+                    className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full cursor-pointer flex flex-col"
                     onClick={() => handleMemberClick(member)}
                   >
                   <div className="flex justify-center pt-5 mb-5">
@@ -436,19 +436,19 @@ const Team: React.FC = () => {
                       />
                     </motion.div>
                   </div>
-                  <div className="p-4">
-                    <div className="text-center mb-4">
+                  <div className="px-4 pb-4 flex flex-col flex-grow">
+                    <div className="text-center flex-grow">
                       <h4 className="text-lg font-bold text-vb-navy mb-2">{member.name}</h4>
                       {member.title && (
                         <p className="text-vb-blue font-semibold text-sm mb-2">{member.title}</p>
                       )}
-                      {member.military !== "N/A" && (
-                        <p className="text-sm text-vb-medium italic">{member.military}</p>
-                      )}
+                      <p className="text-sm text-vb-medium italic min-h-[1.25rem]">
+                        {member.military !== "N/A" ? member.military : ""}
+                      </p>
                     </div>
                     
-                    {member.linkedinUrl && (
-                      <div className="flex justify-center pt-3 border-t border-secondary">
+                    <div className="flex justify-center pt-3 border-t border-secondary mt-4">
+                      {member.linkedinUrl ? (
                         <motion.a 
                           href={member.linkedinUrl}
                           target="_blank"
@@ -459,8 +459,12 @@ const Team: React.FC = () => {
                         >
                           <i className="fab fa-linkedin text-xl"></i>
                         </motion.a>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="text-gray-400">
+                          <i className="fab fa-linkedin text-xl opacity-30"></i>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </EditableSection>
               </motion.div>

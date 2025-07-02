@@ -28,6 +28,9 @@ export default function Accelerator() {
     title: 'Why Entrepreneurs Choose Version Bravo'
   });
 
+  const [isHeroLoading, setIsHeroLoading] = useState(true);
+  const [isTestimonialsLoading, setIsTestimonialsLoading] = useState(true);
+
   const [whyVBPages, setWhyVBPages] = useState([
     {
       id: 1,
@@ -132,6 +135,9 @@ export default function Accelerator() {
         }
       } catch (error) {
         console.error('Error loading accelerator data:', error);
+      } finally {
+        setIsHeroLoading(false);
+        setIsTestimonialsLoading(false);
       }
     };
     loadData();
@@ -432,14 +438,16 @@ export default function Accelerator() {
             pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
           }`}>
             <div className="container-max text-center pt-4 pb-6">
-              <EditableSection
-                sectionName="Accelerator Hero"
-                onEdit={() => setIsHeroModalOpen(true)}
-              >
-                <h1 className="text-xl md:text-3xl font-bold text-white">
-                  {heroData.title}
-                </h1>
-              </EditableSection>
+              {!isHeroLoading && (
+                <EditableSection
+                  sectionName="Accelerator Hero"
+                  onEdit={() => setIsHeroModalOpen(true)}
+                >
+                  <h1 className="text-xl md:text-3xl font-bold text-white">
+                    {heroData.title}
+                  </h1>
+                </EditableSection>
+              )}
             </div>
           </div>
 
@@ -505,7 +513,7 @@ export default function Accelerator() {
                         // Check if page has a quote assigned
                         const pageHasQuote = page.testimonialId || existingTestimonial;
                         
-                        if (pageHasQuote) {
+                        if (pageHasQuote && !isTestimonialsLoading) {
                           const testimonial = existingTestimonial || testimonials.find(t => t.id === page.testimonialId);
                           if (!testimonial) return null;
                           
@@ -556,7 +564,7 @@ export default function Accelerator() {
                               </div>
                             </EditableSection>
                           );
-                        } else {
+                        } else if (!isTestimonialsLoading) {
                           // Show "Add Quote" option for pages without quotes
                           return (
                             <EditableSection

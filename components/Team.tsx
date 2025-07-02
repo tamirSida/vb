@@ -266,7 +266,7 @@ const Team: React.FC = () => {
           >
             General Partners
           </motion.h3>
-          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
             {founders.map((member, index) => {
               const memberIndex = teamData.findIndex(m => m.name === member.name);
               return (
@@ -295,9 +295,9 @@ const Team: React.FC = () => {
                     className="bg-light rounded-xl overflow-hidden border-2 border-secondary hover:border-vb-blue transition-all duration-300 shadow-lg hover:shadow-xl h-full cursor-pointer"
                     onClick={() => handleMemberClick(member)}
                   >
-                  <div className="flex justify-center pt-6 mb-6">
+                  <div className="flex justify-center pt-8 mb-8">
                     <motion.div 
-                      className="w-32 h-32 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl"
+                      className="w-36 h-36 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl"
                       whileHover={{ 
                         scale: 1.1,
                         transition: { duration: 0.3 }
@@ -306,8 +306,8 @@ const Team: React.FC = () => {
                       <Image 
                         src={member.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE4IiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0zMiAxMDBDMzIgODYgNDYgNzggNjQgNzhTOTYgODYgOTYgMTAwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
                         alt={`${member.name}${member.title ? `, ${member.title}` : ''}${member.military ? `, ${member.military}` : ''}`}
-                        width={128}
-                        height={128}
+                        width={144}
+                        height={144}
                         className="w-full h-full object-cover object-center"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE4IiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0zMiAxMDBDMzIgODYgNDYgNzggNjQgNzhTOTYgODYgOTYgMTAwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
@@ -315,17 +315,17 @@ const Team: React.FC = () => {
                       />
                     </motion.div>
                   </div>
-                  <div className="p-5">
-                    <div className="text-center mb-4">
-                      <h4 className="text-xl font-bold text-vb-navy mb-2">{member.name}</h4>
+                  <div className="p-6">
+                    <div className="text-center mb-5">
+                      <h4 className="text-xl font-bold text-vb-navy mb-3">{member.name}</h4>
                       {member.title && (
-                        <p className="text-vb-blue font-semibold mb-3 text-sm">{member.title}</p>
+                        <p className="text-vb-blue font-semibold mb-3 text-base">{member.title}</p>
                       )}
-                      <p className="text-sm text-vb-medium italic">{member.military}</p>
+                      <p className="text-base text-vb-medium italic">{member.military}</p>
                     </div>
                     
                     {member.linkedinUrl && (
-                      <div className="flex justify-center pt-3 border-t border-secondary">
+                      <div className="flex justify-center pt-4 border-t border-secondary">
                         <motion.a 
                           href={member.linkedinUrl}
                           target="_blank"
@@ -334,7 +334,7 @@ const Team: React.FC = () => {
                           whileHover={{ scale: 1.2, rotate: 5 }}
                           whileTap={{ scale: 0.95 }}
                         >
-                          <i className="fab fa-linkedin text-xl"></i>
+                          <i className="fab fa-linkedin text-2xl"></i>
                         </motion.a>
                       </div>
                     )}
@@ -386,7 +386,7 @@ const Team: React.FC = () => {
           >
             Team
           </motion.h3>
-          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {team.map((member, index) => {
               const memberIndex = teamData.findIndex(m => m.name === member.name);
               return (
@@ -415,9 +415,9 @@ const Team: React.FC = () => {
                     className="bg-light rounded-lg overflow-hidden border border-secondary shadow-md hover:shadow-lg transition-all duration-300 h-full cursor-pointer"
                     onClick={() => handleMemberClick(member)}
                   >
-                  <div className="flex justify-center pt-3 mb-3">
+                  <div className="flex justify-center pt-5 mb-5">
                     <motion.div 
-                      className="w-24 h-24 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg"
+                      className="w-28 h-28 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg"
                       whileHover={{ 
                         scale: 1.1,
                         transition: { duration: 0.3 }
@@ -426,8 +426,8 @@ const Team: React.FC = () => {
                       <Image 
                         src={member.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iNDgiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDgiIGN5PSIzNiIgcj0iMTQiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTI0IDc2QzI0IDY2IDM0IDYwIDQ4IDYwUzcyIDY2IDcyIDc2IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
                         alt={`${member.name}${member.title ? `, ${member.title}` : ''}${member.military ? `, ${member.military}` : ''}`}
-                        width={96}
-                        height={96}
+                        width={112}
+                        height={112}
                         className="w-full h-full object-cover object-top scale-110"
                         priority
                         onError={(e) => {
@@ -436,19 +436,19 @@ const Team: React.FC = () => {
                       />
                     </motion.div>
                   </div>
-                  <div className="p-3">
-                    <div className="text-center mb-3">
-                      <h4 className="text-base font-bold text-vb-navy mb-1">{member.name}</h4>
+                  <div className="p-4">
+                    <div className="text-center mb-4">
+                      <h4 className="text-lg font-bold text-vb-navy mb-2">{member.name}</h4>
                       {member.title && (
-                        <p className="text-vb-blue font-semibold text-xs mb-2">{member.title}</p>
+                        <p className="text-vb-blue font-semibold text-sm mb-2">{member.title}</p>
                       )}
                       {member.military !== "N/A" && (
-                        <p className="text-xs text-vb-medium italic">{member.military}</p>
+                        <p className="text-sm text-vb-medium italic">{member.military}</p>
                       )}
                     </div>
                     
                     {member.linkedinUrl && (
-                      <div className="flex justify-center pt-2 border-t border-secondary">
+                      <div className="flex justify-center pt-3 border-t border-secondary">
                         <motion.a 
                           href={member.linkedinUrl}
                           target="_blank"
@@ -457,7 +457,7 @@ const Team: React.FC = () => {
                           whileHover={{ scale: 1.2, rotate: 5 }}
                           whileTap={{ scale: 0.95 }}
                         >
-                          <i className="fab fa-linkedin text-lg"></i>
+                          <i className="fab fa-linkedin text-xl"></i>
                         </motion.a>
                       </div>
                     )}
@@ -478,7 +478,7 @@ const Team: React.FC = () => {
               <EditableSection 
                 sectionName="Add New Team Member"
                 onEdit={() => handleAddMember(false)}
-                className="bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center h-48 hover:border-vb-blue transition-colors"
+                className="bg-light/50 border-2 border-dashed border-vb-light rounded-lg flex items-center justify-center h-56 hover:border-vb-blue transition-colors"
                 isAddButton={true}
               >
                 <div className="text-center text-vb-light hover:text-vb-blue transition-colors">
@@ -636,7 +636,7 @@ const Team: React.FC = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors text-xs"
                 >
-                  <i className="fab fa-linkedin text-sm mr-1"></i>
+                  <i className="fab fa-linkedin text-lg mr-1"></i>
                   LinkedIn
                 </a>
               )}

@@ -592,54 +592,61 @@ const Team: React.FC = () => {
 
     {/* Member Popup Modal */}
     {isMemberPopupOpen && selectedMember && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-white rounded-2xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] relative overflow-hidden flex flex-col"
         >
           {/* Close button */}
           <button
             onClick={() => setIsMemberPopupOpen(false)}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl z-10"
           >
             <i className="fas fa-times"></i>
           </button>
 
-          {/* Member Info */}
-          <div className="text-center mb-6">
-            <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-vb-blue shadow-lg">
+          <div className="p-6 overflow-y-auto flex-1">
+
+          {/* Member Info - Compact Header */}
+          <div className="flex items-center mb-3 pb-3 border-b border-gray-200">
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-vb-blue shadow-md flex-shrink-0 mr-4">
               <Image 
-                src={selectedMember.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE4IiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0zMiAxMDBDMzIgODYgNDYgNzggNjQgNzhTOTYgODYgOTYgMTAwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
+                src={selectedMember.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTE2IDUwQzE2IDQyIDIyIDM4IDMyIDM4UzQ4IDQyIDQ4IDUwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
                 alt={selectedMember.name}
-                width={128}
-                height={128}
-                className="w-full h-full object-cover"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover object-top scale-110"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTE2IDUwQzE2IDQyIDIyIDM4IDMyIDM4UzQ4IDQyIDQ4IDUwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                }}
               />
             </div>
             
-            <h3 className="text-2xl font-bold text-vb-navy mb-2">{selectedMember.name}</h3>
-            {selectedMember.title && (
-              <p className="text-vb-blue font-semibold mb-2">{selectedMember.title}</p>
-            )}
-            <p className="text-vb-medium italic mb-4">{selectedMember.military}</p>
-            
-            {selectedMember.linkedinUrl && (
-              <a 
-                href={selectedMember.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-4"
-              >
-                <i className="fab fa-linkedin text-xl mr-2"></i>
-                LinkedIn Profile
-              </a>
-            )}
+            <div className="flex-1 text-left">
+              <h3 className="text-lg font-bold text-vb-navy mb-0.5">{selectedMember.name}</h3>
+              {selectedMember.title && (
+                <p className="text-vb-blue font-semibold text-sm mb-0.5">{selectedMember.title}</p>
+              )}
+              <p className="text-vb-medium italic text-xs mb-1">{selectedMember.military}</p>
+              
+              {selectedMember.linkedinUrl && (
+                <a 
+                  href={selectedMember.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors text-xs"
+                >
+                  <i className="fab fa-linkedin text-sm mr-1"></i>
+                  LinkedIn
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Bio Section */}
-          <div className="border-t border-gray-200 pt-4">
+          <div className="pt-2">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-lg font-semibold text-vb-navy">Biography</h4>
               {!isBioEditMode && (
@@ -662,14 +669,15 @@ const Team: React.FC = () => {
                 memberTitle={selectedMember.title || ''}
               />
             ) : (
-              <div className="text-gray-700 text-sm leading-relaxed">
+              <div className="text-gray-700 text-sm leading-relaxed break-words">
                 {selectedMember.bio ? (
-                  <p>{selectedMember.bio}</p>
+                  <p className="whitespace-pre-wrap">{selectedMember.bio}</p>
                 ) : (
                   <p className="text-gray-400 italic">No biography available. Click "Add Bio" to add one.</p>
                 )}
               </div>
             )}
+          </div>
           </div>
         </motion.div>
       </div>
@@ -709,8 +717,9 @@ const BioEditor: React.FC<{
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
-          className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-vb-blue focus:border-transparent resize-none"
+          className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-vb-blue focus:border-transparent resize-none break-words"
           placeholder={`Write a brief biography for ${memberName}...`}
+          style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}
         />
       </div>
       

@@ -631,7 +631,9 @@ const Team: React.FC = () => {
               {selectedMember.title && (
                 <p className="text-vb-blue font-semibold text-sm mb-0.5">{selectedMember.title}</p>
               )}
-              <p className="text-vb-medium italic text-xs mb-1">{selectedMember.military}</p>
+              {selectedMember.military && selectedMember.military !== "N/A" && (
+                <p className="text-vb-medium italic text-xs mb-1">{selectedMember.military}</p>
+              )}
               
               {selectedMember.linkedinUrl && (
                 <a 

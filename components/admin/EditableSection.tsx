@@ -67,7 +67,10 @@ export default function EditableSection({
           {/* Move Up Button */}
           {canMoveUp && onMoveUp && (
             <button
-              onClick={onMoveUp}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveUp();
+              }}
               className="admin-btn bg-blue-500 text-white shadow-lg p-2"
               title="Move Up"
             >
@@ -78,7 +81,10 @@ export default function EditableSection({
           {/* Move Down Button */}
           {canMoveDown && onMoveDown && (
             <button
-              onClick={onMoveDown}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveDown();
+              }}
               className="admin-btn bg-blue-500 text-white shadow-lg p-2"
               title="Move Down"
             >
@@ -89,7 +95,10 @@ export default function EditableSection({
           {/* Edit Button */}
           {onEdit && (
             <button
-              onClick={onEdit}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
               className="admin-btn bg-kizna-electric text-kizna-dark shadow-lg"
             >
               <i className="fas fa-edit mr-2"></i>Edit {sectionName}

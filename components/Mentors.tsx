@@ -323,46 +323,42 @@ const Mentors: React.FC = () => {
                 canMoveUp={index > 0}
                 canMoveDown={index < mentorsData.mentors.length - 1}
                 onEdit={() => handleEditMentor(mentor)}
-                className="text-center p-6 bg-light rounded-lg hover:shadow-xl transition-all duration-300 border border-secondary hover:border-vb-gold h-full relative overflow-hidden"
+                className="text-center p-3 bg-light rounded-lg hover:shadow-xl transition-all duration-300 border border-secondary hover:border-vb-gold h-full relative overflow-hidden"
               >
                 {/* Animated background gradient */}
                 <div className="absolute inset-0 bg-gradient-to-br from-vb-gold/5 to-vb-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div className="relative z-10">
                   <motion.div 
-                    className="mb-4"
+                    className="mb-2"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.2 }}
                   >
                     <Image 
-                      src={mentor.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSIzMCIgcj0iMTIiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTIwIDY1QzIwIDU1IDI5IDUwIDQwIDUwUzYwIDU1IDYwIDY1IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
+                      src={mentor.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzYiIGN5PSIzNiIgcj0iMzYiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzYiIGN5PSIyNyIgcj0iMTEiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTE4IDU4QzE4IDQ5IDI2IDQ1IDM2IDQ1UzU0IDQ5IDU0IDU4IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
                       alt={mentor.name}
-                      width={80}
-                      height={80}
-                      className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-vb-blue hover:border-vb-gold transition-colors duration-300"
+                      width={72}
+                      height={72}
+                      className="w-18 h-18 rounded-full object-cover mx-auto border-2 border-vb-blue transition-colors duration-300"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSIzMCIgcj0iMTIiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTIwIDY1QzIwIDU1IDI5IDUwIDQwIDUwUzYwIDU1IDYwIDY1IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzIiIGhlaWdodD0iNzIiIHZpZXdCb3g9IjAgMCA3MiA3MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzYiIGN5PSIzNiIgcj0iMzYiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzYiIGN5PSIyNyIgcj0iMTEiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTE4IDU4QzE4IDQ5IDI2IDQ1IDM2IDQ1UzU0IDQ5IDU0IDU4IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
                       }}
                     />
                   </motion.div>
                   <motion.h3 
-                    className="font-bold text-vb-navy text-lg mb-2 flex items-center justify-center gap-2 hover:text-vb-blue transition-colors"
+                    className="font-bold text-vb-navy text-base mb-1 flex items-center justify-center gap-2 hover:text-vb-blue transition-colors"
                     whileHover={{ scale: 1.05 }}
                   >
                     {mentor.name}
                     {mentor.flag && (
-                      <motion.span 
-                        className="text-lg"
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
+                      <span className="text-sm">
                         {mentor.flag}
-                      </motion.span>
+                      </span>
                     )}
                   </motion.h3>
                   {mentor.company && (
                     <motion.p 
-                      className="text-vb-medium text-sm mb-3"
+                      className="text-vb-medium text-xs mb-2"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 + (index * 0.1) + 0.2 }}
@@ -372,7 +368,7 @@ const Mentors: React.FC = () => {
                   )}
                   {mentor.linkedinUrl && (
                     <motion.div 
-                      className="pt-3 border-t border-secondary"
+                      className="pt-2 border-t border-secondary"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 + (index * 0.1) + 0.3 }}
@@ -385,7 +381,7 @@ const Mentors: React.FC = () => {
                         whileHover={{ scale: 1.3, rotate: 10 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <i className="fab fa-linkedin text-xl"></i>
+                        <i className="fab fa-linkedin text-lg"></i>
                       </motion.a>
                     </motion.div>
                   )}

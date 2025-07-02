@@ -300,7 +300,6 @@ const Team: React.FC = () => {
                       className="w-32 h-32 rounded-full overflow-hidden border-4 border-vb-blue shadow-xl"
                       whileHover={{ 
                         scale: 1.1,
-                        borderColor: "#fbbf24",
                         transition: { duration: 0.3 }
                       }}
                     >
@@ -421,7 +420,6 @@ const Team: React.FC = () => {
                       className="w-24 h-24 rounded-full overflow-hidden border-2 border-vb-blue shadow-lg"
                       whileHover={{ 
                         scale: 1.1,
-                        borderColor: "#fbbf24",
                         transition: { duration: 0.3 }
                       }}
                     >

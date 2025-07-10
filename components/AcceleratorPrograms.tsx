@@ -538,7 +538,7 @@ const AcceleratorPrograms: React.FC = () => {
             // Verify the save by reading back from Firebase
             setTimeout(async () => {
               try {
-                const verifyData = await getDocument('acceleratorContent');
+                const verifyData = await getDocument('acceleratorContent') as any;
                 if (verifyData && verifyData.timeline) {
                   console.log('Verification: Timeline data in Firebase:', verifyData.timeline);
                 } else {

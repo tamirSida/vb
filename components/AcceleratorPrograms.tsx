@@ -650,13 +650,9 @@ const AcceleratorPrograms: React.FC = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
                   >
-                    <motion.h3 
-                      className="text-2xl font-bold mb-3 text-vb-navy"
-                      whileHover={{ scale: 1.05, color: "#2563eb" }}
-                      transition={{ duration: 0.2 }}
-                    >
+                    <h3 className="text-2xl font-bold mb-3 text-vb-navy">
                       {program.name}
-                    </motion.h3>
+                    </h3>
                     <motion.p 
                       className="text-vb-medium mb-4"
                       initial={{ opacity: 0 }}

@@ -306,15 +306,23 @@ const AcceleratorPrograms: React.FC = () => {
 
   const handleDeleteTimelinePhase = async (phase: any) => {
     try {
-      const updatedTimeline = acceleratorData.timeline.filter(p => p.timeframe !== phase.timeframe);
+      // Use both timeframe and title for more specific matching to avoid deleting multiple phases
+      const updatedTimeline = acceleratorData.timeline.filter(p => 
+        !(p.timeframe === phase.timeframe && p.title === phase.title)
+      );
       const updatedData = {
         ...acceleratorData,
         timeline: updatedTimeline,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorContent', updatedData);
-      setAcceleratorData(updatedData);
-      console.log('Timeline phase deleted successfully');
+      console.log('Deleting timeline phase from Firebase:', phase);
+      const success = await updateDocument('acceleratorContent', updatedData);
+      if (success) {
+        setAcceleratorData(updatedData);
+        console.log('Timeline phase deleted successfully from Firebase');
+      } else {
+        console.error('Failed to delete timeline phase from Firebase');
+      }
     } catch (error) {
       console.error('Error deleting timeline phase:', error);
     }
@@ -493,11 +501,19 @@ const AcceleratorPrograms: React.FC = () => {
           timelineDescription: data.timelineDescription,
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorContent', updatedData);
-        setAcceleratorData(updatedData);
+        console.log('Saving timeline header to Firebase:', updatedData);
+        const success = await updateDocument('acceleratorContent', updatedData);
+        if (success) {
+          setAcceleratorData(updatedData);
+          console.log('Timeline header saved successfully to Firebase');
+        } else {
+          console.error('Failed to save timeline header to Firebase');
+        }
       } else if (editingType === 'timelinePhase') {
-        // Update timeline phase
-        const phaseIndex = acceleratorData.timeline.findIndex(p => p.timeframe === selectedPhase.timeframe);
+        // Update timeline phase using both timeframe and title for better matching
+        const phaseIndex = acceleratorData.timeline.findIndex(p => 
+          p.timeframe === selectedPhase.timeframe && p.title === selectedPhase.title
+        );
         if (phaseIndex !== -1) {
           const updatedTimeline = [...acceleratorData.timeline];
           updatedTimeline[phaseIndex] = {
@@ -513,8 +529,28 @@ const AcceleratorPrograms: React.FC = () => {
             timeline: updatedTimeline,
             updatedAt: new Date().toISOString()
           };
-          await updateDocument('acceleratorContent', updatedData);
-          setAcceleratorData(updatedData);
+          console.log('Saving timeline phase to Firebase:', updatedData);
+          const success = await updateDocument('acceleratorContent', updatedData);
+          if (success) {
+            setAcceleratorData(updatedData);
+            console.log('Timeline phase saved successfully to Firebase');
+            
+            // Verify the save by reading back from Firebase
+            setTimeout(async () => {
+              try {
+                const verifyData = await getDocument('acceleratorContent');
+                if (verifyData && verifyData.timeline) {
+                  console.log('Verification: Timeline data in Firebase:', verifyData.timeline);
+                } else {
+                  console.warn('Verification: No timeline data found in Firebase');
+                }
+              } catch (verifyError) {
+                console.warn('Verification read failed:', verifyError);
+              }
+            }, 1000);
+          } else {
+            console.error('Failed to save timeline phase to Firebase');
+          }
         }
       } else if (editingType === 'addTimelinePhase') {
         // Add new timeline phase
@@ -531,8 +567,14 @@ const AcceleratorPrograms: React.FC = () => {
           timeline: [...acceleratorData.timeline, newPhase],
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorContent', updatedData);
-        setAcceleratorData(updatedData);
+        console.log('Adding new timeline phase to Firebase:', updatedData);
+        const success = await updateDocument('acceleratorContent', updatedData);
+        if (success) {
+          setAcceleratorData(updatedData);
+          console.log('New timeline phase added successfully to Firebase');
+        } else {
+          console.error('Failed to add new timeline phase to Firebase');
+        }
       }
       console.log('Accelerator programs data saved successfully');
       setIsEditModalOpen(false);
@@ -543,28 +585,7 @@ const AcceleratorPrograms: React.FC = () => {
     }
   };
 
-  // Load data from Firestore on component mount
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const data = await getDocument('acceleratorPrograms');
-        if (data) {
-          // Merge with default timeline and images if not present in Firestore
-          const mergedData = {
-            ...acceleratorData,
-            ...data,
-            timeline: (data as any).timeline || acceleratorData.timeline,
-            images: (data as any).images || []
-          };
-          setAcceleratorData(mergedData as any);
-        }
-      } catch (error) {
-        console.error('Error loading accelerator programs data:', error);
-      }
-    };
-    
-    loadData();
-  }, []);
+  // Remove duplicate useEffect - already handled above with acceleratorContent document
 
   return (
     <>

@@ -88,10 +88,11 @@ Press this sequence of keys in order:
 - Photo uploads and LinkedIn integration
 - General Partners vs Team member categorization
 - **Enhanced Layout**: Improved spacing and sizing for better visual hierarchy
-- **Consistent Layout**: All team cards have uniform LinkedIn section positioning
+- **Clean Card Design**: LinkedIn logos removed from pre-click cards for cleaner appearance
 - **Responsive Grid**: Optimized grid layout (2 cols medium, 3 large, 4 xl screens)
 - **Interactive Profiles**: Click team members for detailed popup with biography editing
 - **Admin Integration**: Edit buttons use event propagation prevention to avoid popup conflicts
+- **LinkedIn in Popup**: LinkedIn links accessible in member detail popup only
 
 **Portfolio Section**
 - Add/edit/delete portfolio companies
@@ -106,6 +107,10 @@ Press this sequence of keys in order:
 - Program title and description editing
 - "About the Program" content section
 - Program details management
+- **Enhanced Program Timeline**: Interactive phase cards with icon selection
+- **Timeline Phase Management**: Add/edit/delete individual timeline phases
+- **Phase Details Modal**: Click phases to view detailed information
+- **Robust Save System**: Enhanced Firebase persistence with verification logging
 
 **Mentor Network**
 - Add/edit/delete mentors
@@ -129,6 +134,8 @@ Press this sequence of keys in order:
 - Automatic fallback to static content
 - CORS-resistant simple read/write operations
 - Production-ready security rules
+- **Enhanced Error Handling**: Comprehensive logging and verification for timeline operations
+- **Type Safety**: Proper TypeScript type casting for Firebase operations
 
 **Admin Authentication**
 - Firebase Authentication integration
@@ -141,9 +148,11 @@ Press this sequence of keys in order:
 - Hover-activated edit buttons with event propagation prevention
 - Professional admin interface
 - Mobile-responsive design
-- **Enhanced Team Layout**: Improved padding, sizing, and LinkedIn icon prominence
+- **Smart Button Positioning**: Delete buttons positioned to avoid edit button conflicts
+- **Event Propagation**: Proper click event handling prevents UI conflicts
 - **Consistent Card Heights**: Flex layout ensures uniform team card appearance
 - **Smart Military Background Display**: Hidden when "N/A" for cleaner presentation
+- **Motion Animations**: Removed problematic hover effects (like h3 zoom) for better UX
 
 ## Production Deployment
 
@@ -181,11 +190,22 @@ service cloud.firestore {
 - CORS error handling prevents UI breaks
 - Automatic fallback to static content
 - Optimized image loading with Next.js Image component
+- **Build Optimizations**: TypeScript errors resolved for production deployment
+- **Timeline Efficiency**: Improved phase matching using both timeframe and title
 
 ## Development Commands
 - `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run build` - Build for production (TypeScript type-safe)
 - `npm run start` - Start production server
+
+## Recent Bug Fixes & Improvements
+- **Timeline CMS Save Issue**: Fixed Firebase persistence with proper error handling and verification
+- **Phase Deletion Bug**: Fixed single phase deletion affecting multiple phases
+- **UI Conflicts**: Repositioned delete buttons to avoid overlap with edit buttons
+- **Team Cards**: Removed LinkedIn logos from preview cards for cleaner design
+- **Motion Effects**: Removed problematic hover animations (h3 zoom effects)
+- **Type Safety**: Added proper TypeScript casting for Firebase operations
+- **Build Errors**: Resolved Netlify deployment issues with type safety improvements
 
 ## Tech Stack
 - Next.js with TypeScript

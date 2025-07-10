@@ -324,20 +324,6 @@ const Team: React.FC = () => {
                       <p className="text-base text-vb-medium italic">{member.military}</p>
                     </div>
                     
-                    {member.linkedinUrl && (
-                      <div className="flex justify-center pt-4 border-t border-secondary">
-                        <motion.a 
-                          href={member.linkedinUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
-                          whileHover={{ scale: 1.2, rotate: 5 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <i className="fab fa-linkedin text-2xl"></i>
-                        </motion.a>
-                      </div>
-                    )}
                   </div>
                 </EditableSection>
               </motion.div>
@@ -447,24 +433,6 @@ const Team: React.FC = () => {
                       </p>
                     </div>
                     
-                    <div className="flex justify-center pt-3 border-t border-secondary mt-4">
-                      {member.linkedinUrl ? (
-                        <motion.a 
-                          href={member.linkedinUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
-                          whileHover={{ scale: 1.2, rotate: 5 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <i className="fab fa-linkedin text-xl"></i>
-                        </motion.a>
-                      ) : (
-                        <div className="text-gray-400">
-                          <i className="fab fa-linkedin text-xl opacity-30"></i>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </EditableSection>
               </motion.div>

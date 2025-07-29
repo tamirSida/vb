@@ -453,12 +453,12 @@ const Mentors: React.FC = () => {
           </motion.p>
           <motion.a
             href="/contact/?interest=mentorship"
-            className="inline-block bg-vb-gold hover:bg-vb-gold/90 text-vb-navy font-semibold px-8 py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
+            className="inline-block bg-vb-gold hover:bg-vb-gold/90 text-vb-navy font-bold px-10 py-4 rounded-lg transition-all duration-300 hover:shadow-xl hover:scale-105 border-2 border-vb-gold hover:border-vb-navy shadow-lg"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isGridInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.5, delay: 1.0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
           >
             <i className="fas fa-handshake mr-2"></i>
             Become a Mentor

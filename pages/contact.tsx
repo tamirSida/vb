@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import DiscreteAdminAccess, { useUrlAdminAccess } from '../components/admin/DiscreteAdminAccess';
 
@@ -7,6 +7,16 @@ export default function Contact() {
   useUrlAdminAccess();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedInterest, setSelectedInterest] = useState('');
+
+  // Auto-populate interest field from URL parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const interestParam = urlParams.get('interest');
+    if (interestParam) {
+      setSelectedInterest(interestParam);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -264,6 +274,8 @@ export default function Contact() {
                       <select
                         id="interest"
                         name="interest"
+                        value={selectedInterest}
+                        onChange={(e) => setSelectedInterest(e.target.value)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-vb-blue focus:border-transparent transition-colors"
                       >
                         <option value="">Select your primary interest</option>

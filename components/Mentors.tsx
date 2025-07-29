@@ -435,6 +435,35 @@ const Mentors: React.FC = () => {
           sectionName="Add Image After Mentors"
           isAddButton={true}
         />
+
+        {/* Mentor Recruitment CTA */}
+        <motion.div 
+          className="text-center mt-16 pt-12 border-t border-vb-light/20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isGridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <motion.p 
+            className="text-lg text-vb-medium mb-6 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isGridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            We are always looking to grow our network. If you want to mentor the next generation of combat veteran founders, reach out!
+          </motion.p>
+          <motion.a
+            href="/contact/?interest=mentorship"
+            className="inline-block bg-vb-gold hover:bg-vb-gold/90 text-vb-navy font-semibold px-8 py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isGridInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5, delay: 1.0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <i className="fas fa-handshake mr-2"></i>
+            Become a Mentor
+          </motion.a>
+        </motion.div>
       </div>
     </section>
 

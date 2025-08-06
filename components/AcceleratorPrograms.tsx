@@ -7,6 +7,29 @@ import ImageInsert from './admin/ImageInsert';
 import { useSimpleFirestore } from '../hooks/useSimpleFirestore';
 import { useAdmin } from '../contexts/AdminContext';
 
+// Utility function to remove undefined values recursively
+const removeUndefinedValues = (obj: any): any => {
+  if (obj === null || obj === undefined) {
+    return null;
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => removeUndefinedValues(item)).filter(item => item !== undefined);
+  }
+  
+  if (typeof obj === 'object') {
+    const cleaned: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value !== undefined) {
+        cleaned[key] = removeUndefinedValues(value);
+      }
+    }
+    return cleaned;
+  }
+  
+  return obj;
+};
+
 // Common icon options for timeline phases
 const TIMELINE_ICONS = [
   { icon: 'fas fa-clipboard-list', label: 'Application' },
@@ -238,7 +261,7 @@ const AcceleratorPrograms: React.FC = () => {
         images: updatedImages,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorContent', updatedData);
+      await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
       setAcceleratorData(updatedData);
       console.log('Image added successfully');
     } catch (error) {
@@ -254,7 +277,7 @@ const AcceleratorPrograms: React.FC = () => {
         images: updatedImages,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorContent', updatedData);
+      await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
       setAcceleratorData(updatedData);
       console.log('Image deleted successfully');
     } catch (error) {
@@ -311,7 +334,13 @@ const AcceleratorPrograms: React.FC = () => {
         !(p.timeframe === phase.timeframe && p.title === phase.title)
       );
       const updatedData = {
-        ...acceleratorData,
+        title: acceleratorData.title || 'Our Accelerator Program',
+        description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+        about: acceleratorData.about || '',
+        timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+        timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        programs: acceleratorData.programs || [],
+        images: acceleratorData.images || [],
         timeline: updatedTimeline,
         updatedAt: new Date().toISOString()
       };
@@ -341,7 +370,7 @@ const AcceleratorPrograms: React.FC = () => {
         programs: updatedPrograms,
         updatedAt: new Date().toISOString()
       };
-      await updateDocument('acceleratorContent', updatedData);
+      await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
       setAcceleratorData(updatedData);
       
       console.log('Accelerator program deleted successfully');
@@ -378,7 +407,7 @@ const AcceleratorPrograms: React.FC = () => {
         updatedAt: new Date().toISOString()
       };
       
-      await updateDocument('acceleratorContent', updatedData);
+      await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
       setAcceleratorData(updatedData);
     } catch (error) {
       console.error('Error deleting square:', error);
@@ -391,15 +420,15 @@ const AcceleratorPrograms: React.FC = () => {
         const updatedData = {
           title: data.title,
           description: data.description,
-          about: acceleratorData.about,
-          timelineTitle: acceleratorData.timelineTitle,
-          timelineDescription: acceleratorData.timelineDescription,
-          programs: acceleratorData.programs,
-          images: acceleratorData.images,
-          timeline: acceleratorData.timeline,
+          about: acceleratorData.about || '',
+          timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+          timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          programs: acceleratorData.programs || [],
+          images: acceleratorData.images || [],
+          timeline: acceleratorData.timeline || [],
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorContent', updatedData);
+        await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
         setAcceleratorData(updatedData);
       } else if (editingType === 'about') {
         const updatedData = {
@@ -407,7 +436,7 @@ const AcceleratorPrograms: React.FC = () => {
           about: data.about,
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorContent', updatedData);
+        await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
         setAcceleratorData(updatedData);
       } else if (editingType === 'program') {
         // Update existing program
@@ -425,7 +454,7 @@ const AcceleratorPrograms: React.FC = () => {
             programs: updatedPrograms,
             updatedAt: new Date().toISOString()
           };
-          await updateDocument('acceleratorContent', updatedData);
+          await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
           setAcceleratorData(updatedData);
         }
       } else if (editingType === 'add') {
@@ -444,7 +473,7 @@ const AcceleratorPrograms: React.FC = () => {
           programs: [...acceleratorData.programs, newProgram],
           updatedAt: new Date().toISOString()
         };
-        await updateDocument('acceleratorContent', updatedData);
+        await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
         setAcceleratorData(updatedData);
       } else if (editingType === 'addSquare') {
         // Add new square to program
@@ -465,7 +494,7 @@ const AcceleratorPrograms: React.FC = () => {
             programs: updatedPrograms,
             updatedAt: new Date().toISOString()
           };
-          await updateDocument('acceleratorContent', updatedData);
+          await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
           setAcceleratorData(updatedData);
         }
       } else if (editingType === 'editSquare') {
@@ -490,19 +519,24 @@ const AcceleratorPrograms: React.FC = () => {
               programs: updatedPrograms,
               updatedAt: new Date().toISOString()
             };
-            await updateDocument('acceleratorContent', updatedData);
+            await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
             setAcceleratorData(updatedData);
           }
         }
       } else if (editingType === 'timelineHeader') {
         const updatedData = {
-          ...acceleratorData,
-          timelineTitle: data.timelineTitle,
-          timelineDescription: data.timelineDescription,
+          title: acceleratorData.title || 'Our Accelerator Program',
+          description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+          about: acceleratorData.about || '',
+          timelineTitle: data.timelineTitle || 'Program Timeline',
+          timelineDescription: data.timelineDescription || 'Click on each phase to learn more about the process',
+          programs: acceleratorData.programs || [],
+          images: acceleratorData.images || [],
+          timeline: acceleratorData.timeline || [],
           updatedAt: new Date().toISOString()
         };
         console.log('Saving timeline header to Firebase:', updatedData);
-        const success = await updateDocument('acceleratorContent', updatedData);
+        const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
         if (success) {
           setAcceleratorData(updatedData);
           console.log('Timeline header saved successfully to Firebase');
@@ -525,12 +559,18 @@ const AcceleratorPrograms: React.FC = () => {
             isOngoing: selectedPhase.isOngoing
           };
           const updatedData = {
-            ...acceleratorData,
+            title: acceleratorData.title || 'Our Accelerator Program',
+            description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+            about: acceleratorData.about || '',
+            timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+            timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+            programs: acceleratorData.programs || [],
+            images: acceleratorData.images || [],
             timeline: updatedTimeline,
             updatedAt: new Date().toISOString()
           };
           console.log('Saving timeline phase to Firebase:', updatedData);
-          const success = await updateDocument('acceleratorContent', updatedData);
+          const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
           if (success) {
             setAcceleratorData(updatedData);
             console.log('Timeline phase saved successfully to Firebase');
@@ -563,12 +603,18 @@ const AcceleratorPrograms: React.FC = () => {
           isOngoing: data.isOngoing || false
         };
         const updatedData = {
-          ...acceleratorData,
-          timeline: [...acceleratorData.timeline, newPhase],
+          title: acceleratorData.title || 'Our Accelerator Program',
+          description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+          about: acceleratorData.about || '',
+          timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+          timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          programs: acceleratorData.programs || [],
+          images: acceleratorData.images || [],
+          timeline: [...(acceleratorData.timeline || []), newPhase],
           updatedAt: new Date().toISOString()
         };
         console.log('Adding new timeline phase to Firebase:', updatedData);
-        const success = await updateDocument('acceleratorContent', updatedData);
+        const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
         if (success) {
           setAcceleratorData(updatedData);
           console.log('New timeline phase added successfully to Firebase');

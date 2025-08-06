@@ -7,7 +7,8 @@
 - Three main paths: Non-Profit, Accelerator, Investment Fund
 - Uses VB logo without text for clean design
 - No navigation menu for focused user experience
-- **Full CMS Integration**: Hero section, WhyVB, Programs, Team, Portfolio
+- **Current Implementation**: Only hero section with countdown timer (auto-redirects to accelerator)
+- **TODO**: Add missing CMS sections (WhyVB, Programs, Team, Portfolio) for full landing page functionality
 
 ### Accelerator Page (/accelerator)
 - Dedicated accelerator program showcase
@@ -106,10 +107,12 @@ Press this sequence of keys in order:
 **Our Accelerator Program**
 - Program title and description editing
 - "About the Program" content section
-- Program details management
+- Program details management with dynamic squares system
 - **Enhanced Program Timeline**: Interactive phase cards with icon selection
 - **Timeline Phase Management**: Add/edit/delete individual timeline phases
 - **Phase Details Modal**: Click phases to view detailed information
+- **Curriculum Section**: Complete 5x4 grid layout with module management
+- **Curriculum Features**: Add/edit/delete curriculum modules, responsive grid (1-4 cols)
 - **Robust Save System**: Enhanced Firebase persistence with verification logging
 
 **Mentor Network**
@@ -206,6 +209,9 @@ service cloud.firestore {
 - **Motion Effects**: Removed problematic hover animations (h3 zoom effects)
 - **Type Safety**: Added proper TypeScript casting for Firebase operations
 - **Build Errors**: Resolved Netlify deployment issues with type safety improvements
+- **Curriculum System**: Added comprehensive 5x4 grid curriculum management with full CMS integration
+- **Infinite Loop Fix**: Resolved circular reference in useEffect causing dev server hangs
+- **Firebase Data Loading**: Fixed CMS data persistence issues by properly structuring Firebase queries
 
 ## Tech Stack
 - Next.js with TypeScript
@@ -219,3 +225,11 @@ service cloud.firestore {
 - Multiple escape routes from admin pages
 - Discrete access methods for professional appearance
 - Consistent admin styling with glass morphism design
+
+## TODO: Future Improvements
+- **Landing Page Enhancement**: Add missing CMS sections (WhyVB, Programs, Team, Portfolio) to complete full landing page functionality
+- **Timeline Phase IDs**: Add unique IDs to timeline phases for more reliable deletion instead of timeframe+title matching
+- **Curriculum Optimization**: Start with empty curriculum array instead of placeholder "Module 1, Module 2" entries
+- **Image Upload Enhancement**: Consider adding direct file upload functionality vs current URL-based system
+- **Content Versioning**: Add ability to revert changes and view content history
+- **Bulk Operations**: Add select-all and bulk edit capabilities for managing multiple items

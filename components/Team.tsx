@@ -309,7 +309,11 @@ const Team: React.FC = () => {
                         width={144}
                         height={144}
                         className="w-full h-full object-cover object-center"
+                        priority={index < 2}
+                        sizes="(max-width: 768px) 144px, 144px"
+                        quality={85}
                         onError={(e) => {
+                          console.log(`Image failed to load for ${member.name}: ${member.image}`);
                           (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE4IiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0zMiAxMDBDMzIgODYgNDYgNzggNjQgNzhTOTYgODYgOTYgMTAwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
                         }}
                       />
@@ -415,8 +419,11 @@ const Team: React.FC = () => {
                         width={112}
                         height={112}
                         className="w-full h-full object-cover object-top scale-110"
-                        priority
+                        priority={index < 4}
+                        sizes="(max-width: 768px) 112px, 112px"
+                        quality={85}
                         onError={(e) => {
+                          console.log(`Image failed to load for ${member.name}: ${member.image}`);
                           (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iNDgiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iNDgiIGN5PSIzNiIgcj0iMTQiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTI0IDc2QzI0IDY2IDM0IDYwIDQ4IDYwUzcyIDY2IDcyIDc2IiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
                         }}
                       />
@@ -588,7 +595,11 @@ const Team: React.FC = () => {
                 width={64}
                 height={64}
                 className="w-full h-full object-cover object-top scale-110"
+                priority
+                sizes="64px"
+                quality={90}
                 onError={(e) => {
+                  console.log(`Popup image failed to load for ${selectedMember.name}: ${selectedMember.image}`);
                   (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iMTAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTE2IDUwQzE2IDQyIDIyIDM4IDMyIDM4UzQ4IDQyIDQ4IDUwIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
                 }}
               />

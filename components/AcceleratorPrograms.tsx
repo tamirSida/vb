@@ -748,12 +748,9 @@ const AcceleratorPrograms: React.FC = () => {
                             </div>
                           )}
                           <span className="text-vb-blue font-semibold block mb-1">{square.label}:</span>
-                          <motion.p 
-                            className="text-vb-navy font-bold text-lg"
-                            whileHover={{ scale: 1.1 }}
-                          >
+                          <p className="text-vb-navy font-bold text-lg">
                             {square.value}
-                          </motion.p>
+                          </p>
                         </motion.div>
                       ))}
                       {isAdminMode && (

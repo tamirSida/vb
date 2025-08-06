@@ -225,51 +225,115 @@ const AcceleratorPrograms: React.FC = () => {
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   // Load data from Firestore on component mount
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       const data = await getDocument('acceleratorContent') as any;
-  //       if (data) {
-  //         // Ensure programs have squares array, migrating old structure if needed
-  //         const migratedPrograms = (data.programs || acceleratorData.programs).map((program: any) => {
-  //           if (!program.squares && (program.duration || program.investment || program.equity)) {
-  //             // Migrate old structure to new squares format
-  //             return {
-  //               ...program,
-  //               squares: [
-  //                 ...(program.duration ? [{ id: 'duration', label: 'Duration', value: program.duration }] : []),
-  //                 ...(program.investment ? [{ id: 'investment', label: 'Investment', value: program.investment }] : []),
-  //                 ...(program.equity ? [{ id: 'equity', label: 'What You Receive', value: program.equity }] : [])
-  //               ]
-  //             };
-  //           }
-  //           return program;
-  //         });
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getDocument('acceleratorContent') as any;
+        if (data) {
+          // Ensure programs have squares array, migrating old structure if needed
+          const migratedPrograms = (data.programs || siteData.programs.filter(program => program.name === 'VB Accelerator')).map((program: any) => {
+            if (!program.squares && (program.duration || program.investment || program.equity)) {
+              // Migrate old structure to new squares format
+              return {
+                ...program,
+                squares: [
+                  ...(program.duration ? [{ id: 'duration', label: 'Duration', value: program.duration }] : []),
+                  ...(program.investment ? [{ id: 'investment', label: 'Investment', value: program.investment }] : []),
+                  ...(program.equity ? [{ id: 'equity', label: 'What You Receive', value: program.equity }] : [])
+                ]
+              };
+            }
+            return program;
+          });
           
-  //         setAcceleratorData({
-  //           title: data.title || 'Our Accelerator Program',
-  //           description: data.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
-  //           about: data.about || 'adam fill here',
-  //           timelineTitle: data.timelineTitle || 'Program Timeline',
-  //           timelineDescription: data.timelineDescription || 'Click on each phase to learn more about the process',
-  //           curriculumTitle: data.curriculumTitle || 'Curriculum',
-  //           curriculumDescription: data.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
-  //           programs: migratedPrograms,
-  //           images: data.images || [],
-  //           timeline: data.timeline || [],
-  //           curriculum: data.curriculum || Array.from({ length: 20 }, (_, index) => ({
-  //             id: `curriculum-${index + 1}`,
-  //             title: `Module ${index + 1}`,
-  //             description: 'Description'
-  //           }))
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error('Error loading accelerator data:', error);
-  //     }
-  //   };
-  //   loadData();
-  // }, []);
+          // Create the default curriculum if not present
+          const defaultCurriculum = Array.from({ length: 20 }, (_, index) => ({
+            id: `curriculum-${index + 1}`,
+            title: `Module ${index + 1}`,
+            description: 'Description'
+          }));
+          
+          setAcceleratorData({
+            title: data.title || 'Our Accelerator Program',
+            description: data.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+            about: data.about || 'adam fill here',
+            timelineTitle: data.timelineTitle || 'Program Timeline',
+            timelineDescription: data.timelineDescription || 'Click on each phase to learn more about the process',
+            curriculumTitle: data.curriculumTitle || 'Curriculum',
+            curriculumDescription: data.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+            programs: migratedPrograms,
+            images: data.images || [],
+            timeline: data.timeline || [
+              {
+                timeframe: 'JAN-MAR',
+                title: 'Application and Selection Process',
+                description: 'Holistic assessment of founder-market fit, the uniqueness of their value proposition, and the overall market opportunity and business viability of their venture.',
+                highlights: [
+                  'Comprehensive founder evaluation',
+                  'Market opportunity analysis',
+                  'Business viability assessment'
+                ],
+                icon: 'fas fa-clipboard-list'
+              },
+              {
+                timeframe: 'APRIL',
+                title: 'Israel Startup Bootcamp',
+                description: 'Operators experience Start-Up Nation through seasoned founders, industry experts & leading academics. They advance their early-stage ventures through a "battle-tested" dedicated curriculum and training program designed for Veterans/Reservists.',
+                highlights: [
+                  '2 weeks intensive program',
+                  'Access to seasoned founders',
+                  'Industry expert mentorship',
+                  'Battle-tested curriculum for veterans'
+                ],
+                icon: 'fas fa-graduation-cap'
+              },
+              {
+                timeframe: 'APRIL-MAY',
+                title: 'Online Acceleration Direct Mentorship',
+                description: 'Operators are paired with an experienced founder and continue to build and advance their venture during weekly check-ins and assignments.',
+                highlights: [
+                  '6 weeks of direct mentorship',
+                  'Paired with experienced founders',
+                  'Weekly check-ins and assignments',
+                  'Continuous venture advancement'
+                ],
+                icon: 'fas fa-handshake'
+              },
+              {
+                timeframe: 'JUNE',
+                title: 'California Showcase',
+                description: 'Offers operators two intensive weeks in Los Angeles and the Bay Area for crucial meetings with industry experts, investors, and partners, culminating in a "pitch day" where they present their ventures to a select group of Silicon Valley investors.',
+                highlights: [
+                  '2 weeks in LA and Bay Area',
+                  'Meetings with industry experts',
+                  'Investor networking',
+                  'Final pitch day presentation'
+                ],
+                icon: 'fas fa-users'
+              },
+              {
+                timeframe: 'ONGOING',
+                title: 'VB Portfolio Network',
+                description: 'Operators gain entry to a robust network, providing a continuous source of support and guidance as they navigate the complexities of building their startups. This enduring connection offers invaluable resources and ongoing mentorship, crucial for long-term success.',
+                isOngoing: true,
+                highlights: [
+                  'Lifetime network access',
+                  'Continuous support and guidance',
+                  'Ongoing mentorship',
+                  'Long-term success resources'
+                ],
+                icon: 'fas fa-network-wired'
+              }
+            ],
+            curriculum: data.curriculum || defaultCurriculum
+          });
+        }
+      } catch (error) {
+        console.error('Error loading accelerator data:', error);
+      }
+    };
+    loadData();
+  }, [getDocument]);
 
   // Handle image operations
   const handleImageSave = async (imageData: any) => {

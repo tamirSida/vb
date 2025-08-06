@@ -139,7 +139,7 @@ const AcceleratorPrograms: React.FC = () => {
   const { isAdminMode } = useAdmin();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<any>(null);
-  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase' | 'addTimelinePhase' | 'addSquare' | 'editSquare'>('header');
+  const [editingType, setEditingType] = useState<'header' | 'program' | 'add' | 'about' | 'timelineHeader' | 'timelinePhase' | 'addTimelinePhase' | 'addSquare' | 'editSquare' | 'curriculumHeader' | 'addCurriculumItem' | 'editCurriculumItem'>('header');
   const [isPhaseModalOpen, setIsPhaseModalOpen] = useState(false);
   const [selectedPhase, setSelectedPhase] = useState<any>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -150,8 +150,15 @@ const AcceleratorPrograms: React.FC = () => {
     about: 'adam fill here',
     timelineTitle: 'Program Timeline',
     timelineDescription: 'Click on each phase to learn more about the process',
+    curriculumTitle: 'Curriculum',
+    curriculumDescription: 'Comprehensive training program covering all aspects of startup development',
     programs: siteData.programs.filter(program => program.name === 'VB Accelerator'),
     images: [] as any[],
+    curriculum: Array.from({ length: 20 }, (_, index) => ({
+      id: `curriculum-${index + 1}`,
+      title: `Module ${index + 1}`,
+      description: 'Description'
+    })),
     timeline: [
       {
         timeframe: 'JAN-MAR',
@@ -218,47 +225,68 @@ const AcceleratorPrograms: React.FC = () => {
   const { updateDocument, getDocument } = useSimpleFirestore('siteContent');
 
   // Load data from Firestore on component mount
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const data = await getDocument('acceleratorContent') as any;
-        if (data) {
-          // Ensure programs have squares array, migrating old structure if needed
-          const migratedPrograms = (data.programs || acceleratorData.programs).map((program: any) => {
-            if (!program.squares && (program.duration || program.investment || program.equity)) {
-              // Migrate old structure to new squares format
-              return {
-                ...program,
-                squares: [
-                  ...(program.duration ? [{ id: 'duration', label: 'Duration', value: program.duration }] : []),
-                  ...(program.investment ? [{ id: 'investment', label: 'Investment', value: program.investment }] : []),
-                  ...(program.equity ? [{ id: 'equity', label: 'What You Receive', value: program.equity }] : [])
-                ]
-              };
-            }
-            return program;
-          });
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     try {
+  //       const data = await getDocument('acceleratorContent') as any;
+  //       if (data) {
+  //         // Ensure programs have squares array, migrating old structure if needed
+  //         const migratedPrograms = (data.programs || acceleratorData.programs).map((program: any) => {
+  //           if (!program.squares && (program.duration || program.investment || program.equity)) {
+  //             // Migrate old structure to new squares format
+  //             return {
+  //               ...program,
+  //               squares: [
+  //                 ...(program.duration ? [{ id: 'duration', label: 'Duration', value: program.duration }] : []),
+  //                 ...(program.investment ? [{ id: 'investment', label: 'Investment', value: program.investment }] : []),
+  //                 ...(program.equity ? [{ id: 'equity', label: 'What You Receive', value: program.equity }] : [])
+  //               ]
+  //             };
+  //           }
+  //           return program;
+  //         });
           
-          setAcceleratorData({
-            ...acceleratorData,
-            ...data,
-            programs: migratedPrograms
-          });
-        }
-      } catch (error) {
-        console.error('Error loading accelerator data:', error);
-      }
-    };
-    loadData();
-  }, []);
+  //         setAcceleratorData({
+  //           title: data.title || 'Our Accelerator Program',
+  //           description: data.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+  //           about: data.about || 'adam fill here',
+  //           timelineTitle: data.timelineTitle || 'Program Timeline',
+  //           timelineDescription: data.timelineDescription || 'Click on each phase to learn more about the process',
+  //           curriculumTitle: data.curriculumTitle || 'Curriculum',
+  //           curriculumDescription: data.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+  //           programs: migratedPrograms,
+  //           images: data.images || [],
+  //           timeline: data.timeline || [],
+  //           curriculum: data.curriculum || Array.from({ length: 20 }, (_, index) => ({
+  //             id: `curriculum-${index + 1}`,
+  //             title: `Module ${index + 1}`,
+  //             description: 'Description'
+  //           }))
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error('Error loading accelerator data:', error);
+  //     }
+  //   };
+  //   loadData();
+  // }, []);
 
   // Handle image operations
   const handleImageSave = async (imageData: any) => {
     try {
       const updatedImages = [...acceleratorData.images, imageData];
       const updatedData = {
-        ...acceleratorData,
+        title: acceleratorData.title || 'Our Accelerator Program',
+        description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+        about: acceleratorData.about || '',
+        timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+        timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+        curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+        programs: acceleratorData.programs || [],
         images: updatedImages,
+        timeline: acceleratorData.timeline || [],
+        curriculum: acceleratorData.curriculum || [],
         updatedAt: new Date().toISOString()
       };
       await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
@@ -273,8 +301,17 @@ const AcceleratorPrograms: React.FC = () => {
     try {
       const updatedImages = acceleratorData.images.filter((img: any) => img.id !== imageId);
       const updatedData = {
-        ...acceleratorData,
+        title: acceleratorData.title || 'Our Accelerator Program',
+        description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+        about: acceleratorData.about || '',
+        timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+        timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+        curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+        programs: acceleratorData.programs || [],
         images: updatedImages,
+        timeline: acceleratorData.timeline || [],
+        curriculum: acceleratorData.curriculum || [],
         updatedAt: new Date().toISOString()
       };
       await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
@@ -327,6 +364,53 @@ const AcceleratorPrograms: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleEditCurriculumHeader = () => {
+    setEditingType('curriculumHeader');
+    setIsEditModalOpen(true);
+  };
+
+  const handleAddCurriculumItem = () => {
+    setSelectedPhase(null);
+    setEditingType('addCurriculumItem');
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditCurriculumItem = (item: any) => {
+    setSelectedPhase(item);
+    setEditingType('editCurriculumItem');
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteCurriculumItem = async (item: any) => {
+    try {
+      const updatedCurriculum = acceleratorData.curriculum.filter(c => c.id !== item.id);
+      const updatedData = {
+        title: acceleratorData.title || 'Our Accelerator Program',
+        description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+        about: acceleratorData.about || '',
+        timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+        timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+        curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+        programs: acceleratorData.programs || [],
+        images: acceleratorData.images || [],
+        timeline: acceleratorData.timeline || [],
+        curriculum: updatedCurriculum,
+        updatedAt: new Date().toISOString()
+      };
+      console.log('Deleting curriculum item from Firebase:', item);
+      const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
+      if (success) {
+        setAcceleratorData(updatedData);
+        console.log('Curriculum item deleted successfully from Firebase');
+      } else {
+        console.error('Failed to delete curriculum item from Firebase');
+      }
+    } catch (error) {
+      console.error('Error deleting curriculum item:', error);
+    }
+  };
+
   const handleDeleteTimelinePhase = async (phase: any) => {
     try {
       // Use both timeframe and title for more specific matching to avoid deleting multiple phases
@@ -339,9 +423,12 @@ const AcceleratorPrograms: React.FC = () => {
         about: acceleratorData.about || '',
         timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
         timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+        curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
         programs: acceleratorData.programs || [],
         images: acceleratorData.images || [],
         timeline: updatedTimeline,
+        curriculum: acceleratorData.curriculum || [],
         updatedAt: new Date().toISOString()
       };
       console.log('Deleting timeline phase from Firebase:', phase);
@@ -366,8 +453,17 @@ const AcceleratorPrograms: React.FC = () => {
     try {
       const updatedPrograms = acceleratorData.programs.filter(program => program.name !== editingProgram.name);
       const updatedData = {
-        ...acceleratorData,
+        title: acceleratorData.title || 'Our Accelerator Program',
+        description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+        about: acceleratorData.about || '',
+        timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+        timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+        curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
         programs: updatedPrograms,
+        images: acceleratorData.images || [],
+        timeline: acceleratorData.timeline || [],
+        curriculum: acceleratorData.curriculum || [],
         updatedAt: new Date().toISOString()
       };
       await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
@@ -402,8 +498,17 @@ const AcceleratorPrograms: React.FC = () => {
       );
       
       const updatedData = {
-        ...acceleratorData,
+        title: acceleratorData.title || 'Our Accelerator Program',
+        description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+        about: acceleratorData.about || '',
+        timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+        timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+        curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+        curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
         programs: updatedPrograms,
+        images: acceleratorData.images || [],
+        timeline: acceleratorData.timeline || [],
+        curriculum: acceleratorData.curriculum || [],
         updatedAt: new Date().toISOString()
       };
       
@@ -423,17 +528,29 @@ const AcceleratorPrograms: React.FC = () => {
           about: acceleratorData.about || '',
           timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
           timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+          curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
           programs: acceleratorData.programs || [],
           images: acceleratorData.images || [],
           timeline: acceleratorData.timeline || [],
+          curriculum: acceleratorData.curriculum || [],
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
         setAcceleratorData(updatedData);
       } else if (editingType === 'about') {
         const updatedData = {
-          ...acceleratorData,
+          title: acceleratorData.title || 'Our Accelerator Program',
+          description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
           about: data.about,
+          timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+          timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+          curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+          programs: acceleratorData.programs || [],
+          images: acceleratorData.images || [],
+          timeline: acceleratorData.timeline || [],
+          curriculum: acceleratorData.curriculum || [],
           updatedAt: new Date().toISOString()
         };
         await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
@@ -450,8 +567,17 @@ const AcceleratorPrograms: React.FC = () => {
             highlights: data.highlights.split('\n').filter((h: string) => h.trim())
           };
           const updatedData = {
-            ...acceleratorData,
+            title: acceleratorData.title || 'Our Accelerator Program',
+            description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+            about: acceleratorData.about || '',
+            timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+            timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+            curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+            curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
             programs: updatedPrograms,
+            images: acceleratorData.images || [],
+            timeline: acceleratorData.timeline || [],
+            curriculum: acceleratorData.curriculum || [],
             updatedAt: new Date().toISOString()
           };
           await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
@@ -490,8 +616,17 @@ const AcceleratorPrograms: React.FC = () => {
             squares: [...(updatedPrograms[programIndex].squares || []), newSquare]
           };
           const updatedData = {
-            ...acceleratorData,
+            title: acceleratorData.title || 'Our Accelerator Program',
+            description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+            about: acceleratorData.about || '',
+            timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+            timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+            curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+            curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
             programs: updatedPrograms,
+            images: acceleratorData.images || [],
+            timeline: acceleratorData.timeline || [],
+            curriculum: acceleratorData.curriculum || [],
             updatedAt: new Date().toISOString()
           };
           await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
@@ -530,9 +665,12 @@ const AcceleratorPrograms: React.FC = () => {
           about: acceleratorData.about || '',
           timelineTitle: data.timelineTitle || 'Program Timeline',
           timelineDescription: data.timelineDescription || 'Click on each phase to learn more about the process',
+          curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+          curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
           programs: acceleratorData.programs || [],
           images: acceleratorData.images || [],
           timeline: acceleratorData.timeline || [],
+          curriculum: acceleratorData.curriculum || [],
           updatedAt: new Date().toISOString()
         };
         console.log('Saving timeline header to Firebase:', updatedData);
@@ -620,6 +758,89 @@ const AcceleratorPrograms: React.FC = () => {
           console.log('New timeline phase added successfully to Firebase');
         } else {
           console.error('Failed to add new timeline phase to Firebase');
+        }
+      } else if (editingType === 'curriculumHeader') {
+        const updatedData = {
+          title: acceleratorData.title || 'Our Accelerator Program',
+          description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+          about: acceleratorData.about || '',
+          timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+          timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          curriculumTitle: data.curriculumTitle || 'Curriculum',
+          curriculumDescription: data.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+          programs: acceleratorData.programs || [],
+          images: acceleratorData.images || [],
+          timeline: acceleratorData.timeline || [],
+          curriculum: acceleratorData.curriculum || [],
+          updatedAt: new Date().toISOString()
+        };
+        console.log('Saving curriculum header to Firebase:', updatedData);
+        const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
+        if (success) {
+          setAcceleratorData(updatedData);
+          console.log('Curriculum header saved successfully to Firebase');
+        } else {
+          console.error('Failed to save curriculum header to Firebase');
+        }
+      } else if (editingType === 'addCurriculumItem') {
+        const newItem = {
+          id: `curriculum-${Date.now()}`,
+          title: data.title,
+          description: data.description
+        };
+        const updatedData = {
+          title: acceleratorData.title || 'Our Accelerator Program',
+          description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+          about: acceleratorData.about || '',
+          timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+          timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+          curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+          programs: acceleratorData.programs || [],
+          images: acceleratorData.images || [],
+          timeline: acceleratorData.timeline || [],
+          curriculum: [...(acceleratorData.curriculum || []), newItem],
+          updatedAt: new Date().toISOString()
+        };
+        console.log('Adding new curriculum item to Firebase:', updatedData);
+        const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
+        if (success) {
+          setAcceleratorData(updatedData);
+          console.log('New curriculum item added successfully to Firebase');
+        } else {
+          console.error('Failed to add new curriculum item to Firebase');
+        }
+      } else if (editingType === 'editCurriculumItem') {
+        const itemIndex = acceleratorData.curriculum.findIndex(c => c.id === selectedPhase.id);
+        if (itemIndex !== -1) {
+          const updatedCurriculum = [...acceleratorData.curriculum];
+          updatedCurriculum[itemIndex] = {
+            ...updatedCurriculum[itemIndex],
+            title: data.title,
+            description: data.description
+          };
+          const updatedData = {
+            title: acceleratorData.title || 'Our Accelerator Program',
+            description: acceleratorData.description || 'Intensive 10-week program designed for veteran entrepreneurs ready to scale their startups',
+            about: acceleratorData.about || '',
+            timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
+            timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+            curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+            curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
+            programs: acceleratorData.programs || [],
+            images: acceleratorData.images || [],
+            timeline: acceleratorData.timeline || [],
+            curriculum: updatedCurriculum,
+            updatedAt: new Date().toISOString()
+          };
+          console.log('Saving curriculum item to Firebase:', updatedData);
+          const success = await updateDocument('acceleratorContent', removeUndefinedValues(updatedData));
+          if (success) {
+            setAcceleratorData(updatedData);
+            console.log('Curriculum item saved successfully to Firebase');
+          } else {
+            console.error('Failed to save curriculum item to Firebase');
+          }
         }
       }
       console.log('Accelerator programs data saved successfully');
@@ -906,6 +1127,98 @@ const AcceleratorPrograms: React.FC = () => {
             </div>
           </div>
 
+          {/* Curriculum Section */}
+          <div className="bg-light text-dark rounded-xl shadow-lg border border-secondary overflow-hidden mt-8">
+            <div className="p-8">
+              <EditableSection
+                sectionName="Curriculum Header"
+                onEdit={handleEditCurriculumHeader}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isTimelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
+                >
+                  <h3 className="text-3xl font-bold text-vb-navy mb-4">{acceleratorData.curriculumTitle || 'Curriculum'}</h3>
+                  <p className="text-xl text-vb-medium max-w-2xl mx-auto">
+                    {acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development'}
+                  </p>
+                </motion.div>
+              </EditableSection>
+              
+              {/* Curriculum Grid - 5 rows x 4 cols */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {(acceleratorData.curriculum || []).map((item: any, index: number) => (
+                  <motion.div
+                    key={item.id}
+                    className="bg-white/50 p-4 rounded-lg border border-vb-light/30 relative group"
+                    whileHover={{ 
+                      scale: 1.05,
+                      backgroundColor: "rgba(59, 130, 246, 0.1)",
+                      transition: { duration: 0.2 }
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                  >
+                    {isAdminMode && (
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditCurriculumItem(item);
+                          }}
+                          className="text-vb-blue hover:text-vb-navy mr-2"
+                          title="Edit Curriculum Item"
+                        >
+                          <i className="fas fa-edit text-sm"></i>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm(`Delete ${item.title}?`)) {
+                              handleDeleteCurriculumItem(item);
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                          title="Delete Curriculum Item"
+                        >
+                          <i className="fas fa-trash text-sm"></i>
+                        </button>
+                      </div>
+                    )}
+                    <span className="text-vb-blue font-semibold block mb-1">{item.title}:</span>
+                    <p className="text-vb-navy font-bold text-lg">
+                      {item.description}
+                    </p>
+                  </motion.div>
+                ))}
+                
+                {/* Add Curriculum Item Button */}
+                {isAdminMode && (
+                  <motion.div
+                    className="bg-gray-100/50 p-4 rounded-lg border border-gray-300 border-dashed flex items-center justify-center cursor-pointer hover:bg-gray-200/50 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    onClick={handleAddCurriculumItem}
+                  >
+                    <div className="text-center text-gray-500">
+                      <i className="fas fa-plus text-2xl mb-2"></i>
+                      <p className="text-sm font-medium">Add Module</p>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Curriculum Management Help Text */}
+              {isAdminMode && (
+                <div className="mt-6 text-center text-sm text-vb-medium">
+                  <p>Click on any module to edit it, or use the + button to add a new module</p>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Image insertion after timeline */}
           {acceleratorData.images
             .filter((img: any) => img.position === 3)
@@ -960,11 +1273,17 @@ const AcceleratorPrograms: React.FC = () => {
                   ? `Edit ${selectedPhase?.title || 'Timeline Phase'}`
                   : editingType === 'addTimelinePhase'
                     ? "Add New Timeline Phase"
-                    : editingType === 'addSquare'
-                      ? "Add New Square"
-                      : editingType === 'editSquare'
-                        ? "Edit Square"
-                        : `Edit ${editingProgram?.name || 'Program'}`
+                    : editingType === 'curriculumHeader'
+                      ? "Edit Curriculum Header"
+                      : editingType === 'addCurriculumItem'
+                        ? "Add New Curriculum Module"
+                        : editingType === 'editCurriculumItem'
+                          ? `Edit ${selectedPhase?.title || 'Curriculum Module'}`
+                          : editingType === 'addSquare'
+                            ? "Add New Square"
+                            : editingType === 'editSquare'
+                              ? "Edit Square"
+                              : `Edit ${editingProgram?.name || 'Program'}`
       }
     >
       {editingType === 'header' ? (
@@ -1090,6 +1409,50 @@ const AcceleratorPrograms: React.FC = () => {
               </label>
             </div>
           )}
+        </div>
+      ) : editingType === 'curriculumHeader' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Curriculum Title</label>
+            <input
+              type="text"
+              name="curriculumTitle"
+              defaultValue={acceleratorData.curriculumTitle || 'Curriculum'}
+              className="admin-input w-full"
+              placeholder="e.g., Curriculum"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Curriculum Description</label>
+            <textarea
+              name="curriculumDescription"
+              defaultValue={acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development'}
+              className="admin-input w-full h-20 resize-none"
+              placeholder="Describe the curriculum section..."
+            />
+          </div>
+        </div>
+      ) : editingType === 'addCurriculumItem' || editingType === 'editCurriculumItem' ? (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Module Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={selectedPhase?.title || ''}
+              className="admin-input w-full"
+              placeholder="e.g., Module 1, Business Planning"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Module Description</label>
+            <textarea
+              name="description"
+              defaultValue={selectedPhase?.description || ''}
+              className="admin-input w-full h-20 resize-none"
+              placeholder="Brief description of the module content..."
+            />
+          </div>
         </div>
       ) : (editingType === 'addSquare' || editingType === 'editSquare') ? (
         <div className="space-y-4">

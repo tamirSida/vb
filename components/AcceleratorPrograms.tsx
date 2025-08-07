@@ -766,8 +766,11 @@ const AcceleratorPrograms: React.FC = () => {
             about: acceleratorData.about || '',
             timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
             timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+            curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+            curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
             programs: acceleratorData.programs || [],
             images: acceleratorData.images || [],
+            curriculum: acceleratorData.curriculum || [],
             timeline: updatedTimeline,
             updatedAt: new Date().toISOString()
           };
@@ -810,8 +813,11 @@ const AcceleratorPrograms: React.FC = () => {
           about: acceleratorData.about || '',
           timelineTitle: acceleratorData.timelineTitle || 'Program Timeline',
           timelineDescription: acceleratorData.timelineDescription || 'Click on each phase to learn more about the process',
+          curriculumTitle: acceleratorData.curriculumTitle || 'Curriculum',
+          curriculumDescription: acceleratorData.curriculumDescription || 'Comprehensive training program covering all aspects of startup development',
           programs: acceleratorData.programs || [],
           images: acceleratorData.images || [],
+          curriculum: acceleratorData.curriculum || [],
           timeline: [...(acceleratorData.timeline || []), newPhase],
           updatedAt: new Date().toISOString()
         };
